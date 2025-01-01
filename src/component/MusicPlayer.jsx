@@ -7,7 +7,6 @@ import { FaChevronUp } from "react-icons/fa";
 import { FaForward } from "react-icons/fa";
 import { FaBackward } from "react-icons/fa";
 
-
 const MusicPlayer = ({
   songName,
   playNextSong,
@@ -15,26 +14,25 @@ const MusicPlayer = ({
   artistName,
   image,
   handlePlayerClose,
-  songId, // Assuming songId is passed down as a prop
+  songId,
 }) => {
-  const [currentTime, setCurrentTime] = useState(0); // Current time in seconds
-  const [totalDuration, setTotalDuration] = useState(0); // Total duration of the song
-  const [isPlaying, setIsPlaying] = useState(false); // Track whether the song is playing
-  const [isDragging, setIsDragging] = useState(false); // Dragging state
-  const [isMuted, setIsMuted] = useState(false); // Track whether the song is muted
-  const audioRef = useRef(null); // Audio element reference
-  const progressBarRef = useRef(null); // Reference for the progress bar
+  const [currentTime, setCurrentTime] = useState(0);
+  const [totalDuration, setTotalDuration] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // New state for loading
+  const audioRef = useRef(null);
+  const progressBarRef = useRef(null);
 
   const progressPercentage = (currentTime / totalDuration) * 100;
 
-  // Format seconds into mm:ss format
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
   };
 
-  // Common function to handle dragging on mouse or touch
   const updateProgress = (clientX) => {
     if (!progressBarRef.current) return;
 
@@ -45,7 +43,6 @@ const MusicPlayer = ({
     if (audioRef.current) audioRef.current.currentTime = newTime;
   };
 
-  // Handle mouse or touch move
   const handleMove = (e) => {
     if (!isDragging) return;
 
@@ -56,7 +53,6 @@ const MusicPlayer = ({
     }
   };
 
-  // Handle mouse or touch start
   const handleStart = (e) => {
     setIsDragging(true);
 
@@ -67,12 +63,10 @@ const MusicPlayer = ({
     }
   };
 
-  // Handle mouse or touch end
   const handleEnd = () => {
     setIsDragging(false);
   };
 
-  // Handle Play/Pause
   const togglePlay = () => {
     if (!audioRef.current) {
       console.error(
@@ -83,15 +77,16 @@ const MusicPlayer = ({
 
     if (isPlaying) {
       audioRef.current.pause();
+      setIsPlaying(false);
     } else {
+      setIsLoading(true); // Set loading state
       audioRef.current.play().catch((error) => {
         console.error("Error while trying to play the audio:", error);
+        setIsLoading(false); // Reset loading state on error
       });
     }
-    setIsPlaying(!isPlaying);
   };
 
-  // Sync the progress bar with audio playback
   useEffect(() => {
     const updateCurrentTime = () => {
       setCurrentTime(audioRef.current.currentTime);
@@ -99,6 +94,10 @@ const MusicPlayer = ({
 
     if (audioRef.current) {
       audioRef.current.addEventListener("timeupdate", updateCurrentTime);
+      audioRef.current.addEventListener("playing", () => {
+        setIsPlaying(true);
+        setIsLoading(false); // Remove loading state when playing starts
+      });
       audioRef.current.addEventListener("ended", () => setIsPlaying(false));
     }
 
@@ -109,14 +108,12 @@ const MusicPlayer = ({
     };
   }, []);
 
-  // Load total duration from the audio file
   const handleLoadedMetadata = () => {
     if (audioRef.current) {
       setTotalDuration(audioRef.current.duration);
     }
   };
 
-  // Toggle mute/unmute
   const toggleMute = () => {
     setIsMuted(!isMuted);
     if (audioRef.current) {
@@ -134,10 +131,9 @@ const MusicPlayer = ({
     >
       <div
         style={{ backgroundImage: `url(${image})` }}
-        className="transition-all duration-700 md:w-[80%] relative md:h-[98%]  bg-no-repeat bg-center bg-cover overflow-auto no-scrollbar h-full w-full bg-white/20 md:rounded-[30px]"
+        className="transition-all duration-700 md:w-[80%] relative md:h-[98%] bg-no-repeat bg-center bg-cover overflow-auto no-scrollbar h-full w-full bg-white/20 md:rounded-[30px]"
       >
         <div className="bg-black/20 p-4 h-full overflow-auto no-scrollbar backdrop-blur-md">
-          {/* Header */}
           <div className="flex absolute top-7 left-7 justify-between items-center">
             <FaArrowLeft
               onClick={() => handlePlayerClose()}
@@ -145,7 +141,6 @@ const MusicPlayer = ({
             />
           </div>
           <div className="flex md:flex-row flex-col items-center justify-center">
-            {/* Album Image */}
             <div className="transition-all md:mb-0 mb-5 px-3 py-5 md:w-[50%] flex justify-center">
               <img
                 src={image}
@@ -153,10 +148,8 @@ const MusicPlayer = ({
                 className="transition-all h-full w-[80%] rounded-xl"
               />
             </div>
-
             <div className="transition-all overflow-auto no-scrollbar md:w-[60%] h-full">
               <div className="md:rounded-3xl md:p-2 md:border-2 md:border-white/20 mb-5">
-                {/* Song Info */}
                 <div className="flex items-center px-3 justify-between">
                   <div className="flex flex-col">
                     <span className="font-extrabold md:text-4xl text-3xl">
@@ -168,11 +161,11 @@ const MusicPlayer = ({
                   </div>
                   <CiHeart className="md:text-5xl cursor-pointer text-3xl" />
                 </div>
-
-                {/* Progress Tracker */}
                 <div className="px-3 mt-5">
                   <div className="flex items-center justify-between text-sm text-gray-200">
-                    <span>{formatTime(currentTime)}</span>
+                    <span>
+                      {isLoading ? "Loading..." : formatTime(currentTime)}
+                    </span>
                     <span>{formatTime(totalDuration)}</span>
                   </div>
                   <div
@@ -192,13 +185,14 @@ const MusicPlayer = ({
                     ></div>
                   </div>
                 </div>
-
-                {/* Controls */}
                 <div className="flex items-center justify-center gap-5 mt-5">
                   <button className="p-3 rounded-full">
                     <PiShuffle className="text-white md:text-lg text-3xl" />
                   </button>
-                  <button onClick={() => playPrevSong()} className="p-3 rounded-full">
+                  <button
+                    onClick={() => playPrevSong()}
+                    className="p-3 rounded-full"
+                  >
                     <FaBackward className="text-white text-3xl" />
                   </button>
                   <button
@@ -211,11 +205,18 @@ const MusicPlayer = ({
                       <FaPlay className="text-white text-lg" />
                     )}
                   </button>
-                  <button onClick={() => playNextSong()} className="p-3 rounded-full">
+                  <button
+                    onClick={() => playNextSong()}
+                    className="p-3 rounded-full"
+                  >
                     <FaForward className="text-white text-3xl" />
                   </button>
                   <button onClick={toggleMute} className="p-3 rounded-full">
-                    {isMuted ? <HiSpeakerXMark className="text-white md:text-lg text-3xl"/> : <HiSpeakerWave className="text-white md:text-lg text-3xl" />}
+                    {isMuted ? (
+                      <HiSpeakerXMark className="text-white md:text-lg text-3xl" />
+                    ) : (
+                      <HiSpeakerWave className="text-white md:text-lg text-3xl" />
+                    )}
                   </button>
                 </div>
               </div>
@@ -226,29 +227,20 @@ const MusicPlayer = ({
                 </span>
               </div>
               <div className="text-center text-3xl overflow-auto no-scrollbar h-[200px] bg-white/20 rounded-3xl p-5">
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
                 Corporis rerum fuga ipsa necessitatibus harum temporibus eos
                 consectetur sed fugiat molestias magnam quis eius quaerat enim
-                ullam hic excepturi, quasi assumenda! Lorem, ipsum dolor sit
-                amet consectetur adipisicing elit. Corporis rerum fuga ipsa
-                necessitatibus harum temporibus eos consectetur sed fugiat
-                molestias magnam quis eius quaerat enim ullam hic excepturi,
-                quasi assumenda! Lorem, ipsum dolor sit amet consectetur
-                adipisicing elit. Corporis rerum fuga ipsa necessitatibus harum
-                temporibus eos consectetur sed fugiat molestias magnam quis eius
-                quaerat enim ullam hic excepturi, quasi assumenda!
+                ullam hic excepturi, quasi assumenda!
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      {/* Audio Player */}
       <audio
         ref={audioRef}
-        src={`/assets/audio/${songId}.mp3`} // Use songId to find the corresponding audio file
+        src={`/assets/audio/${songId}.mp3`}
         preload="auto"
-        onLoadedMetadata={handleLoadedMetadata} // Get total duration when metadata is loaded
+        onLoadedMetadata={handleLoadedMetadata}
       />
     </div>
   );
