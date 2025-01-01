@@ -1,5 +1,4 @@
 import React, { Suspense, useState } from "react";
-import bg from "../assets/bg.jpg";
 import { CiSearch } from "react-icons/ci";
 
 // Lazy load the SongList component
@@ -62,7 +61,7 @@ function Layout() {
   return (
     <div
       className="h-screen bg-center bg-cover"
-      style={{ backgroundImage: `url(${bg})` }}
+      style={{ backgroundImage: `url(/assets/bg.jpg)` }}
     >
       <div className="absolute flex flex-col md:p-10 p-3 top-0 left-0 w-full h-full bg-black/30 text-white overflow-auto">
         <div className="flex justify-between md:w-[500px]">

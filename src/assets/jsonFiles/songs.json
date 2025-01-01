@@ -3,174 +3,174 @@
         "id": 3,
         "songName": "Cartoon - On & On",
         "artistName": "Daniel Levi",
-        "poster": "/src/assets/img/3.jpg"
+        "poster": "/assets/img/3.jpg"
     },
     {
         "id": 4,
         "songName": "Warriyo - Mortals",
         "artistName": "Mortals",
-        "poster": "/src/assets/img/4.jpg"
+        "poster": "/assets/img/4.jpg"
     },
     {
         "id": 5,
         "songName": "Ertugrul Gazi",
         "artistName": "Ertugrul",
-        "poster": "/src/assets/img/5.jpg"
+        "poster": "/assets/img/5.jpg"
     },
     {
         "id": 6,
         "songName": "Electronic Music",
         "artistName": "Electro",
-        "poster": "/src/assets/img/6.jpg"
+        "poster": "/assets/img/6.jpg"
     },
     {
         "id": 7,
         "songName": "Agar Tum Sath Ho",
         "artistName": "Tamashaa",
-        "poster": "/src/assets/img/7.jpg"
+        "poster": "/assets/img/7.jpg"
     },
     {
         "id": 8,
         "songName": "Suna Hai",
         "artistName": "Jubin Nautiyal",
-        "poster": "/src/assets/img/8.jpg"
+        "poster": "/assets/img/8.jpg"
     },
     {
         "id": 9,
         "songName": "Dilbar",
         "artistName": "Neha kakker, Dhvani Bhanushali, Ikka",
-        "poster": "/src/assets/img/9.jpg"
+        "poster": "/assets/img/9.jpg"
     },
     {
         "id": "gadar2",
         "songName": "Udd ja kale kawan | Gadar 2",
         "artistName": "Udit Narayan, Alka Yagnik",
-        "poster": "/src/assets/img/gadar2.jpeg"
+        "poster": "/assets/img/gadar2.jpeg"
     },
     {
         "id": "zahra",
         "songName": "Zahra",
         "artistName": "Unknown",
-        "poster": "/src/assets/img/no-music-icon.svg"
+        "poster": "/assets/img/no-music-icon.svg"
     },
     {
         "id": 10,
         "songName": "Dunia",
         "artistName": "Abhijit Vaghani, Akhil, Dhvani Bhanushali, Bob",
-        "poster": "/src/assets/img/10.jpg"
+        "poster": "/assets/img/10.jpg"
     },
     {
         "id": 11,
         "songName": "Lagdi Lahore Di",
         "artistName": "Guru Randhawa, Tulsi kumar",
-        "poster": "/src/assets/img/11.jpg"
+        "poster": "/assets/img/11.jpg"
     },
     {
         "id": 12,
         "songName": "Putt Jatt De",
         "artistName": "Diljit Dosanjh, Kaater",
-        "poster": "/src/assets/img/12.jpg"
+        "poster": "/assets/img/12.jpg"
     },
     {
         "id": 13,
         "songName": "Baarishein",
         "artistName": "Atif Aslam",
-        "poster": "/src/assets/img/13.jpg"
+        "poster": "/assets/img/13.jpg"
     },
     {
         "id": 14,
         "songName": "Vaste",
         "artistName": "Dhvani Bhanushali, Nikhil D Souza",
-        "poster": "/src/assets/img/14.jpg"
+        "poster": "/assets/img/14.jpg"
     },
     {
         "id": 15,
         "songName": "Lut Gay",
         "artistName": "Jubin Nautiyal",
-        "poster": "/src/assets/img/15.jpg"
+        "poster": "/assets/img/15.jpg"
     },
     {
         "id": 16,
         "songName": "Meri Zindagi Hai Tu",
         "artistName": "Jubin Nautiyal, Neeti Mohan",
-        "poster": "/src/assets/img/16.jpg"
+        "poster": "/assets/img/16.jpg"
     },
     {
         "id": 20,
         "songName": "Vande Matram",
         "artistName": "AR Raheman",
-        "poster": "/src/assets/img/20.jpg"
+        "poster": "/assets/img/20.jpg"
     },
     {
         "id": 17,
         "songName": "Zaroori Tha",
         "artistName": "rahat fateh ali khan",
-        "poster": "/src/assets/img/17.jpg"
+        "poster": "/assets/img/17.jpg"
     },
     {
         "id": 18,
         "songName": "PASOORI",
         "artistName": "Ali Sethi, Shae Gill",
-        "poster": "/src/assets/img/18.jpg"
+        "poster": "/assets/img/18.jpg"
     },
     {
         "id": 19,
         "songName": "Insane",
         "artistName": "AP Dhillon",
-        "poster": "/src/assets/img/19.jpg"
+        "poster": "/assets/img/19.jpg"
     },
     {
         "id": 21,
         "songName": "Udd ja kale kawan | Gadar 1",
         "artistName": "Udit Narayan",
-        "poster": "/src/assets/img/21.jpg"
+        "poster": "/assets/img/21.jpg"
     },
     {
         "id": 23,
         "songName": "Har Har Mahadev",
         "artistName": "Vikram Montrose",
-        "poster": "/src/assets/img/23.jpg"
+        "poster": "/assets/img/23.jpg"
     },
     {
         "id": "BankeHawaMein",
         "songName": "Banke Hawa Mein",
         "artistName": "Altamash Faridi",
-        "poster": "/src/assets/img/BankeHawaMein.jpg"
+        "poster": "/assets/img/BankeHawaMein.jpg"
     },
     {
         "id": "ChaloIkBaarFirSeAjnabiBanJaye",
         "songName": "Chalo Ik Baar Fir Se Ajnabi Ban Jaye",
         "artistName": "Mahendra Kapoor",
-        "poster": "/src/assets/img/ChaloIkBaarFirSeAjnabiBanJaye.jpg"
+        "poster": "/assets/img/ChaloIkBaarFirSeAjnabiBanJaye.jpg"
     },
     {
         "id": "MaahiVe",
         "songName": "Maahi Ve",
         "artistName": "Neha Kakker",
-        "poster": "/src/assets/img/MaahiVe.jpg"
+        "poster": "/assets/img/MaahiVe.jpg"
     },
     {
         "id": "MeriBheegiBheegiSi",
         "songName": "Meri Bheegi Bheegi Si",
         "artistName": "Kishore Kumar",
-        "poster": "/src/assets/img/MeriBheegiBheegiSi.jpg"
+        "poster": "/assets/img/MeriBheegiBheegiSi.jpg"
     },
     {
         "id": "Musafir",
         "songName": "Musafir",
         "artistName": "Atif Aslam",
-        "poster": "/src/assets/img/musafir.jpg"
+        "poster": "/assets/img/musafir.jpg"
     },
     {
         "id": "YadavBrand2",
         "songName": "Yadav Brand 2",
         "artistName": "sunny yaduvanshi, Nitesh ujoli",
-        "poster": "/src/assets/img/yadavbrand2.jpg"
+        "poster": "/assets/img/yadavbrand2.jpg"
     },
     {
         "id": "Tumhiaana,Marjaavaan",
         "songName": "Tum Hi Aana, Marjaavaan",
         "artistName": "Jubin Nautiyal",
-        "poster": "/src/assets/img/Tumhiaana,Marjaavaan.jpeg"
+        "poster": "/assets/img/Tumhiaana,Marjaavaan.jpeg"
     }
 ]
