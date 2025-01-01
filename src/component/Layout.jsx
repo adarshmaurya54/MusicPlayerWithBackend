@@ -11,14 +11,54 @@ function Layout() {
   const [songList, setSongList] = useState(songs); // Set songs directly
   const [player, setPlayer] = useState(0);
 
+  // Function to handle song selection
   const handlePlayer = (songId) => {
     setPlayer(songId);  // Set the player to the song ID selected
   };
 
+  // Function to close the player
   const handlePlayerClose = () => {
     setPlayer(0);  // Close the player
   };
+
+  // Function to get the next song ID
+  const getNextSongId = (currentSongId) => {
+    const currentIndex = songList.findIndex((song) => song.id === currentSongId);
+    if (currentIndex === -1) return null; // If song is not found, return null
+
+    // Get the next song index (looping back to the first song when at the end)
+    const nextIndex = (currentIndex + 1) % songList.length;
+    return songList[nextIndex].id; // Return the next song's ID
+  };
+
+  // Function to get the previous song ID
+  const getPrevSongId = (currentSongId) => {
+    const currentIndex = songList.findIndex((song) => song.id === currentSongId);
+    if (currentIndex === -1) return null; // If song is not found, return null
+
+    // Get the previous song index (looping back to the last song when at the beginning)
+    const prevIndex = (currentIndex - 1 + songList.length) % songList.length;
+    return songList[prevIndex].id; // Return the previous song's ID
+  };
+
+  // Function to play the next song
+  const playNextSong = () => {
+    const nextSongId = getNextSongId(player);
+    if (nextSongId) {
+      setPlayer(nextSongId);  // Update the player with the next song ID
+    }
+  };
+
+  // Function to play the previous song
+  const playPrevSong = () => {
+    const prevSongId = getPrevSongId(player);
+    if (prevSongId) {
+      setPlayer(prevSongId);  // Update the player with the previous song ID
+    }
+  };
+
   const selectedSong = songList.find((song) => song.id === player);
+
   return (
     <div
       className="h-screen bg-center bg-cover"
@@ -54,16 +94,19 @@ function Layout() {
             ))}
           </Suspense>
         </div>
+
         {player !== 0 && selectedSong && (
-        <MusicPlayer
-          songId={selectedSong.id}
-          handlePlayerClose={handlePlayerClose}
-          songName={selectedSong.songName}
-          artistName={selectedSong.artistName}
-          image={selectedSong.poster}
-          totalDuration={400} // Assuming the song duration is in seconds
-        />
-      )}
+          <MusicPlayer
+            songId={selectedSong.id}
+            handlePlayerClose={handlePlayerClose}
+            songName={selectedSong.songName}
+            artistName={selectedSong.artistName}
+            image={selectedSong.poster}
+            totalDuration={400} // Assuming the song duration is in seconds
+            playNextSong={playNextSong} // Pass the function to the music player
+            playPrevSong={playPrevSong} // Pass the previous song function to the music player
+          />
+        )}
       </div>
     </div>
   );

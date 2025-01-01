@@ -7,10 +7,10 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        poppins: ['Poppins', 'sans-serif'], // Custom font
+        poppins: ['Poppins', 'sans-serif'],
+        roboto: ['Roboto', 'sans-serif'], // Add Roboto font
       },
     },
   },
   plugins: [],
 }
-

@@ -1,17 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FaArrowLeft, FaPlay, FaPause } from "react-icons/fa";
-import { BsThreeDots } from "react-icons/bs";
 import { CiHeart } from "react-icons/ci";
-import {
-  TbPlayerSkipBackFilled,
-  TbPlayerSkipForwardFilled,
-} from "react-icons/tb";
-import { HiSpeakerWave } from "react-icons/hi2";
+import { HiSpeakerWave, HiSpeakerXMark } from "react-icons/hi2";
 import { PiShuffle } from "react-icons/pi";
 import { FaChevronUp } from "react-icons/fa";
+import { FaForward } from "react-icons/fa";
+import { FaBackward } from "react-icons/fa";
+
 
 const MusicPlayer = ({
   songName,
+  playNextSong,
+  playPrevSong,
   artistName,
   image,
   handlePlayerClose,
@@ -21,6 +21,7 @@ const MusicPlayer = ({
   const [totalDuration, setTotalDuration] = useState(0); // Total duration of the song
   const [isPlaying, setIsPlaying] = useState(false); // Track whether the song is playing
   const [isDragging, setIsDragging] = useState(false); // Dragging state
+  const [isMuted, setIsMuted] = useState(false); // Track whether the song is muted
   const audioRef = useRef(null); // Audio element reference
   const progressBarRef = useRef(null); // Reference for the progress bar
 
@@ -115,6 +116,14 @@ const MusicPlayer = ({
     }
   };
 
+  // Toggle mute/unmute
+  const toggleMute = () => {
+    setIsMuted(!isMuted);
+    if (audioRef.current) {
+      audioRef.current.muted = !isMuted;
+    }
+  };
+
   return (
     <div
       className="fixed top-0 left-0 w-full h-full bg-black/50 flex justify-center text-white items-center"
@@ -125,41 +134,39 @@ const MusicPlayer = ({
     >
       <div
         style={{ backgroundImage: `url(${image})` }}
-        className="md:w-[80%] md:h-[98%]  bg-no-repeat bg-center bg-cover overflow-auto no-scrollbar h-full w-full bg-white/20 md:rounded-3xl"
+        className="transition-all duration-700 md:w-[80%] relative md:h-[98%]  bg-no-repeat bg-center bg-cover overflow-auto no-scrollbar h-full w-full bg-white/20 md:rounded-[30px]"
       >
-        <div className="bg-black/20 h-full backdrop-blur-md">
-          <div className="p-4 py-8 md:py-4">
-            {/* Header */}
-            <div className="flex justify-between items-center">
-              <FaArrowLeft
-                onClick={() => handlePlayerClose()}
-                className="text-xl cursor-pointer"
+        <div className="bg-black/20 p-4 h-full overflow-auto no-scrollbar backdrop-blur-md">
+          {/* Header */}
+          <div className="flex absolute top-7 left-7 justify-between items-center">
+            <FaArrowLeft
+              onClick={() => handlePlayerClose()}
+              className="text-xl cursor-pointer"
+            />
+          </div>
+          <div className="flex md:flex-row flex-col items-center justify-center">
+            {/* Album Image */}
+            <div className="transition-all md:mb-0 mb-5 px-3 py-5 md:w-[50%] flex justify-center">
+              <img
+                src={image}
+                alt="Album Art"
+                className="transition-all h-full w-[80%] rounded-xl"
               />
-              <p className="font-bold text-xl">Now Playing</p>
-              <BsThreeDots className="text-xl cursor-pointer" />
             </div>
-            <div className="flex md:flex-row flex-col py-10 items-center justify-center">
-              {/* Album Image */}
-              <div className="transition-all md:mb-0 mb-5 px-3 py-5 md:w-[50%] flex justify-center">
-                <img
-                  src={image}
-                  alt="Album Art"
-                  className="h-full w-[70%] rounded-xl"
-                />
-              </div>
 
-              <div className="md:w-[60%] overflow-auto">
+            <div className="transition-all overflow-auto no-scrollbar md:w-[60%] h-full">
+              <div className="md:rounded-3xl md:p-2 md:border-2 md:border-white/20 mb-5">
                 {/* Song Info */}
                 <div className="flex items-center px-3 justify-between">
                   <div className="flex flex-col">
-                    <span className="font-extrabold md:text-xl text-3xl">
+                    <span className="font-extrabold md:text-4xl text-3xl">
                       {songName}
                     </span>
-                    <span className="md:text-sm font-thin text-lg text-gray-100">
+                    <span className="md:text-xl font-thin text-lg text-gray-100">
                       {artistName}
                     </span>
                   </div>
-                  <CiHeart className="md:text-2xl cursor-pointer text-3xl" />
+                  <CiHeart className="md:text-5xl cursor-pointer text-3xl" />
                 </div>
 
                 {/* Progress Tracker */}
@@ -191,8 +198,8 @@ const MusicPlayer = ({
                   <button className="p-3 rounded-full">
                     <PiShuffle className="text-white md:text-lg text-3xl" />
                   </button>
-                  <button className="p-3 rounded-full">
-                    <TbPlayerSkipBackFilled className="text-white text-3xl" />
+                  <button onClick={() => playPrevSong()} className="p-3 rounded-full">
+                    <FaBackward className="text-white text-3xl" />
                   </button>
                   <button
                     className="p-3 bg-orange-500 rounded-full"
@@ -204,23 +211,32 @@ const MusicPlayer = ({
                       <FaPlay className="text-white text-lg" />
                     )}
                   </button>
-                  <button className="p-3 rounded-full">
-                    <TbPlayerSkipForwardFilled className="text-white text-3xl" />
+                  <button onClick={() => playNextSong()} className="p-3 rounded-full">
+                    <FaForward className="text-white text-3xl" />
                   </button>
-                  <button className="p-3 rounded-full">
-                    <HiSpeakerWave className="text-white md:text-lg text-3xl" />
+                  <button onClick={toggleMute} className="p-3 rounded-full">
+                    {isMuted ? <HiSpeakerXMark className="text-white md:text-lg text-3xl"/> : <HiSpeakerWave className="text-white md:text-lg text-3xl" />}
                   </button>
                 </div>
-                <div className="text-center bg-white/20 md:rounded-[30px] md:rounded-b-none rounded-[50px] rounded-b-none p-5">
-                  <div className="flex flex-col cursor-pointer justify-center items-center mb-5">
-                    <FaChevronUp className="text-xl md:hidden" />
-                    <span className="font-light">Lyrics</span>
-                  </div>
-                  Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                  Corporis rerum fuga ipsa necessitatibus harum temporibus eos
-                  consectetur sed fugiat molestias magnam quis eius quaerat enim
-                  ullam hic excepturi, quasi assumenda!
-                </div>
+              </div>
+              <div className="flex flex-col cursor-pointer justify-center items-center mb-5">
+                <FaChevronUp className="text-xl md:hidden" />
+                <span className="font-bold font-roboto uppercase text-xl">
+                  Lyrics
+                </span>
+              </div>
+              <div className="text-center text-3xl overflow-auto no-scrollbar h-[200px] bg-white/20 rounded-3xl p-5">
+                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+                Corporis rerum fuga ipsa necessitatibus harum temporibus eos
+                consectetur sed fugiat molestias magnam quis eius quaerat enim
+                ullam hic excepturi, quasi assumenda! Lorem, ipsum dolor sit
+                amet consectetur adipisicing elit. Corporis rerum fuga ipsa
+                necessitatibus harum temporibus eos consectetur sed fugiat
+                molestias magnam quis eius quaerat enim ullam hic excepturi,
+                quasi assumenda! Lorem, ipsum dolor sit amet consectetur
+                adipisicing elit. Corporis rerum fuga ipsa necessitatibus harum
+                temporibus eos consectetur sed fugiat molestias magnam quis eius
+                quaerat enim ullam hic excepturi, quasi assumenda!
               </div>
             </div>
           </div>
@@ -234,4 +250,8 @@ const MusicPlayer = ({
         preload="auto"
         onLoadedMetadata={handleLoadedMetadata} // Get total duration when metadata is loaded
       />
- 
+    </div>
+  );
+};
+
+export default MusicPlayer;
