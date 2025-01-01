@@ -121,6 +121,34 @@ const MusicPlayer = ({
     }
   };
 
+  const handleNextSong = () => {
+    if (playNextSong) {
+      playNextSong();
+      if (audioRef.current) {
+        setIsLoading(true); // Show loading state
+        setTimeout(() => {
+          audioRef.current.play().catch((error) => {
+            console.error("Error playing the next song:", error);
+          });
+        }, 300); // Slight delay for smooth transition
+      }
+    }
+  };
+  
+  const handlePrevSong = () => {
+    if (playPrevSong) {
+      playPrevSong();
+      if (audioRef.current) {
+        setIsLoading(true); // Show loading state
+        setTimeout(() => {
+          audioRef.current.play().catch((error) => {
+            console.error("Error playing the previous song:", error);
+          });
+        }, 300); // Slight delay for smooth transition
+      }
+    }
+  };
+
   return (
     <div
       className="fixed top-0 left-0 w-full h-full bg-black/50 flex justify-center text-white items-center"
@@ -179,8 +207,8 @@ const MusicPlayer = ({
                       style={{ width: `${progressPercentage}%` }}
                     ></div>
                     <div
-                      className="absolute top-1/2 transform -translate-y-1/2 bg-white w-4 h-4 rounded-full cursor-pointer"
-                      style={{ left: `${progressPercentage}%` }}
+                      className="absolute top-1/2 transform -translate-y-1/2 bg-white outline outline-1 outline-white outline-offset-2 w-4 h-4 rounded-full cursor-pointer"
+                      style={{ left: `${progressPercentage - 3}%` }}
                       draggable="false"
                     ></div>
                   </div>
@@ -190,7 +218,7 @@ const MusicPlayer = ({
                     <PiShuffle className="text-white md:text-lg text-3xl" />
                   </button>
                   <button
-                    onClick={() => playPrevSong()}
+                    onClick={() => handlePrevSong()}
                     className="p-3 rounded-full"
                   >
                     <FaBackward className="text-white text-3xl" />
@@ -206,7 +234,7 @@ const MusicPlayer = ({
                     )}
                   </button>
                   <button
-                    onClick={() => playNextSong()}
+                    onClick={() => handleNextSong()}
                     className="p-3 rounded-full"
                   >
                     <FaForward className="text-white text-3xl" />
