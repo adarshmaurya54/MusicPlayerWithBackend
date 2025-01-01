@@ -246,7 +246,7 @@ const MusicPlayer = ({
       {/* Audio Player */}
       <audio
         ref={audioRef}
-        src={`/src/assets/audio/${songId}.mp3`} // Use songId to find the corresponding audio file
+        src={`/assets/audio/${songId}.mp3`} // Use songId to find the corresponding audio file
         preload="auto"
         onLoadedMetadata={handleLoadedMetadata} // Get total duration when metadata is loaded
       />
