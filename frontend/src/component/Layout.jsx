@@ -1,16 +1,41 @@
-import React, { Suspense, useState } from "react";
+import React, { Suspense, useState, useEffect } from "react";
 import { CiSearch } from "react-icons/ci";
+import apiService from "../services/apiService"; // Adjust the path according to your folder structure
 
 // Lazy load the SongList component
 const SongList = React.lazy(() => import("./SongList"));
-import songs from "../assets/jsonFiles/songs.json"; // Import songs.json
 import MusicPlayer from "./MusicPlayer";
 
 function Layout() {
-  const [songList, setSongList] = useState(songs); // Set songs directly
+  const [songList, setSongList] = useState([]); // Initially set to an empty array
   const [player, setPlayer] = useState(0);
   const [hiddenPlayer, setHiddenPlayer] = useState(false);
   const [searchQuery, setSearchQuery] = useState(""); // State for search query
+  const [loading, setLoading] = useState(true); // To track loading state
+  const [error, setError] = useState(""); // To track errors
+
+  // Fetch songs from the backend when the component mounts
+  useEffect(() => {
+    const fetchSongs = async () => {
+      try {
+        const songs = await apiService.getSongs(); // Fetch songs from the backend
+        setSongList(songs); // Set the song list from the API response
+        setLoading(false); // Set loading to false when data is fetched
+      } catch (err) {
+        setError("Failed to fetch songs");
+        setLoading(false);
+      }
+    };
+
+    fetchSongs();
+  }, []); // Empty dependency array means this runs once when the component mounts
+
+  // Filter songs based on search query (match song name or artist name)
+  const filteredSongs = songList.filter(
+    (song) =>
+      song.songName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      song.artistName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   // Function to handle song selection
   const handlePlayer = (songId) => {
@@ -22,13 +47,6 @@ function Layout() {
   const handlePlayerClose = () => {
     setHiddenPlayer(true); // Close the player
   };
-
-  // Filter songs based on search query (match song name or artist name)
-  const filteredSongs = songList.filter(
-    (song) =>
-      song.songName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      song.artistName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
   // Function to get the next song ID
   const getNextSongId = (currentSongId) => {
@@ -70,6 +88,14 @@ function Layout() {
 
   const selectedSong = songList.find((song) => song.id === player);
 
+  if (loading) {
+    return <div>Loading songs...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
   return (
     <div
       className="h-screen bg-center bg-cover"
@@ -86,7 +112,7 @@ function Layout() {
           />
         </div>
 
-        <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 mt-5">
+        <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 mt-5">
           {/* Suspense wrapper for lazy loading */}
           <Suspense fallback={<div>Loading songs...</div>}>
             {filteredSongs.map((song) => (
