@@ -1,5 +1,4 @@
 import React, { Suspense, useState, useEffect } from "react";
-import { CiSearch } from "react-icons/ci";
 import apiService from "../services/apiService"; // Adjust the path according to your folder structure
 
 // Lazy load the SongList component
@@ -98,35 +97,33 @@ function Layout() {
 
   return (
     <div
-      className="h-screen bg-center bg-cover"
-      style={{ backgroundImage: `url(/assets/bg.jpg)` }}
+      className="h-screen md:bg-[url(/assets/bg.jpg)] bg-center bg-cover"
     >
-      <div className="absolute flex flex-col md:p-10 p-3 top-0 left-0 w-full h-full bg-black/30 text-white overflow-auto">
-        <div className="flex justify-between md:w-[500px]">
-          <input
-            type="text"
-            className="md:w-[78%] w-full text-black bg-white rounded-xl text-sm p-2 px-3 outline-none font-light"
-            placeholder="Tell me what you want to listen to?"
-            value={searchQuery} // Bind the input value to searchQuery
-            onChange={(e) => setSearchQuery(e.target.value)} // Update searchQuery on input change
-          />
+      <div className="absolute flex flex-col md:p-10 top-0 left-0 w-full h-full text-white overflow-auto">
+        <div className="bg-white border p-4 pb-5 md:rounded-2xl">
+          <div className="flex justify-between md:w-[500px]">
+            <input
+              type="text"
+              className="md:w-[78%] w-full text-black border-2 rounded-xl py-4 px-3 outline-none"
+              placeholder="Tell me what you want to listen to?"
+              value={searchQuery} // Bind the input value to searchQuery
+              onChange={(e) => setSearchQuery(e.target.value)} // Update searchQuery on input change
+            />
+          </div>
+          <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-5">
+            <Suspense fallback={<div>Loading songs...</div>}>
+              {filteredSongs.map((song) => (
+                <SongList
+                  key={song.id}
+                  handlePlayer={handlePlayer}
+                  id={song.id}
+                  title={song.songName}
+                  artist={song.artistName}
+                />
+              ))}
+            </Suspense>
+          </div>
         </div>
-
-        <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 mt-5">
-          {/* Suspense wrapper for lazy loading */}
-          <Suspense fallback={<div>Loading songs...</div>}>
-            {filteredSongs.map((song) => (
-              <SongList
-                key={song.id}
-                handlePlayer={handlePlayer}
-                id={song.id}
-                title={song.songName}
-                artist={song.artistName}
-              />
-            ))}
-          </Suspense>
-        </div>
-
         {player !== 0 && selectedSong && (
           <div className={`${hiddenPlayer ? "hidden" : "block"}`}>
             <MusicPlayer

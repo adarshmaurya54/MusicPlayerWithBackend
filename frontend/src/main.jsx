@@ -4,11 +4,16 @@ import NotFoundPage from './component/NotFoundPage'
 import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import SongList from './component/SongList'
+import Login from './component/Login'
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <Layout />,
+  },
+  {
+    path: '/login',
+    element: <Login />,
   },
   {
     path: '*',

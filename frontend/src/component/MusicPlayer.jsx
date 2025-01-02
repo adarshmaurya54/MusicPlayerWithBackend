@@ -165,19 +165,19 @@ const MusicPlayer = ({
           <div className="flex absolute md:top-7 md:left-7 justify-between items-center">
             <FaArrowLeft
               onClick={() => handlePlayerClose()}
-              className="text-xl cursor-pointer"
+              className="md:text-3xl text-xl cursor-pointer"
             />
           </div>
-          <div className="flex md:flex-row flex-col items-center justify-center">
-            <div className="transition-all md:mb-0 mb-5 px-3 py-5 md:w-[50%] flex justify-center">
+          <div className="flex md:flex-row h-full flex-col items-center justify-center">
+            <div className="transition-all md:mb-0 mb-5 px-3 py-5 md:w-[50%] w-full flex justify-center">
               <img
                 src={image}
                 alt="Album Art"
-                className="transition-all h-full w-[80%] rounded-xl"
+                className="transition-all md:w-full w-[80%]  rounded-xl"
               />
             </div>
-            <div className="transition-all overflow-auto no-scrollbar md:w-[60%] h-full">
-              <div className="md:rounded-3xl md:p-2 md:border-2 md:border-white/20 mb-5">
+            <div className="transition-all flex items-center justify-center md:w-[60%]">
+              <div className="md:rounded-3xl w-full md:p-2 md:border-2 md:border-white/20">
                 <div className="flex items-center px-3 justify-between">
                   <div className="flex flex-col">
                     <span className="font-extrabold md:text-4xl text-3xl">
@@ -248,7 +248,7 @@ const MusicPlayer = ({
                   </button>
                 </div>
               </div>
-              <div className="flex flex-col cursor-pointer justify-center items-center mb-5">
+              {/* <div className="flex flex-col cursor-pointer justify-center items-center mb-5">
                 <FaChevronUp className="text-xl md:hidden" />
                 <span className="font-bold font-roboto uppercase text-xl">
                   Lyrics
@@ -259,7 +259,7 @@ const MusicPlayer = ({
                 Corporis rerum fuga ipsa necessitatibus harum temporibus eos
                 consectetur sed fugiat molestias magnam quis eius quaerat enim
                 ullam hic excepturi, quasi assumenda!
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
