@@ -10,11 +10,12 @@ function Layout() {
   const [songList, setSongList] = useState(songs); // Set songs directly
   const [player, setPlayer] = useState(0);
   const [hiddenPlayer, setHiddenPlayer] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(""); // State for search query
 
   // Function to handle song selection
   const handlePlayer = (songId) => {
     setPlayer(songId); // Set the player to the song ID selected
-    setHiddenPlayer(false); // Close the player
+    setHiddenPlayer(false); // Open the player
   };
 
   // Function to close the player
@@ -22,16 +23,22 @@ function Layout() {
     setHiddenPlayer(true); // Close the player
   };
 
+  // Filter songs based on search query (match song name or artist name)
+  const filteredSongs = songList.filter(
+    (song) =>
+      song.songName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      song.artistName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   // Function to get the next song ID
   const getNextSongId = (currentSongId) => {
     const currentIndex = songList.findIndex(
       (song) => song.id === currentSongId
     );
-    if (currentIndex === -1) return null; // If song is not found, return null
+    if (currentIndex === -1) return null;
 
-    // Get the next song index (looping back to the first song when at the end)
     const nextIndex = (currentIndex + 1) % songList.length;
-    return songList[nextIndex].id; // Return the next song's ID
+    return songList[nextIndex].id;
   };
 
   // Function to get the previous song ID
@@ -39,18 +46,17 @@ function Layout() {
     const currentIndex = songList.findIndex(
       (song) => song.id === currentSongId
     );
-    if (currentIndex === -1) return null; // If song is not found, return null
+    if (currentIndex === -1) return null;
 
-    // Get the previous song index (looping back to the last song when at the beginning)
     const prevIndex = (currentIndex - 1 + songList.length) % songList.length;
-    return songList[prevIndex].id; // Return the previous song's ID
+    return songList[prevIndex].id;
   };
 
   // Function to play the next song
   const playNextSong = () => {
     const nextSongId = getNextSongId(player);
     if (nextSongId) {
-      setPlayer(nextSongId); // Update the player with the next song ID
+      setPlayer(nextSongId);
     }
   };
 
@@ -58,7 +64,7 @@ function Layout() {
   const playPrevSong = () => {
     const prevSongId = getPrevSongId(player);
     if (prevSongId) {
-      setPlayer(prevSongId); // Update the player with the previous song ID
+      setPlayer(prevSongId);
     }
   };
 
@@ -73,28 +79,29 @@ function Layout() {
         <div className="flex justify-between md:w-[500px]">
           <input
             type="text"
-            className="w-[78%] text-white bg-white/30 rounded-full text-sm p-2 px-3 outline-none font-light"
+            className="w-[78%] text-black bg-white rounded-full text-sm p-2 px-3 outline-none font-light"
             placeholder="Tell me what you want to listen to?"
+            value={searchQuery} // Bind the input value to searchQuery
+            onChange={(e) => setSearchQuery(e.target.value)} // Update searchQuery on input change
           />
           <button
             type="button"
-            className="bg-white/30 text-sm text-white w-[20%] rounded-full flex justify-center items-center"
+            className="bg-white text-sm text-black w-[20%] rounded-full flex justify-center items-center"
           >
             <CiSearch className="inline-block me-1" />
           </button>
         </div>
 
-        <div className="grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-2 gap-4 mt-5">
+        <div className="grid md:grid-cols-4 sm:grid-cols-2 gap-4 mt-5">
           {/* Suspense wrapper for lazy loading */}
           <Suspense fallback={<div>Loading songs...</div>}>
-            {songList.map((song) => (
+            {filteredSongs.map((song) => (
               <SongList
                 key={song.id}
-                handlePlayer={handlePlayer} // Pass the function reference
+                handlePlayer={handlePlayer}
                 id={song.id}
                 title={song.songName}
                 artist={song.artistName}
-                poster={song.poster}
               />
             ))}
           </Suspense>
@@ -109,8 +116,8 @@ function Layout() {
               artistName={selectedSong.artistName}
               image={selectedSong.poster}
               totalDuration={400} // Assuming the song duration is in seconds
-              playNextSong={playNextSong} // Pass the function to the music player
-              playPrevSong={playPrevSong} // Pass the previous song function to the music player
+              playNextSong={playNextSong}
+              playPrevSong={playPrevSong}
             />
           </div>
         )}

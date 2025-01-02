@@ -151,7 +151,7 @@ const MusicPlayer = ({
 
   return (
     <div
-      className="fixed top-0 left-0 w-full h-full bg-black/50 flex justify-center text-white items-center"
+      className="fixed top-0 left-0 w-full h-full bg-black/20 backdrop-blur-md flex justify-center text-white items-center"
       onMouseMove={handleMove}
       onMouseUp={handleEnd}
       onTouchMove={handleMove}
@@ -159,7 +159,7 @@ const MusicPlayer = ({
     >
       <div
         style={{ backgroundImage: `url(${image})` }}
-        className="transition-all duration-700 md:w-[80%] relative md:h-[98%] bg-no-repeat bg-center bg-cover overflow-auto no-scrollbar h-full w-full bg-white/20 md:rounded-[30px]"
+        className="transition-all duration-700 md:w-[80%] relative md:h-[98%] bg-no-repeat bg-center bg-cover overflow-auto no-scrollbar h-full w-full md:rounded-[30px]"
       >
         <div className="bg-black/20 p-4 h-full overflow-auto no-scrollbar backdrop-blur-md">
           <div className="flex absolute top-7 left-7 justify-between items-center">
@@ -183,7 +183,7 @@ const MusicPlayer = ({
                     <span className="font-extrabold md:text-4xl text-3xl">
                       {songName}
                     </span>
-                    <span className="md:text-xl font-thin text-lg text-gray-100">
+                    <span className="md:text-xl capitalize font-thin text-lg text-gray-100">
                       {artistName}
                     </span>
                   </div>
@@ -207,8 +207,8 @@ const MusicPlayer = ({
                       style={{ width: `${progressPercentage}%` }}
                     ></div>
                     <div
-                      className="absolute top-1/2 transform -translate-y-1/2 bg-white outline outline-1 outline-white outline-offset-2 w-4 h-4 rounded-full cursor-pointer"
-                      style={{ left: `${progressPercentage - 3}%` }}
+                      className="absolute top-1/2 transform -translate-y-1/2 bg-white w-4 h-4 rounded-full cursor-pointer"
+                      style={{ left: `${progressPercentage - 2}%` }}
                       draggable="false"
                     ></div>
                   </div>
@@ -254,7 +254,7 @@ const MusicPlayer = ({
                   Lyrics
                 </span>
               </div>
-              <div className="text-center text-3xl overflow-auto no-scrollbar h-[200px] bg-white/20 rounded-3xl p-5">
+              <div className="text-center text-3xl overflow-auto no-scrollbar h-[200px] border-2 border-white/20 rounded-3xl p-5">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit.
                 Corporis rerum fuga ipsa necessitatibus harum temporibus eos
                 consectetur sed fugiat molestias magnam quis eius quaerat enim
