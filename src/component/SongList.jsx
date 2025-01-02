@@ -9,12 +9,7 @@ function SongList({ id, title, artist, poster, handlePlayer }) {
   };
 
   return (
-    <div className="bg-white border-2 backdrop-blur-lg mt-3 hover:shadow-2xl transition-all duration-500 cursor-pointer flex flex-col p-2 rounded-[20px]">
-      {/* <img
-        src={poster}
-        alt={title}
-        className="md:h-[60%] object-cover rounded-xl"
-      /> */}
+    <div className="bg-white backdrop-blur-lg mt-3 hover:shadow-2xl transition-all duration-500 cursor-pointer flex flex-col p-2 rounded-[20px]">
       <div className="flex text-center justify-between flex-col">
         <div>
           <div className="text-black mt-3">
@@ -32,7 +27,10 @@ function SongList({ id, title, artist, poster, handlePlayer }) {
             </div>
           </div>
         </div>
-        <div  onClick={() => handlePlayer(id)} className="text-white flex items-center justify-center gap-1 mt-4 p-2 rounded-b-xl rounded-t-md text-center font-bold bg-black">
+        <div
+          onClick={() => handlePlayer(id)}
+          className="text-white flex items-center justify-center gap-1 mt-4 p-2 rounded-b-xl rounded-t-md text-center font-bold bg-black"
+        >
           <FaPlay />
           Play
         </div>

@@ -79,20 +79,14 @@ function Layout() {
         <div className="flex justify-between md:w-[500px]">
           <input
             type="text"
-            className="w-[78%] text-black bg-white rounded-full text-sm p-2 px-3 outline-none font-light"
+            className="md:w-[78%] w-full text-black bg-white rounded-xl text-sm p-2 px-3 outline-none font-light"
             placeholder="Tell me what you want to listen to?"
             value={searchQuery} // Bind the input value to searchQuery
             onChange={(e) => setSearchQuery(e.target.value)} // Update searchQuery on input change
           />
-          <button
-            type="button"
-            className="bg-white text-sm text-black w-[20%] rounded-full flex justify-center items-center"
-          >
-            <CiSearch className="inline-block me-1" />
-          </button>
         </div>
 
-        <div className="grid md:grid-cols-4 sm:grid-cols-2 gap-4 mt-5">
+        <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 mt-5">
           {/* Suspense wrapper for lazy loading */}
           <Suspense fallback={<div>Loading songs...</div>}>
             {filteredSongs.map((song) => (

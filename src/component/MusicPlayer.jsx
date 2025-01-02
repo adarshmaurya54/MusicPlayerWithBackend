@@ -162,7 +162,7 @@ const MusicPlayer = ({
         className="transition-all duration-700 md:w-[80%] relative md:h-[98%] bg-no-repeat bg-center bg-cover overflow-auto no-scrollbar h-full w-full md:rounded-[30px]"
       >
         <div className="bg-black/20 p-4 h-full overflow-auto no-scrollbar backdrop-blur-md">
-          <div className="flex absolute top-7 left-7 justify-between items-center">
+          <div className="flex absolute md:top-7 md:left-7 justify-between items-center">
             <FaArrowLeft
               onClick={() => handlePlayerClose()}
               className="text-xl cursor-pointer"
@@ -208,7 +208,7 @@ const MusicPlayer = ({
                     ></div>
                     <div
                       className="absolute top-1/2 transform -translate-y-1/2 bg-white w-4 h-4 rounded-full cursor-pointer"
-                      style={{ left: `${progressPercentage - 2}%` }}
+                      style={{ left: `${progressPercentage - 1}%` }}
                       draggable="false"
                     ></div>
                   </div>
