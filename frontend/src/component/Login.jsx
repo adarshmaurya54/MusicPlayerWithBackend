@@ -1,6 +1,41 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import apiService from "../services/apiService";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [errorMessage, setErrorMessage] = useState(""); // For handling errors
+  const navigate = useNavigate(); // To navigate to another page on success
+
+  // Check for existing JWT token
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/"); // Redirect to dashboard if token is found
+    }
+  }, [navigate]);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    try {
+      // Call the backend API for login
+      const response = await apiService.login({ email, password });
+
+      // Store the JWT token in localStorage
+      localStorage.setItem("token", response.token);
+
+      // Redirect or handle further actions after successful login
+      console.log("Login successful, token stored:", response.token);
+      navigate("/dashboard"); // Redirect to the dashboard or another page
+    } catch (error) {
+      console.error("Login failed:", error.message);
+      setErrorMessage("Invalid credentials, please try again.");
+    }
+  };
+
   return (
     <div
       className="h-screen flex items-center justify-center bg-center bg-cover"
@@ -10,7 +45,7 @@ function Login() {
         <div className="text-center font-extrabold text-2xl text-blue-500">
           Sign In
         </div>
-        <form className="mt-5">
+        <form className="mt-5" onSubmit={handleLogin}>
           <input
             required
             className="w-full bg-white border-none px-5 py-3 rounded-2xl mt-4 shadow-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -18,6 +53,8 @@ function Login() {
             name="email"
             id="email"
             placeholder="E-mail"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <input
             required
@@ -26,6 +63,8 @@ function Login() {
             name="password"
             id="password"
             placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <span className="block mt-3 ml-3 text-xs text-blue-400">
             <a href="#">Forgot Password ?</a>

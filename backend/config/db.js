@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+require("dotenv").config();
 
 const connectDB = async() => {
     try{
@@ -6,7 +7,7 @@ const connectDB = async() => {
         console.log(`Connected to Mongodb Database ${mongoose.connection.host}`);
         
     }catch(err){
-        console.log(`Mongodb Database Error ${err}`.bgRed.white);
+        console.log(`Mongodb Database Error ${err}`);
         
     }
 }

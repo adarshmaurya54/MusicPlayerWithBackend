@@ -18,6 +18,10 @@ const songSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Song poster is required'],
   },
+  favourite: {
+    type: Boolean,
+    default: false, // Set default value to false
+  },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Song', songSchema);

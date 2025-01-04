@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FaArrowLeft, FaPlay, FaPause } from "react-icons/fa";
+import { FaArrowLeft, FaPlay, FaPause, FaHeart } from "react-icons/fa";
 import { CiHeart } from "react-icons/ci";
 import { HiSpeakerWave, HiSpeakerXMark } from "react-icons/hi2";
 import { PiShuffle } from "react-icons/pi";
@@ -22,8 +22,13 @@ const MusicPlayer = ({
   const [isDragging, setIsDragging] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isLoading, setIsLoading] = useState(false); // New state for loading
+  const [isLiked, setIsLiked] = useState(false); // State to track toggle
   const audioRef = useRef(null);
   const progressBarRef = useRef(null);
+
+  const handleToggle = () => {
+    setIsLiked((prev) => !prev); // Toggle state
+  };
 
   const progressPercentage = (currentTime / totalDuration) * 100;
 
@@ -134,7 +139,7 @@ const MusicPlayer = ({
       }
     }
   };
-  
+
   const handlePrevSong = () => {
     if (playPrevSong) {
       playPrevSong();
@@ -148,10 +153,49 @@ const MusicPlayer = ({
       }
     }
   };
+  // when song is fully completed then play next song logic below
+  useEffect(() => {
+    const updateCurrentTime = () => {
+      if (audioRef.current) {
+        setCurrentTime(audioRef.current.currentTime);
+      }
+    };
+
+    const handleAudioEnded = () => {
+      setIsPlaying(false);
+      if (playNextSong) {
+        playNextSong();
+        if (audioRef.current) {
+          setIsLoading(true); // Show loading state for the next song
+          setTimeout(() => {
+            audioRef.current.play().catch((error) => {
+              console.error("Error playing the next song:", error);
+            });
+          }, 300); // Slight delay for smooth transition
+        }
+      }
+    };
+
+    if (audioRef.current) {
+      audioRef.current.addEventListener("timeupdate", updateCurrentTime);
+      audioRef.current.addEventListener("playing", () => {
+        setIsPlaying(true);
+        setIsLoading(false); // Remove loading state when playing starts
+      });
+      audioRef.current.addEventListener("ended", handleAudioEnded);
+    }
+
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.removeEventListener("timeupdate", updateCurrentTime);
+        audioRef.current.removeEventListener("ended", handleAudioEnded);
+      }
+    };
+  }, [playNextSong]); // Add `playNextSong` as a dependency
 
   return (
     <div
-      className="fixed top-0 left-0 w-full h-full bg-black/20 backdrop-blur-md flex justify-center text-white items-center"
+      className="fixed top-0 left-0 w-full h-full backdrop-blur-md flex justify-center text-white items-center"
       onMouseMove={handleMove}
       onMouseUp={handleEnd}
       onTouchMove={handleMove}
@@ -173,7 +217,7 @@ const MusicPlayer = ({
               <img
                 src={image}
                 alt="Album Art"
-                className="transition-all md:w-full w-[80%]  rounded-xl"
+                className="transition-all w-[80%]  rounded-xl"
               />
             </div>
             <div className="transition-all flex items-center justify-center md:w-[60%]">
@@ -187,7 +231,16 @@ const MusicPlayer = ({
                       {artistName}
                     </span>
                   </div>
-                  <CiHeart className="md:text-5xl cursor-pointer text-3xl" />
+                  <div
+                    onClick={handleToggle}
+                    className="w-[50px] h-full flex items-center justify-center cursor-pointer"
+                  >
+                    {isLiked ? (
+                      <FaHeart className="md:text-4xl active:scale-75  transition-all text-3xl text-red-500" />
+                    ) : (
+                      <CiHeart className="md:text-5xl active:scale-75  transition-all text-3xl" />
+                    )}
+                  </div>
                 </div>
                 <div className="px-3 mt-5">
                   <div className="flex items-center justify-between text-sm text-gray-200">
