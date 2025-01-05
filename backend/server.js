@@ -57,6 +57,9 @@ app.get('/artists', artistController.getAllArtists); // Get all artists
 app.get('/song/:filename', songController.getSongWithMetadata); // Get song by filename with metadata
 app.delete('/thumbnail/:songId', songController.deleteThumbnails); // Delete thumbnails by songId
 
+// Token Validation Route (no authentication required)
+app.post('/validate-token', authController.validateToken); // Token validation route
+
 // Protected Routes (authentication required for posting)
 app.use(verifyToken); // Apply token verification middleware globally for all routes below
 

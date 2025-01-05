@@ -3,10 +3,8 @@ import { FaArrowLeft, FaPlay, FaPause, FaHeart } from "react-icons/fa";
 import { CiHeart } from "react-icons/ci";
 import { HiSpeakerWave, HiSpeakerXMark } from "react-icons/hi2";
 import { PiShuffle } from "react-icons/pi";
-import { FaChevronUp } from "react-icons/fa";
 import { FaForward } from "react-icons/fa";
 import { FaBackward } from "react-icons/fa";
-import apiService from "../services/apiService";
 
 const MusicPlayer = ({
   songName,
@@ -17,9 +15,8 @@ const MusicPlayer = ({
   backgroundImage,
   handlePlayerClose,
   songId,
-  audioUrl
+  audioUrl,
 }) => {
-  
   const [currentTime, setCurrentTime] = useState(0);
   const [totalDuration, setTotalDuration] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -120,6 +117,7 @@ const MusicPlayer = ({
   const handleLoadedMetadata = () => {
     if (audioRef.current) {
       setTotalDuration(audioRef.current.duration);
+      audioRef.current.play(); // Start playing once metadata is loaded
     }
   };
 
@@ -157,7 +155,7 @@ const MusicPlayer = ({
       }
     }
   };
-  // when song is fully completed then play next song logic below
+
   useEffect(() => {
     const updateCurrentTime = () => {
       if (audioRef.current) {
@@ -195,10 +193,7 @@ const MusicPlayer = ({
         audioRef.current.removeEventListener("ended", handleAudioEnded);
       }
     };
-  }, [playNextSong]); // Add `playNextSong` as a dependency
-
-  
-
+  }, [playNextSong]);
 
   return (
     <div
@@ -209,7 +204,11 @@ const MusicPlayer = ({
       onTouchEnd={handleEnd}
     >
       <div
-        style={{ backgroundImage: `url(${import.meta.env.VITE_BASEURL}/assets${backgroundImage})` }}
+        style={{
+          backgroundImage: `url(${
+            import.meta.env.VITE_BASEURL
+          }/assets${backgroundImage})`,
+        }}
         className="transition-all duration-700 md:w-[90%] relative md:h-[98%] bg-no-repeat bg-center bg-cover overflow-auto no-scrollbar h-full w-full md:rounded-[30px]"
       >
         <div className="bg-black/20 p-4 h-full overflow-auto no-scrollbar backdrop-blur-md">
@@ -231,9 +230,12 @@ const MusicPlayer = ({
               <div className="md:rounded-3xl w-full md:p-2 md:border-2 md:border-white/20">
                 <div className="flex items-center px-3 justify-between">
                   <div className="flex flex-col">
-                    <span className="font-extrabold md:text-4xl text-3xl">
+                    <div
+                      title={songName}
+                      className="font-extrabold line-clamp-2 md:text-4xl text-3xl"
+                    >
                       {songName}
-                    </span>
+                    </div>
                     <span className="md:text-xl capitalize font-thin text-lg text-gray-100">
                       {artistName}
                     </span>
@@ -308,18 +310,6 @@ const MusicPlayer = ({
                   </button>
                 </div>
               </div>
-              {/* <div className="flex flex-col cursor-pointer justify-center items-center mb-5">
-                <FaChevronUp className="text-xl md:hidden" />
-                <span className="font-bold font-roboto uppercase text-xl">
-                  Lyrics
-                </span>
-              </div>
-              <div className="text-center text-3xl overflow-auto no-scrollbar h-[200px] border-2 border-white/20 rounded-3xl p-5">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Corporis rerum fuga ipsa necessitatibus harum temporibus eos
-                consectetur sed fugiat molestias magnam quis eius quaerat enim
-                ullam hic excepturi, quasi assumenda!
-              </div> */}
             </div>
           </div>
         </div>

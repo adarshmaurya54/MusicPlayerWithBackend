@@ -9,33 +9,6 @@ function SongList({ id, title, artist, poster, handlePlayer }) {
   };
 
   return (
-    // <div className="bg-white backdrop-blur-lg mt-3 hover:shadow-2xl transition-all duration-500 cursor-pointer flex flex-col p-2 rounded-[20px]">
-    //   <div className="flex text-center justify-between flex-col">
-    //     <div>
-    //       <div className="text-black mt-3">
-    //         <h1 className="font-bold font-poppins truncate text-lg">{title}</h1>
-    //         <h6 className="text-gray-600 truncate font-light">{artist}</h6>
-    //       </div>
-    //       <div className="flex justify-center mt-4 gap-2">
-    //         <div
-    //           onClick={() => handleFavorite()}
-    //           className={`flex text-3xl justify-center items-center ${
-    //             favorite ? "text-red-600" : "text-black"
-    //           }`}
-    //         >
-    //           <FaHeart />
-    //         </div>
-    //       </div>
-    //     </div>
-    //     <div
-    //       
-    //       className="text-white flex items-center justify-center gap-1 mt-4 p-2 rounded-b-xl rounded-t-md text-center font-bold bg-black"
-    //     >
-    //       <FaPlay />
-    //       Play
-    //     </div>
-    //   </div>
-    // </div>
     <div onClick={() => handlePlayer(id)} className="bg-white border-2 cursor-pointer border-black/10 hover:shadow-md rounded-lg overflow-hidden dark:bg-zinc-900">
       <div className="flex justify-between items-center px-6 py-4">
         <div className="flex items-center">
@@ -56,9 +29,9 @@ function SongList({ id, title, artist, poster, handlePlayer }) {
             <circle cx="18" cy="16" r="3"></circle>
           </svg>
           <div className="mx-7">
-            <h3 className="text-lg font-medium text-gray-700 dark:text-gray-200">
+            <p title={title} className="text-lg line-clamp-1 font-medium text-gray-700 dark:text-gray-200">
               {title}
-            </h3>
+            </p>
             <p className="text-gray-500 dark:text-gray-400">{artist}</p>
           </div>
         </div>

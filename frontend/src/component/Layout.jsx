@@ -41,6 +41,25 @@ function Layout() {
     fetchSongs();
   }, []); // Empty dependency array means this runs once when the component mounts
 
+  // Fetch song details whenever the player state changes
+  useEffect(() => {
+    const fetchSongDetails = async () => {
+      if (player !== 0) {
+        try {
+          setSongClickLoading(true);
+          const response = await apiService.getSongInfo(player);
+          setSongDetail(response);
+          setSongClickLoading(false);
+        } catch (err) {
+          console.error("Failed to fetch song details:", err);
+          setSongClickLoading(false);
+        }
+      }
+    };
+
+    fetchSongDetails();
+  }, [player]);
+
   // Filter songs based on search query (match song name or artist name)
   const filteredSongs = songList.filter(
     (song) =>
@@ -49,56 +68,46 @@ function Layout() {
   );
 
   // Function to handle song selection
-  const handlePlayer = async (songId) => {
-    try {
-      setSongClickLoading(true); // Start loading
-      const response = await apiService.getSongInfo(songId); // Fetch song details using songId
-      setSongDetail(response); // Update song details with the response data
-      setSongClickLoading(false); // Stop loading
-    } catch (err) {
-      console.log(err);
-      setSongClickLoading(false); // Stop loading in case of error
-    }
-    setPlayer(songId); // Set the player to the song ID selected
-    setHiddenPlayer(false); // Open the player
+  const handlePlayer = (songId) => {
+    setPlayer(songId);
+    setHiddenPlayer(false); // Show the player
   };
 
   // Function to close the player
   const handlePlayerClose = async (songId) => {
     try {
-      // Call the deleteThumbnails service
       await apiService.deleteThumbnails(songId);
-
       console.log(`Thumbnails for songId ${songId} deleted successfully.`);
-
-      // Close the player after successfully deleting thumbnails
-      setHiddenPlayer(true);
+      setHiddenPlayer(true); // Close the player
     } catch (error) {
       console.error("Error deleting thumbnails:", error.message);
-      // Optionally, you can show an error message to the user
     }
   };
 
   // Function to get the next song ID
   const getNextSongId = (currentSongId) => {
     const currentIndex = songList.findIndex(
-      (song) => song.id === currentSongId
+      (song) => song.songId === currentSongId
     );
-    if (currentIndex === -1) return null;
+
+    if (currentIndex === -1) {
+      console.error("Song not found in the list");
+      return null;
+    }
 
     const nextIndex = (currentIndex + 1) % songList.length;
-    return songList[nextIndex].id;
+    return songList[nextIndex].songId;
   };
 
   // Function to get the previous song ID
   const getPrevSongId = (currentSongId) => {
     const currentIndex = songList.findIndex(
-      (song) => song.id === currentSongId
+      (song) => song.songId === currentSongId
     );
     if (currentIndex === -1) return null;
 
     const prevIndex = (currentIndex - 1 + songList.length) % songList.length;
-    return songList[prevIndex].id;
+    return songList[prevIndex].songId;
   };
 
   // Function to play the next song
@@ -117,8 +126,6 @@ function Layout() {
     }
   };
 
-  const selectedSong = songList.find((song) => song.songId === player);
-
   if (loading) {
     return <SongLoadingScalaton />;
   }
@@ -126,7 +133,6 @@ function Layout() {
   if (error) {
     return <div>{error}</div>;
   }
-  console.log(songDetail);
 
   return (
     <div className="h-screen bg-fixed overflow-auto md:bg-[url(/bg.jpg)] bg-center bg-cover">
@@ -138,8 +144,8 @@ function Layout() {
               type="text"
               className="md:w-[78%] w-full text-black border-2 rounded-xl py-4 px-3 outline-none"
               placeholder="Tell me what you want to listen to?"
-              value={searchQuery} // Bind the input value to searchQuery
-              onChange={(e) => setSearchQuery(e.target.value)} // Update searchQuery on input change
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
           <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-5">
@@ -156,23 +162,23 @@ function Layout() {
             </Suspense>
           </div>
         </div>
-        {player !== 0 && selectedSong && (
+        {player !== 0 && songDetail && (
           <div className={`${hiddenPlayer ? "hidden" : "block"}`}>
             <MusicPlayer
-              songId={selectedSong.songId}
+              songId={player}
               handlePlayerClose={handlePlayerClose}
-              songName={selectedSong.songName}
-              artistName={songDetail?.artistName}
-              image={songDetail?.highQualityThumbnailUrl}
-              audioUrl={songDetail?.audioUrl}
-              backgroundImage={songDetail?.lowQualityThumbnailUrl}
+              songName={songDetail.songName}
+              artistName={songDetail.artistName}
+              image={songDetail.highQualityThumbnailUrl}
+              audioUrl={songDetail.audioUrl}
+              backgroundImage={songDetail.lowQualityThumbnailUrl}
               playNextSong={playNextSong}
               playPrevSong={playPrevSong}
             />
           </div>
         )}
         {upload && <Upload handleToggleUpload={handleToggleUpload} />}
-        {songClickLoading && <SongClickLoader/>}
+        {/* {songClickLoading && <SongClickLoader />} */}
       </div>
     </div>
   );

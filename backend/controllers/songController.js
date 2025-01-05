@@ -68,6 +68,9 @@ exports.getSongWithMetadata = async (req, res) => {
       // Extract metadata from the audio file
       const metadata = await musicMetadata.parseFile(audioFilePath);
 
+      // Extract song title (or default to the filename)
+      const songName = metadata.common.title || filename;
+
       // Extract artist (or default to 'Unknown Artist')
       const artistName = metadata.common.artist || 'Unknown Artist';
 
@@ -103,8 +106,9 @@ exports.getSongWithMetadata = async (req, res) => {
         lowQualityThumbnailUrl = '/default-thumbnail-low.jpg';
       }
 
-      // Respond with song details (audio URL, artist, and thumbnail URLs)
+      // Respond with song details (audio URL, artist, song name, and thumbnail URLs)
       res.json({
+        songName,
         audioUrl: `/assets/audio/${filename}.mp3`, // URL to access the audio file
         artistName,
         highQualityThumbnailUrl,
@@ -118,6 +122,7 @@ exports.getSongWithMetadata = async (req, res) => {
     res.status(404).json({ error: 'Audio file not found' });
   }
 };
+
 
 exports.deleteThumbnails = async (req, res) => {
   const songId = req.params.songId; // Get songId from the route parameter

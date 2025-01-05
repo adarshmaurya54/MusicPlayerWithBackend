@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FaRegTimesCircle } from "react-icons/fa";
 import apiService from "../services/apiService"; // Import the apiService
+import { FaCloudUploadAlt } from "react-icons/fa";
 
 function Upload({ handleToggleUpload }) {
   const [file, setFile] = useState(null);
@@ -73,7 +74,7 @@ function Upload({ handleToggleUpload }) {
 
       // Handle success response
       setUploadStatus("Song Uploaded Successfully");
-      setLoading(false)
+      setLoading(false);
     } catch (error) {
       // Handle error response
       console.error("Error creating song:", error);
@@ -102,9 +103,15 @@ function Upload({ handleToggleUpload }) {
         />
         <div className="md:flex items-center w-full overflow-auto md:p-0 p-10 h-full">
           <div className="form md:w-[60%]">
-            <form className="max-w-sm mx-auto" onSubmit={(e) => e.preventDefault()}>
+            <form
+              className="max-w-sm mx-auto"
+              onSubmit={(e) => e.preventDefault()}
+            >
               <div className="mb-5">
-                <label htmlFor="songname" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                <label
+                  htmlFor="songname"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
                   Song Name
                 </label>
                 <input
@@ -118,7 +125,10 @@ function Upload({ handleToggleUpload }) {
                 />
               </div>
               <div className="mb-5">
-                <label htmlFor="artistname" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                <label
+                  htmlFor="artistname"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
                   Artist Name
                 </label>
                 <input
@@ -132,7 +142,10 @@ function Upload({ handleToggleUpload }) {
                 />
               </div>
               <div className="mb-5">
-                <label htmlFor="songlyrics" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                <label
+                  htmlFor="songlyrics"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
                   Song Lyrics
                 </label>
                 <textarea
@@ -154,9 +167,17 @@ function Upload({ handleToggleUpload }) {
                 <div className="w-full p-3">
                   <div className="relative h-48 rounded-lg border-2 border-black flex justify-center items-center">
                     <div className="absolute flex flex-col items-center">
-                      <img alt="File Icon" className="mb-3" src="https://img.icons8.com/dusk/64/000000/file.png" />
-                      <span className="block text-gray-500 font-semibold">Drag & drop your files here</span>
-                      <span className="block text-gray-400 font-normal mt-1">or click to upload</span>
+                      <img
+                        alt="File Icon"
+                        className="mb-3"
+                        src="https://img.icons8.com/dusk/64/000000/file.png"
+                      />
+                      <span className="block text-gray-500 font-semibold">
+                        Drag & drop your files here
+                      </span>
+                      <span className="block text-gray-400 font-normal mt-1">
+                        or click to upload
+                      </span>
                     </div>
                     <input
                       name="file"
@@ -176,7 +197,8 @@ function Upload({ handleToggleUpload }) {
                   <span className="font-semibold">File Name:</span> {file.name}
                 </p>
                 <p className="text-sm text-gray-600">
-                  <span className="font-semibold">File Size:</span> {(file.size / 1024).toFixed(2)} KB
+                  <span className="font-semibold">File Size:</span>{" "}
+                  {(file.size / 1024).toFixed(2)} KB
                 </p>
               </div>
             )}
@@ -209,11 +231,19 @@ function Upload({ handleToggleUpload }) {
                 className="px-4 py-2 w-[45%] text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 hover:outline outline-gray-300 outline-offset-2"
                 onClick={submitForm}
               >
-                Submit
+                Submit Song
               </button>
             </div>
           </div>
         </div>
+        {loading && (
+          <div className="absolute top-0 left-0 h-full w-full flex items-center justify-center backdrop-blur-sm rounded-3xl">
+            <div className="bg-white w-[40%] h-[40%] border-2 rounded-3xl flex flex-col justify-center items-center">
+              <FaCloudUploadAlt className="text-black text-9xl" />
+              <span className="text-black">Uploading your song please wait...</span>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

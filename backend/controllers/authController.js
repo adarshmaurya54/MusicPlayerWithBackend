@@ -33,3 +33,23 @@ exports.login = async (req, res) => {
     return res.status(500).json({ error: "Server error" });
   }
 };
+
+// Token validation function
+exports.validateToken = (req, res) => {
+  const token = req.header('Authorization')?.replace('Bearer ', ''); // Get token from headers
+
+  if (!token) {
+    return res.status(403).json({ error: 'Access denied, no token provided' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verify token
+
+    req.user = decoded; // Attach decoded token data to the request object
+    res.status(200).json({ message: 'Token is valid', user: req.user });
+  } catch (err) {
+    console.error(err);
+    res.status(403).json({ error: 'Invalid or expired token' }); // Token verification failed
+  }
+};
+
