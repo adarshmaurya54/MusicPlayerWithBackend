@@ -55,6 +55,7 @@ app.post('/login', authController.login);  // Login route
 app.get('/songs', songController.getAllSongs); // Get all songs with artist details
 app.get('/artists', artistController.getAllArtists); // Get all artists
 app.get('/song/:filename', songController.getSongWithMetadata); // Get song by filename with metadata
+app.delete('/thumbnail/:songId', songController.deleteThumbnails); // Delete thumbnails by songId
 
 // Protected Routes (authentication required for posting)
 app.use(verifyToken); // Apply token verification middleware globally for all routes below

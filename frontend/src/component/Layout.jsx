@@ -7,6 +7,7 @@ import MusicPlayer from "./MusicPlayer";
 import Header from "./Header";
 import SongLoadingScalaton from "./SongLoadingScalaton";
 import Upload from "./Upload";
+import SongClickLoader from "./SongClickLoader";
 
 function Layout() {
   const [songDetail, setSongDetail] = useState(null);
@@ -15,17 +16,19 @@ function Layout() {
   const [hiddenPlayer, setHiddenPlayer] = useState(false);
   const [searchQuery, setSearchQuery] = useState(""); // State for search query
   const [loading, setLoading] = useState(true); // To track loading state
+  const [songClickLoading, setSongClickLoading] = useState(false); // To track loading state
   const [error, setError] = useState(""); // To track errors
   const [upload, setUpload] = useState(false);
-  
+
   const handleToggleUpload = () => {
     setUpload(!upload);
-  }
+  };
 
   // Fetch songs from the backend when the component mounts
   useEffect(() => {
     const fetchSongs = async () => {
       try {
+        setLoading(true); // Set loading to false when data is fetched
         const songs = await apiService.getSongs(); // Fetch songs from the backend
         setSongList(songs); // Set the song list from the API response
         setLoading(false); // Set loading to false when data is fetched
@@ -48,21 +51,32 @@ function Layout() {
   // Function to handle song selection
   const handlePlayer = async (songId) => {
     try {
-      // setLoading(true); // Start loading
+      setSongClickLoading(true); // Start loading
       const response = await apiService.getSongInfo(songId); // Fetch song details using songId
       setSongDetail(response); // Update song details with the response data
-      // setLoading(false); // Stop loading
+      setSongClickLoading(false); // Stop loading
     } catch (err) {
       console.log(err);
-      // setLoading(false); // Stop loading in case of error
+      setSongClickLoading(false); // Stop loading in case of error
     }
     setPlayer(songId); // Set the player to the song ID selected
     setHiddenPlayer(false); // Open the player
   };
-  
+
   // Function to close the player
-  const handlePlayerClose = () => {
-    setHiddenPlayer(true); // Close the player
+  const handlePlayerClose = async (songId) => {
+    try {
+      // Call the deleteThumbnails service
+      await apiService.deleteThumbnails(songId);
+
+      console.log(`Thumbnails for songId ${songId} deleted successfully.`);
+
+      // Close the player after successfully deleting thumbnails
+      setHiddenPlayer(true);
+    } catch (error) {
+      console.error("Error deleting thumbnails:", error.message);
+      // Optionally, you can show an error message to the user
+    }
   };
 
   // Function to get the next song ID
@@ -106,17 +120,17 @@ function Layout() {
   const selectedSong = songList.find((song) => song.songId === player);
 
   if (loading) {
-    return <SongLoadingScalaton/>;
+    return <SongLoadingScalaton />;
   }
 
   if (error) {
     return <div>{error}</div>;
   }
- console.log(songDetail);
- 
+  console.log(songDetail);
+
   return (
-    <div className="h-screen bg-fixed overflow-auto md:bg-[url(/assets/bg.jpg)] bg-center bg-cover">
-      <Header handleToggleUpload={handleToggleUpload}/>
+    <div className="h-screen bg-fixed overflow-auto md:bg-[url(/bg.jpg)] bg-center bg-cover">
+      <Header handleToggleUpload={handleToggleUpload} />
       <div className="flex flex-col md:p-10 w-full text-white overflow-auto">
         <div className="bg-white border p-4 pb-5 md:rounded-2xl">
           <div className="flex justify-between md:w-[500px]">
@@ -129,7 +143,7 @@ function Layout() {
             />
           </div>
           <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-5">
-            <Suspense fallback={<SongLoadingScalaton/>}>
+            <Suspense fallback={<SongLoadingScalaton />}>
               {filteredSongs.map((song) => (
                 <SongList
                   key={song.songId}
@@ -150,13 +164,15 @@ function Layout() {
               songName={selectedSong.songName}
               artistName={songDetail?.artistName}
               image={songDetail?.highQualityThumbnailUrl}
+              audioUrl={songDetail?.audioUrl}
               backgroundImage={songDetail?.lowQualityThumbnailUrl}
               playNextSong={playNextSong}
               playPrevSong={playPrevSong}
             />
           </div>
         )}
-        {upload && <Upload handleToggleUpload={handleToggleUpload}/>}
+        {upload && <Upload handleToggleUpload={handleToggleUpload} />}
+        {songClickLoading && <SongClickLoader/>}
       </div>
     </div>
   );

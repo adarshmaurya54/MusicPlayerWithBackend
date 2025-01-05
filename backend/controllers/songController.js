@@ -118,3 +118,39 @@ exports.getSongWithMetadata = async (req, res) => {
     res.status(404).json({ error: 'Audio file not found' });
   }
 };
+
+exports.deleteThumbnails = async (req, res) => {
+  const songId = req.params.songId; // Get songId from the route parameter
+  const thumbnailFolder = path.join(__dirname, '..', 'assets', 'thumbnails'); // Path to the thumbnails folder
+
+  // Define file paths for high and low-quality thumbnails
+  const highQualityThumbnailPath = path.join(thumbnailFolder, `${songId}-high.jpg`);
+  const lowQualityThumbnailPath = path.join(thumbnailFolder, `${songId}-low.jpg`);
+
+  try {
+    // Check and delete the high-quality thumbnail if it exists
+    if (fs.existsSync(highQualityThumbnailPath)) {
+      fs.unlinkSync(highQualityThumbnailPath);
+      console.log(`Deleted: ${highQualityThumbnailPath}`);
+    } else {
+      console.log(`High-quality thumbnail not found: ${highQualityThumbnailPath}`);
+    }
+
+    // Check and delete the low-quality thumbnail if it exists
+    if (fs.existsSync(lowQualityThumbnailPath)) {
+      fs.unlinkSync(lowQualityThumbnailPath);
+      console.log(`Deleted: ${lowQualityThumbnailPath}`);
+    } else {
+      console.log(`Low-quality thumbnail not found: ${lowQualityThumbnailPath}`);
+    }
+
+    // Respond with success
+    res.json({
+      message: 'Thumbnails deleted successfully',
+      songId,
+    });
+  } catch (error) {
+    console.error('Error deleting thumbnails:', error);
+    res.status(500).json({ error: 'Error deleting thumbnails' });
+  }
+};

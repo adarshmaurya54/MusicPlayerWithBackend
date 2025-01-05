@@ -10,6 +10,7 @@ function Upload({ handleToggleUpload }) {
   const [artistName, setArtistName] = useState("");
   const [songLyrics, setSongLyrics] = useState("");
   const [fileUploaded, setFileUploaded] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -66,16 +67,18 @@ function Upload({ handleToggleUpload }) {
     formData.append("audioFile", file);
 
     try {
+      setLoading(true);
       // Call the backend API to create the song and upload the file
       const response = await apiService.createSong(formData);
 
       // Handle success response
       setUploadStatus("Song Uploaded Successfully");
-      console.log(response);
+      setLoading(false)
     } catch (error) {
       // Handle error response
       console.error("Error creating song:", error);
       setUploadStatus("Upload Failed");
+      setLoading(false);
     }
   };
 

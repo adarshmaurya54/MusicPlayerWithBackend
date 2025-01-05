@@ -17,6 +17,7 @@ const MusicPlayer = ({
   backgroundImage,
   handlePlayerClose,
   songId,
+  audioUrl
 }) => {
   
   const [currentTime, setCurrentTime] = useState(0);
@@ -325,7 +326,7 @@ const MusicPlayer = ({
       </div>
       <audio
         ref={audioRef}
-        src={`${import.meta.env.VITE_BASEURL}`}
+        src={`${import.meta.env.VITE_BASEURL}${audioUrl}`}
         preload="auto"
         onLoadedMetadata={handleLoadedMetadata}
       />
