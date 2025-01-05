@@ -1,8 +1,10 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
 const connectDB = require("./config/db");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
 
 // Import controllers
 const artistController = require('./controllers/artistController');
@@ -21,6 +23,27 @@ const port = process.env.PORT || 8080;
 // Middleware
 app.use(cors()); // Cross-origin resource sharing (for allowing frontend to communicate)
 app.use(express.json()); // Parses incoming JSON requests and puts the parsed data in `req.body`
+// Serve files from the 'public/assets/audio' folder
+app.use('/assets/audio', express.static(path.join(__dirname, 'assets', 'audio')));
+app.use('/assets/thumbnails', express.static(path.join(__dirname, 'assets', 'thumbnails')));
+
+// Set up Multer for file upload
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = path.join(__dirname, 'assets', 'audio');
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true }); // Create the folder if it doesn't exist
+    }
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    const songId = req.body.songId.replace(/\s+/g, ''); // Remove spaces for songId
+    cb(null, `${songId}.mp3`); // Save the audio file with songId.mp3
+  }
+});
+
+// Multer upload middleware
+const upload = multer({ storage });
 
 // Test Route
 app.get("/", (req, res) => {
@@ -31,12 +54,16 @@ app.get("/", (req, res) => {
 app.post('/login', authController.login);  // Login route
 app.get('/songs', songController.getAllSongs); // Get all songs with artist details
 app.get('/artists', artistController.getAllArtists); // Get all artists
+app.get('/song/:filename', songController.getSongWithMetadata); // Get song by filename with metadata
 
 // Protected Routes (authentication required for posting)
 app.use(verifyToken); // Apply token verification middleware globally for all routes below
 
-app.post('/song', songController.createSong);  // Create song
-app.post('/artist', artistController.createArtist);  // Create artist
+// Song Routes
+app.post('/song', upload.single('audioFile'), songController.createSong); // Create song with file upload
+
+// Artist Routes
+app.post('/artist', artistController.createArtist); // Create artist
 
 // Global Error Handler
 app.use((err, req, res, next) => {

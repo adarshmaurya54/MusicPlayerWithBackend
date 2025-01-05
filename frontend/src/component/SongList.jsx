@@ -36,17 +36,17 @@ function SongList({ id, title, artist, poster, handlePlayer }) {
     //     </div>
     //   </div>
     // </div>
-    <div onClick={() => handlePlayer(id)} class="bg-white border-2 cursor-pointer border-black/10 hover:shadow-md rounded-lg overflow-hidden dark:bg-zinc-900">
-      <div class="flex justify-between items-center px-6 py-4">
-        <div class="flex items-center">
+    <div onClick={() => handlePlayer(id)} className="bg-white border-2 cursor-pointer border-black/10 hover:shadow-md rounded-lg overflow-hidden dark:bg-zinc-900">
+      <div className="flex justify-between items-center px-6 py-4">
+        <div className="flex items-center">
           <svg
-            class="h-6 w-6 text-yellow-500"
+            className="h-6 w-6 text-yellow-500"
             fill="none"
             height="24"
             stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
             viewBox="0 0 24 24"
             width="24"
             xmlns="http://www.w3.org/2000/svg"
@@ -55,23 +55,23 @@ function SongList({ id, title, artist, poster, handlePlayer }) {
             <circle cx="6" cy="18" r="3"></circle>
             <circle cx="18" cy="16" r="3"></circle>
           </svg>
-          <div class="mx-7">
-            <h3 class="text-lg font-medium text-gray-700 dark:text-gray-200">
+          <div className="mx-7">
+            <h3 className="text-lg font-medium text-gray-700 dark:text-gray-200">
               {title}
             </h3>
-            <p class="text-gray-500 dark:text-gray-400">{artist}</p>
+            <p className="text-gray-500 dark:text-gray-400">{artist}</p>
           </div>
         </div>
-        <div class="flex items-center">
+        <div className="flex items-center">
           <svg
             onClick={() => handleFavorite()}
-            class="h-6 w-6 text-red-500"
+            className="h-6 w-6 text-red-500"
             fill={`${favorite ? "#ef4444": "none"}`}
             height="24"
             stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
             viewBox="0 0 24 24"
             width="24"
             xmlns="http://www.w3.org/2000/svg"
@@ -79,13 +79,13 @@ function SongList({ id, title, artist, poster, handlePlayer }) {
             <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
           </svg>
           <svg
-            class="h-6 w-6 text-gray-500 dark:text-gray-400 ml-4"
+            className="h-6 w-6 text-gray-500 dark:text-gray-400 ml-4"
             fill="none"
             height="24"
             stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
             viewBox="0 0 24 24"
             width="24"
             xmlns="http://www.w3.org/2000/svg"

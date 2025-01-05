@@ -6,7 +6,6 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [errorMessage, setErrorMessage] = useState(""); // For handling errors
   const navigate = useNavigate(); // To navigate to another page on success
 
   // Check for existing JWT token
@@ -29,10 +28,10 @@ function Login() {
 
       // Redirect or handle further actions after successful login
       console.log("Login successful, token stored:", response.token);
-      navigate("/dashboard"); // Redirect to the dashboard or another page
+      navigate("/"); // Redirect to the dashboard or another page
     } catch (error) {
       console.error("Login failed:", error.message);
-      setErrorMessage("Invalid credentials, please try again.");
+      alert("Invalid credentials, please try again.");
     }
   };
 

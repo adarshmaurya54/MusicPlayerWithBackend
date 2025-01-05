@@ -4,14 +4,23 @@ import apiService from "../services/apiService"; // Adjust the path according to
 // Lazy load the SongList component
 const SongList = React.lazy(() => import("./SongList"));
 import MusicPlayer from "./MusicPlayer";
+import Header from "./Header";
+import SongLoadingScalaton from "./SongLoadingScalaton";
+import Upload from "./Upload";
 
 function Layout() {
+  const [songDetail, setSongDetail] = useState(null);
   const [songList, setSongList] = useState([]); // Initially set to an empty array
   const [player, setPlayer] = useState(0);
   const [hiddenPlayer, setHiddenPlayer] = useState(false);
   const [searchQuery, setSearchQuery] = useState(""); // State for search query
   const [loading, setLoading] = useState(true); // To track loading state
   const [error, setError] = useState(""); // To track errors
+  const [upload, setUpload] = useState(false);
+  
+  const handleToggleUpload = () => {
+    setUpload(!upload);
+  }
 
   // Fetch songs from the backend when the component mounts
   useEffect(() => {
@@ -37,11 +46,20 @@ function Layout() {
   );
 
   // Function to handle song selection
-  const handlePlayer = (songId) => {
+  const handlePlayer = async (songId) => {
+    try {
+      // setLoading(true); // Start loading
+      const response = await apiService.getSongInfo(songId); // Fetch song details using songId
+      setSongDetail(response); // Update song details with the response data
+      // setLoading(false); // Stop loading
+    } catch (err) {
+      console.log(err);
+      // setLoading(false); // Stop loading in case of error
+    }
     setPlayer(songId); // Set the player to the song ID selected
     setHiddenPlayer(false); // Open the player
   };
-
+  
   // Function to close the player
   const handlePlayerClose = () => {
     setHiddenPlayer(true); // Close the player
@@ -85,21 +103,21 @@ function Layout() {
     }
   };
 
-  const selectedSong = songList.find((song) => song.id === player);
+  const selectedSong = songList.find((song) => song.songId === player);
 
   if (loading) {
-    return <div>Loading songs...</div>;
+    return <SongLoadingScalaton/>;
   }
 
   if (error) {
     return <div>{error}</div>;
   }
-
+ console.log(songDetail);
+ 
   return (
-    <div
-      className="h-screen md:bg-[url(/assets/bg.jpg)] bg-center bg-cover"
-    >
-      <div className="absolute flex flex-col md:p-10 top-0 left-0 w-full h-full text-white overflow-auto">
+    <div className="h-screen bg-fixed overflow-auto md:bg-[url(/assets/bg.jpg)] bg-center bg-cover">
+      <Header handleToggleUpload={handleToggleUpload}/>
+      <div className="flex flex-col md:p-10 w-full text-white overflow-auto">
         <div className="bg-white border p-4 pb-5 md:rounded-2xl">
           <div className="flex justify-between md:w-[500px]">
             <input
@@ -111,12 +129,12 @@ function Layout() {
             />
           </div>
           <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-5">
-            <Suspense fallback={<div>Loading songs...</div>}>
+            <Suspense fallback={<SongLoadingScalaton/>}>
               {filteredSongs.map((song) => (
                 <SongList
-                  key={song.id}
+                  key={song.songId}
                   handlePlayer={handlePlayer}
-                  id={song.id}
+                  id={song.songId}
                   title={song.songName}
                   artist={song.artistName}
                 />
@@ -127,17 +145,18 @@ function Layout() {
         {player !== 0 && selectedSong && (
           <div className={`${hiddenPlayer ? "hidden" : "block"}`}>
             <MusicPlayer
-              songId={selectedSong.id}
+              songId={selectedSong.songId}
               handlePlayerClose={handlePlayerClose}
               songName={selectedSong.songName}
-              artistName={selectedSong.artistName}
-              image={selectedSong.poster}
-              totalDuration={400} // Assuming the song duration is in seconds
+              artistName={songDetail?.artistName}
+              image={songDetail?.highQualityThumbnailUrl}
+              backgroundImage={songDetail?.lowQualityThumbnailUrl}
               playNextSong={playNextSong}
               playPrevSong={playPrevSong}
             />
           </div>
         )}
+        {upload && <Upload handleToggleUpload={handleToggleUpload}/>}
       </div>
     </div>
   );

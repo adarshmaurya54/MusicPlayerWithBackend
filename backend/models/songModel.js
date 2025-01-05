@@ -4,24 +4,29 @@ const songSchema = new mongoose.Schema({
   songId: {
     type: String,
     required: [true, 'Song ID is required'],
+    set: (value) => value.replace(/\s+/g, '') // Remove spaces from song name for songId
   },
   songName: {
     type: String,
     required: [true, 'Song name is required'],
   },
-  artist: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Artist', // Reference to the Artist collection
-    required: [true, 'Artist is required'],
-  },
-  poster: {
+  artistName: {
     type: String,
-    required: [true, 'Song poster is required'],
+    required: [true, 'Artist name is required'],
+  },
+  lyrics: {
+    type: String,
+    required: [true, 'Song lyrics are required'],
   },
   favourite: {
     type: Boolean,
     default: false, // Set default value to false
   },
+  audioFile: {
+    type: String, // The file path to store the audio
+    required: [true, 'Audio file is required'],
+    set: (value) => `${value}` // Ensure the audio file is saved with the .mp3 format
+  }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Song', songSchema);

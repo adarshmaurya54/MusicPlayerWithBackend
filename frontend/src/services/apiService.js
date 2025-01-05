@@ -50,15 +50,21 @@ const apiService = {
     }
   },
 
-  // Create a song
-  createSong: async (songData) => {
+  // apiService.js
+  createSong: async (formData) => {
     try {
-      const response = await API.post('/song', songData);
-      return response.data; // Return the created song
+      const response = await API.post('/song', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
     } catch (error) {
-      throw new Error('Error creating song: ' + error.message);
+      console.error('Error in API call:', error.response || error.message);
+      throw new Error('Failed to create song');
     }
   },
+
 
   // Create an artist
   createArtist: async (artistData) => {
@@ -67,6 +73,16 @@ const apiService = {
       return response.data; // Return the created artist
     } catch (error) {
       throw new Error('Error creating artist: ' + error.message);
+    }
+  },
+
+   // Get song details by filename
+   getSongInfo: async (filename) => {
+    try {
+      const response = await API.get(`/song/${filename}`);
+      return response.data; // Return the song info (artist name, thumbnail, etc.)
+    } catch (error) {
+      throw new Error('Error fetching song info: ' + error.message);
     }
   },
 };

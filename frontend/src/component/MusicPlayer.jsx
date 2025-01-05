@@ -6,6 +6,7 @@ import { PiShuffle } from "react-icons/pi";
 import { FaChevronUp } from "react-icons/fa";
 import { FaForward } from "react-icons/fa";
 import { FaBackward } from "react-icons/fa";
+import apiService from "../services/apiService";
 
 const MusicPlayer = ({
   songName,
@@ -13,9 +14,11 @@ const MusicPlayer = ({
   playPrevSong,
   artistName,
   image,
+  backgroundImage,
   handlePlayerClose,
   songId,
 }) => {
+  
   const [currentTime, setCurrentTime] = useState(0);
   const [totalDuration, setTotalDuration] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -193,6 +196,9 @@ const MusicPlayer = ({
     };
   }, [playNextSong]); // Add `playNextSong` as a dependency
 
+  
+
+
   return (
     <div
       className="fixed top-0 left-0 w-full h-full backdrop-blur-md flex justify-center text-white items-center"
@@ -202,20 +208,20 @@ const MusicPlayer = ({
       onTouchEnd={handleEnd}
     >
       <div
-        style={{ backgroundImage: `url(${image})` }}
-        className="transition-all duration-700 md:w-[80%] relative md:h-[98%] bg-no-repeat bg-center bg-cover overflow-auto no-scrollbar h-full w-full md:rounded-[30px]"
+        style={{ backgroundImage: `url(${import.meta.env.VITE_BASEURL}/assets${backgroundImage})` }}
+        className="transition-all duration-700 md:w-[90%] relative md:h-[98%] bg-no-repeat bg-center bg-cover overflow-auto no-scrollbar h-full w-full md:rounded-[30px]"
       >
         <div className="bg-black/20 p-4 h-full overflow-auto no-scrollbar backdrop-blur-md">
           <div className="flex absolute md:top-7 md:left-7 justify-between items-center">
             <FaArrowLeft
-              onClick={() => handlePlayerClose()}
-              className="md:text-3xl text-xl cursor-pointer"
+              onClick={() => handlePlayerClose(songId)}
+              className="text-xl cursor-pointer"
             />
           </div>
           <div className="flex md:flex-row h-full flex-col items-center justify-center">
             <div className="transition-all md:mb-0 mb-5 px-3 py-5 md:w-[50%] w-full flex justify-center">
               <img
-                src={image}
+                src={`${import.meta.env.VITE_BASEURL}/assets${image}`}
                 alt="Album Art"
                 className="transition-all w-[80%]  rounded-xl"
               />
@@ -319,7 +325,7 @@ const MusicPlayer = ({
       </div>
       <audio
         ref={audioRef}
-        src={`/assets/audio/${songId}.mp3`}
+        src={`${import.meta.env.VITE_BASEURL}`}
         preload="auto"
         onLoadedMetadata={handleLoadedMetadata}
       />
