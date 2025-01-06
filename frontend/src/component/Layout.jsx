@@ -1,5 +1,6 @@
 import React, { Suspense, useState, useEffect } from "react";
-import apiService from "../services/apiService"; // Adjust the path according to your folder structure
+import { useParams, useNavigate } from "react-router-dom"; // useParams for URL parameters and useNavigate for navigation
+import apiService from "../services/apiService";
 
 // Lazy load the SongList component
 const SongList = React.lazy(() => import("./SongList"));
@@ -9,100 +10,107 @@ import SongLoadingScalaton from "./SongLoadingScalaton";
 import Upload from "./Upload";
 
 function Layout() {
+  const { songId } = useParams(); // Get songId from URL
   const [songDetail, setSongDetail] = useState(null);
-  const [songList, setSongList] = useState([]); // Initially set to an empty array
-  const [player, setPlayer] = useState(0);
-  const [hiddenPlayer, setHiddenPlayer] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(""); // State for search query
-  const [loading, setLoading] = useState(true); // To track loading state
-  const [songClickLoading, setSongClickLoading] = useState(false); // To track loading state
-  const [error, setError] = useState(""); // To track errors
+  const [songList, setSongList] = useState([]);
+  const [hiddenPlayer, setHiddenPlayer] = useState(false); // Manage visibility
+  const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [upload, setUpload] = useState(false);
+  const [player, setPlayer] = useState(songId ? songId : 0); // To handle current song
+  const [songClickLoading, setSongClickLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleToggleUpload = () => {
     setUpload(!upload);
   };
 
-  // Fetch songs from the backend when the component mounts
+  // Fetch songs from the backend
   const fetchSongs = async () => {
     try {
-      setLoading(true); // Set loading to false when data is fetched
-      const songs = await apiService.getSongs(); // Fetch songs from the backend
-      setSongList(songs); // Set the song list from the API response
-      setLoading(false); // Set loading to false when data is fetched
+      setLoading(true);
+      const songs = await apiService.getSongs();
+      setSongList(songs);
+      setLoading(false);
     } catch (err) {
       setError("Failed to fetch songs");
       setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchSongs();
-  }, []); // Empty dependency array means this runs once when the component mounts
+  }, []);
 
-  // Fetch song details whenever the player state changes
+  // Fetch song details based on songId from URL
   useEffect(() => {
-    const fetchSongDetails = async () => {
-      if (player !== 0) {
+    if (songId) {
+      const fetchSongDetails = async () => {
         try {
           setSongClickLoading(true);
-          const response = await apiService.getSongInfo(player);
+          const response = await apiService.getSongInfo(songId);
           setSongDetail(response);
+          setHiddenPlayer(false); // Make the player visible when a song is selected
           setSongClickLoading(false);
         } catch (err) {
           console.error("Failed to fetch song details:", err);
+          navigate("/")
           setSongClickLoading(false);
         }
-      }
-    };
+      };
 
-    fetchSongDetails();
-  }, [player]);
+      fetchSongDetails();
+    }
+  }, [songId]);
+  
 
-  // Filter songs based on search query (match song name or artist name)
-  const filteredSongs = songList.filter(
-    (song) =>
-      song.songName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      song.artistName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  // Function to handle song selection
-  const handlePlayer = (songId) => {
-    setPlayer(songId);
-    setHiddenPlayer(false); // Show the player
+  // Handle song click to navigate and set player state
+  const handlePlayer = (id) => {
+    setPlayer(id);
+    navigate(`/${id}`);
   };
 
-  // function to delete thumbnail image
-  const handleDeteleThumbnail = async (songId) => {
+  // Play the next song
+  const playNextSong = async () => {
     try {
-      await apiService.deleteThumbnails(songId);
-      console.log(`Thumbnails for songId ${songId} deleted successfully.`);
+      await apiService.deleteThumbnails(player);
+      // console.log(`Thumbnails for songId ${player} deleted successfully.`);
+      const nextSongId = getNextSongId(player);
+      setPlayer(nextSongId);
+      navigate(`/${nextSongId}`);
     } catch (error) {
       console.error("Error deleting thumbnails:", error.message);
     }
   };
 
-  // Function to close the player
-  const handlePlayerClose = (songId) => {
-    setHiddenPlayer(true); // Close the player
-    handleDeteleThumbnail(songId);
+  // Play the previous song
+  const playPrevSong = async () => {
+    try {
+      await apiService.deleteThumbnails(player);
+      // console.log(`Thumbnails for songId ${player} deleted successfully.`);
+      const prevSongId = getPrevSongId(player);
+      if (prevSongId) {
+        setPlayer(prevSongId);
+        navigate(`/${prevSongId}`);
+      }
+    } catch (error) {
+      console.error("Error deleting thumbnails:", error.message);
+    }
   };
 
-  // Function to get the next song ID
+  // Get the next song ID
   const getNextSongId = (currentSongId) => {
     const currentIndex = songList.findIndex(
       (song) => song.songId === currentSongId
     );
-
-    if (currentIndex === -1) {
-      console.error("Song not found in the list");
-      return null;
-    }
+    if (currentIndex === -1) return null;
 
     const nextIndex = (currentIndex + 1) % songList.length;
     return songList[nextIndex].songId;
   };
 
-  // Function to get the previous song ID
+  // Get the previous song ID
   const getPrevSongId = (currentSongId) => {
     const currentIndex = songList.findIndex(
       (song) => song.songId === currentSongId
@@ -113,22 +121,15 @@ function Layout() {
     return songList[prevIndex].songId;
   };
 
-  // Function to play the next song
-  const playNextSong = (songId) => {
-    handleDeteleThumbnail(songId);
-
-    const nextSongId = getNextSongId(player);
-    if (nextSongId) {
-      setPlayer(nextSongId);
-    }
-  };
-
-  // Function to play the previous song
-  const playPrevSong = (songId) => {
-    handleDeteleThumbnail(songId);
-    const prevSongId = getPrevSongId(player);
-    if (prevSongId) {
-      setPlayer(prevSongId);
+  // Function to close the player
+  const handlePlayerClose = async () => {
+    setHiddenPlayer(true); // Hide the player
+    navigate(`/`); // Navigate to home page
+    try {
+      await apiService.deleteThumbnails(player);
+      // console.log(`Thumbnails for songId ${player} deleted successfully.`);
+    } catch (error) {
+      console.error("Error deleting thumbnails:", error.message);
     }
   };
 
@@ -156,19 +157,32 @@ function Layout() {
           </div>
           <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-5">
             <Suspense fallback={<SongLoadingScalaton />}>
-              {filteredSongs.map((song) => (
-                <SongList
-                  key={song.songId}
-                  handlePlayer={handlePlayer}
-                  id={song.songId}
-                  title={song.songName}
-                  artist={song.artistName}
-                />
-              ))}
+              {songList
+                .filter(
+                  (song) =>
+                    song.songName
+                      .toLowerCase()
+                      .includes(searchQuery.toLowerCase()) ||
+                    song.artistName
+                      .toLowerCase()
+                      .includes(searchQuery.toLowerCase())
+                )
+                .map((song) => (
+                  <SongList
+                    key={song.songId}
+                    handlePlayer={() => handlePlayer(song.songId)} // Handle song click and navigate
+                    id={song.songId}
+                    title={song.songName}
+                    artist={song.artistName}
+                    favourite={song.favourite}
+                  />
+                ))}
             </Suspense>
           </div>
         </div>
-        {player !== 0 && songDetail && (
+
+        {/* Conditionally render MusicPlayer if songDetail is available */}
+        {songDetail && (
           <div className={`${hiddenPlayer ? "hidden" : "block"}`}>
             <MusicPlayer
               songId={player}
@@ -178,13 +192,19 @@ function Layout() {
               image={songDetail.highQualityThumbnailUrl}
               audioUrl={songDetail.audioUrl}
               backgroundImage={songDetail.lowQualityThumbnailUrl}
+              favourite={songDetail.favourite}
               playNextSong={playNextSong}
               playPrevSong={playPrevSong}
             />
           </div>
         )}
-        {upload && <Upload fetchSongs={fetchSongs} handleToggleUpload={handleToggleUpload} />}
-        {/* {songClickLoading && <SongClickLoader />} */}
+
+        {upload && (
+          <Upload
+            fetchSongs={fetchSongs}
+            handleToggleUpload={handleToggleUpload}
+          />
+        )}
       </div>
     </div>
   );

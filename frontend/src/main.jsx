@@ -16,6 +16,10 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
+    path: '/:songId',  // New route with songId
+    element: <Layout />,
+  },
+  {
     path: '*',
     element: <NotFoundPage /> // 404 page route outside of Layout
   }

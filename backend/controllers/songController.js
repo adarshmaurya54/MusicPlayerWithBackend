@@ -118,11 +118,19 @@ exports.getSongWithMetadata = async (req, res) => {
         lowQualityThumbnailUrl = '/thumbnails/default-thumbnail-low.jpg';
       }
 
-      // Respond with song details (audio URL, artist, song name, and thumbnail URLs)
+      // Fetch song details from the database
+      const song = await Song.findOne({ songId: filename });
+
+      if (!song) {
+        return res.status(404).json({ error: 'Song not found in the database.' });
+      }
+
+      // Respond with song details (audio URL, artist, song name, thumbnail URLs, and favourite)
       res.json({
-        songName,
+        songName: song.songName || songName,
         audioUrl: `/assets/audio/${filename}.mp3`, // URL to access the audio file
-        artistName,
+        artistName: song.artistName || artistName,
+        favourite: song.favourite || false, // Include the favourite field
         highQualityThumbnailUrl,
         lowQualityThumbnailUrl,
       });

@@ -28,11 +28,8 @@ const Header = ({ handleToggleUpload }) => {
       );
       
       if (response.status === 200) {
-        setIsAuthenticated(true);
-        console.log("valid");
-        
+        setIsAuthenticated(true);        
       } else {
-        console.log("not valid");
         setIsAuthenticated(false);
         localStorage.removeItem("token"); // Remove invalid token
       }

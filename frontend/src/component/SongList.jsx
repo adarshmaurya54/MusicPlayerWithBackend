@@ -1,12 +1,7 @@
 import React, { useState } from "react";
 import { FaHeart, FaPlay } from "react-icons/fa";
 
-function SongList({ id, title, artist, poster, handlePlayer }) {
-  const [favorite, setFavorite] = useState(false);
-
-  const handleFavorite = () => {
-    setFavorite(!favorite);
-  };
+function SongList({ id, title, artist, favourite, handlePlayer }) {
 
   return (
     <div
@@ -44,9 +39,8 @@ function SongList({ id, title, artist, poster, handlePlayer }) {
           </div>
           <div className="flex items-center">
             <svg
-              onClick={() => handleFavorite()}
               className="h-6 w-6 text-red-500"
-              fill={`${favorite ? "#ef4444" : "none"}`}
+              fill={`${favourite ? "#ef4444" : "none"}`}
               height="24"
               stroke="currentColor"
               strokeLinecap="round"

@@ -17,6 +17,7 @@ const MusicPlayer = ({
   handlePlayerClose,
   songId,
   audioUrl,
+  favourite
 }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [totalDuration, setTotalDuration] = useState(0);
@@ -24,11 +25,13 @@ const MusicPlayer = ({
   const [isDragging, setIsDragging] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isLoading, setIsLoading] = useState(false); // New state for loading
-  const [isLiked, setIsLiked] = useState(false); // State to track toggle
+  const [isLiked, setIsLiked] = useState(favourite); // State to track toggle
   const audioRef = useRef(null);
   const progressBarRef = useRef(null);
-
-  const handleToggle = async() => {
+  useEffect(() => {
+    setIsLiked(favourite);
+  },[isLoading, totalDuration]);
+  const handleToggle = async () => {
     setIsLiked((prev) => !prev); // Toggle state
     try {
       await apiService.toggleFavourite(songId); // Call the API to toggle the favorite status
@@ -36,7 +39,6 @@ const MusicPlayer = ({
       console.error("Error toggling favourite status:", error);
       setIsLiked((prev) => !prev); // Revert the state if the API call fails
     }
-  
   };
 
   const progressPercentage = (currentTime / totalDuration) * 100;
@@ -172,19 +174,42 @@ const MusicPlayer = ({
     };
 
     const handleAudioEnded = () => {
+      // Pause the current song
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+    
       setIsPlaying(false);
+      setIsLoading(true); // Show loading state
+    
       if (playNextSong) {
-        playNextSong();
-        if (audioRef.current) {
-          setIsLoading(true); // Show loading state for the next song
-          setTimeout(() => {
-            audioRef.current.play().catch((error) => {
-              console.error("Error playing the next song:", error);
-            });
-          }, 300); // Slight delay for smooth transition
-        }
+        // Fetch the next song's data
+        playNextSong()
+          .then((newSongData) => {
+            // Update the audio source with the new song's URL
+            if (audioRef.current) {
+              audioRef.current.src = newSongData.audioUrl;
+              setTotalDuration(0); // Reset total duration for the new song
+              setCurrentTime(0); // Reset current time
+            }
+            setIsLoading(false); // Remove loading state
+            setTimeout(() => {
+              // Play the next song once it's ready
+              if (audioRef.current) {
+                audioRef.current.play().catch((error) => {
+                  console.error("Error playing the next song:", error);
+                });
+              }
+            }, 300); // Slight delay for a smooth transition
+          })
+          .catch((error) => {
+            console.error("Error loading the next song:", error);
+            setIsLoading(false); // Remove loading state if an error occurs
+          });
       }
     };
+    
+    
 
     if (audioRef.current) {
       audioRef.current.addEventListener("timeupdate", updateCurrentTime);
@@ -261,9 +286,7 @@ const MusicPlayer = ({
                 </div>
                 <div className="px-3 mt-5">
                   <div className="flex items-center justify-between text-sm text-gray-200">
-                    <span>
-                      {isLoading ? "Loading..." : formatTime(currentTime)}
-                    </span>
+                    <span>{isLoading ? "Buffering..." : formatTime(currentTime)}</span>
                     <span>{formatTime(totalDuration)}</span>
                   </div>
                   <div
@@ -321,6 +344,21 @@ const MusicPlayer = ({
             </div>
           </div>
         </div>
+        {/* {isLoading && (
+          <div className="absolute top-0 left-0 w-full h-full backdrop-blur-lg flex items-center justify-center">
+            <div className="flex items-center  rounded-3xl w-[300px] h-[200px] justify-center space-x-1">
+              {[...Array(5)].map((_, index) => (
+                <div
+                  key={index}
+                  className="bg-indigo-500 h-8 w-2 animate-wave rounded-full"
+                  style={{
+                    animationDelay: `${index * 0.2}s`,
+                  }}
+                ></div>
+              ))}
+            </div>
+          </div>
+        )} */}
       </div>
       <audio
         ref={audioRef}
