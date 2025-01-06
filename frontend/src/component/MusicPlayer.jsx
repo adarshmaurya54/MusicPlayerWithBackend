@@ -5,6 +5,7 @@ import { HiSpeakerWave, HiSpeakerXMark } from "react-icons/hi2";
 import { PiShuffle } from "react-icons/pi";
 import { FaForward } from "react-icons/fa";
 import { FaBackward } from "react-icons/fa";
+import apiService from "../services/apiService";
 
 const MusicPlayer = ({
   songName,
@@ -27,8 +28,15 @@ const MusicPlayer = ({
   const audioRef = useRef(null);
   const progressBarRef = useRef(null);
 
-  const handleToggle = () => {
+  const handleToggle = async() => {
     setIsLiked((prev) => !prev); // Toggle state
+    try {
+      await apiService.toggleFavourite(songId); // Call the API to toggle the favorite status
+    } catch (error) {
+      console.error("Error toggling favourite status:", error);
+      setIsLiked((prev) => !prev); // Revert the state if the API call fails
+    }
+  
   };
 
   const progressPercentage = (currentTime / totalDuration) * 100;
@@ -128,9 +136,9 @@ const MusicPlayer = ({
     }
   };
 
-  const handleNextSong = () => {
+  const handleNextSong = (songId) => {
     if (playNextSong) {
-      playNextSong();
+      playNextSong(songId);
       if (audioRef.current) {
         setIsLoading(true); // Show loading state
         setTimeout(() => {
@@ -142,9 +150,9 @@ const MusicPlayer = ({
     }
   };
 
-  const handlePrevSong = () => {
+  const handlePrevSong = (songId) => {
     if (playPrevSong) {
-      playPrevSong();
+      playPrevSong(songId);
       if (audioRef.current) {
         setIsLoading(true); // Show loading state
         setTimeout(() => {
@@ -223,7 +231,7 @@ const MusicPlayer = ({
               <img
                 src={`${import.meta.env.VITE_BASEURL}/assets${image}`}
                 alt="Album Art"
-                className="transition-all w-[80%]  rounded-xl"
+                className="transition-all w-[80%]  rounded-3xl"
               />
             </div>
             <div className="transition-all flex items-center justify-center md:w-[60%]">
@@ -280,7 +288,7 @@ const MusicPlayer = ({
                     <PiShuffle className="text-white md:text-lg text-3xl" />
                   </button>
                   <button
-                    onClick={() => handlePrevSong()}
+                    onClick={() => handlePrevSong(songId)}
                     className="p-3 rounded-full"
                   >
                     <FaBackward className="text-white text-3xl" />
@@ -296,8 +304,8 @@ const MusicPlayer = ({
                     )}
                   </button>
                   <button
-                    onClick={() => handleNextSong()}
-                    className="p-3 rounded-full"
+                    onClick={() => handleNextSong(songId)}
+                    className={`p-3 rounded-full ${songId}`}
                   >
                     <FaForward className="text-white text-3xl" />
                   </button>

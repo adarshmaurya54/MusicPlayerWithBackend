@@ -38,7 +38,7 @@ function Login() {
   return (
     <div
       className="h-screen flex items-center justify-center bg-center bg-cover"
-      style={{ backgroundImage: `url(/assets/bg.jpg)` }}
+      style={{ backgroundImage: `url(/bg.jpg)` }}
     >
       <div className="max-w-xs bg-gradient-to-t from-white to-blue-50 rounded-3xl p-6 border-4 border-white shadow-lg mx-auto my-5">
         <div className="text-center font-extrabold text-2xl text-blue-500">

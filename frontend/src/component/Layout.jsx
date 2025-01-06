@@ -7,7 +7,6 @@ import MusicPlayer from "./MusicPlayer";
 import Header from "./Header";
 import SongLoadingScalaton from "./SongLoadingScalaton";
 import Upload from "./Upload";
-import SongClickLoader from "./SongClickLoader";
 
 function Layout() {
   const [songDetail, setSongDetail] = useState(null);
@@ -25,19 +24,18 @@ function Layout() {
   };
 
   // Fetch songs from the backend when the component mounts
+  const fetchSongs = async () => {
+    try {
+      setLoading(true); // Set loading to false when data is fetched
+      const songs = await apiService.getSongs(); // Fetch songs from the backend
+      setSongList(songs); // Set the song list from the API response
+      setLoading(false); // Set loading to false when data is fetched
+    } catch (err) {
+      setError("Failed to fetch songs");
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchSongs = async () => {
-      try {
-        setLoading(true); // Set loading to false when data is fetched
-        const songs = await apiService.getSongs(); // Fetch songs from the backend
-        setSongList(songs); // Set the song list from the API response
-        setLoading(false); // Set loading to false when data is fetched
-      } catch (err) {
-        setError("Failed to fetch songs");
-        setLoading(false);
-      }
-    };
-
     fetchSongs();
   }, []); // Empty dependency array means this runs once when the component mounts
 
@@ -73,15 +71,20 @@ function Layout() {
     setHiddenPlayer(false); // Show the player
   };
 
-  // Function to close the player
-  const handlePlayerClose = async (songId) => {
+  // function to delete thumbnail image
+  const handleDeteleThumbnail = async (songId) => {
     try {
       await apiService.deleteThumbnails(songId);
       console.log(`Thumbnails for songId ${songId} deleted successfully.`);
-      setHiddenPlayer(true); // Close the player
     } catch (error) {
       console.error("Error deleting thumbnails:", error.message);
     }
+  };
+
+  // Function to close the player
+  const handlePlayerClose = (songId) => {
+    setHiddenPlayer(true); // Close the player
+    handleDeteleThumbnail(songId);
   };
 
   // Function to get the next song ID
@@ -111,7 +114,9 @@ function Layout() {
   };
 
   // Function to play the next song
-  const playNextSong = () => {
+  const playNextSong = (songId) => {
+    handleDeteleThumbnail(songId);
+
     const nextSongId = getNextSongId(player);
     if (nextSongId) {
       setPlayer(nextSongId);
@@ -119,7 +124,8 @@ function Layout() {
   };
 
   // Function to play the previous song
-  const playPrevSong = () => {
+  const playPrevSong = (songId) => {
+    handleDeteleThumbnail(songId);
     const prevSongId = getPrevSongId(player);
     if (prevSongId) {
       setPlayer(prevSongId);
@@ -177,7 +183,7 @@ function Layout() {
             />
           </div>
         )}
-        {upload && <Upload handleToggleUpload={handleToggleUpload} />}
+        {upload && <Upload fetchSongs={fetchSongs} handleToggleUpload={handleToggleUpload} />}
         {/* {songClickLoading && <SongClickLoader />} */}
       </div>
     </div>

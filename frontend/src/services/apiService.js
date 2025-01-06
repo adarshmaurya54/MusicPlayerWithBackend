@@ -100,6 +100,15 @@ const apiService = {
       throw new Error("Failed to delete thumbnails");
     }
   },
+  toggleFavourite: async (songId) => {
+    try {
+      const response = await API.patch(`/favourite/${songId}`); // Endpoint for toggling the favourite status
+      return response.data; // Return the updated data (favourite status and message)
+    } catch (error) {
+      console.error("Error toggling favourite status:", error.response || error.message);
+      throw new Error("Failed to toggle favourite status");
+    }
+  },
 };
 
 export default apiService;

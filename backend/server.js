@@ -56,6 +56,7 @@ app.get('/songs', songController.getAllSongs); // Get all songs with artist deta
 app.get('/artists', artistController.getAllArtists); // Get all artists
 app.get('/song/:filename', songController.getSongWithMetadata); // Get song by filename with metadata
 app.delete('/thumbnail/:songId', songController.deleteThumbnails); // Delete thumbnails by songId
+app.patch('/favourite/:songId', songController.toggleFavourite);
 
 // Token Validation Route (no authentication required)
 app.post('/validate-token', authController.validateToken); // Token validation route

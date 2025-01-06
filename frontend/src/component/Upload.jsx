@@ -3,12 +3,11 @@ import { FaRegTimesCircle } from "react-icons/fa";
 import apiService from "../services/apiService"; // Import the apiService
 import { FaCloudUploadAlt } from "react-icons/fa";
 
-function Upload({ handleToggleUpload }) {
+function Upload({ handleToggleUpload, fetchSongs }) {
   const [file, setFile] = useState(null);
   const [progress, setProgress] = useState(0);
   const [uploadStatus, setUploadStatus] = useState("");
   const [songName, setSongName] = useState("");
-  const [artistName, setArtistName] = useState("");
   const [songLyrics, setSongLyrics] = useState("");
   const [fileUploaded, setFileUploaded] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -54,17 +53,16 @@ function Upload({ handleToggleUpload }) {
   };
 
   const submitForm = async () => {
-    if (!fileUploaded || !songName || !artistName || !songLyrics) {
+    if (!fileUploaded || !songName || !songLyrics) {
       alert("Please upload the file and fill in all fields.");
       return;
     }
 
     setUploadStatus("Submitting...");
     const formData = new FormData();
-    formData.append("songId", songName.replace(/\s+/g, "")); // Remove spaces for songId
-    formData.append("songName", songName);
-    formData.append("artistName", artistName);
-    formData.append("lyrics", songLyrics);
+    formData.append("songId", songName.trim().replace(/\s+/g, ""));
+    formData.append("songName", songName.trim());
+    formData.append("lyrics", songLyrics.trim());
     formData.append("audioFile", file);
 
     try {
@@ -75,6 +73,9 @@ function Upload({ handleToggleUpload }) {
       // Handle success response
       setUploadStatus("Song Uploaded Successfully");
       setLoading(false);
+
+      handleToggleUpload();
+      fetchSongs();
     } catch (error) {
       // Handle error response
       console.error("Error creating song:", error);
@@ -121,23 +122,6 @@ function Upload({ handleToggleUpload }) {
                   placeholder="Ex. O Mere Dil Ke Chain"
                   value={songName}
                   onChange={(e) => setSongName(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="mb-5">
-                <label
-                  htmlFor="artistname"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Artist Name
-                </label>
-                <input
-                  type="text"
-                  id="artistname"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="Ex. Kishore Kumar"
-                  value={artistName}
-                  onChange={(e) => setArtistName(e.target.value)}
                   required
                 />
               </div>
@@ -240,7 +224,9 @@ function Upload({ handleToggleUpload }) {
           <div className="absolute top-0 left-0 h-full w-full flex items-center justify-center backdrop-blur-sm rounded-3xl">
             <div className="bg-white w-[40%] h-[40%] border-2 rounded-3xl flex flex-col justify-center items-center">
               <FaCloudUploadAlt className="text-black text-9xl" />
-              <span className="text-black">Uploading your song please wait...</span>
+              <span className="text-black">
+                Uploading your song please wait...
+              </span>
             </div>
           </div>
         )}
