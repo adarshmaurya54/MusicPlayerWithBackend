@@ -249,7 +249,7 @@ const MusicPlayer = ({
               className="text-xl cursor-pointer"
             />
           </div>
-          <div className="flex md:flex-row h-full flex-col items-center justify-center">
+          <div className="flex md:flex-row h-full flex-col items-center justify-evenly">
             <div className="transition-all md:mb-0 mb-5 px-3 py-5 md:w-[50%] w-full flex justify-center">
               <img
                 src={`${import.meta.env.VITE_BASEURL}/assets${image}`}

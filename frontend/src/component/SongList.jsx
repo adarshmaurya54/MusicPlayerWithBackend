@@ -39,7 +39,7 @@ function SongList({
   return (
     <div
       onClick={() => handlePlayer(id)}
-      className="relative group flex flex-col space-y-2 bg-white border border-gray-200 shadow-lg rounded-lg p-4 cursor-pointer hover:shadow-xl transition-all duration-300 dark:bg-gray-800 dark:border-gray-700"
+      className="relative group flex flex-col space-y-2 bg-white border border-gray-200 shadow-lg rounded-lg p-4 cursor-pointer hover:shadow-xl transition-all duration-300"
     >
       {!isDeleting && isAdminLogin && (
         <>
@@ -77,7 +77,7 @@ function SongList({
         <div
           className={`flex-shrink-0 ${
             isAdminLogin ? "w-[100px] h-[100px]" : "w-16 h-16"
-          } rounded-md bg-gray-300 dark:bg-gray-700 flex items-center justify-center`}
+          } rounded-md bg-gray-300 flex items-center justify-center`}
         >
           <svg
             className="h-8 w-8 text-gray-500"
@@ -103,11 +103,11 @@ function SongList({
           <div className="flex-1 w-full">
             <h3
               title={title}
-              className="text-lg line-clamp-2 font-semibold text-gray-800 dark:text-gray-100"
+              className="text-lg line-clamp-2 font-semibold text-gray-800"
             >
               {title}
             </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">{artist}</p>
+            <p className="text-sm text-gray-600 ">{artist}</p>
           </div>
 
           {/* Favourite Icon */}

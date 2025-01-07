@@ -53,44 +53,45 @@ function Upload({ handleToggleUpload, fetchSongs }) {
   };
 
   const generateRandomString = (length) => {
-    const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; // Lowercase, uppercase, and digits
-    let result = '';
+    const characters =
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; // Lowercase, uppercase, and digits
+    let result = "";
     for (let i = 0; i < length; i++) {
       const randomIndex = Math.floor(Math.random() * characters.length);
       result += characters[randomIndex];
     }
     return result;
   };
-  
+
   const submitForm = async () => {
     if (!fileUploaded || !songName || !songLyrics) {
       alert("Please upload the file and fill in all fields.");
       return;
     }
-  
+
     setUploadStatus("Submitting...");
     const formData = new FormData();
-    
+
     // Create songId based on songName
     const formattedSongName = songName.trim().replace(/\s+/g, ""); // Remove spaces from the songName
     const randomString = generateRandomString(8); // Generate 8 random characters
-  
+
     const songId = formattedSongName + "-" + randomString; // Combine formatted songName and random string
-  
+
     formData.append("songId", songId); // Use the generated songId
     formData.append("songName", songName.trim());
     formData.append("lyrics", songLyrics.trim());
     formData.append("audioFile", file);
-  
+
     try {
       setLoading(true);
       // Call the backend API to create the song and upload the file
       const response = await apiService.createSong(formData);
-  
+
       // Handle success response
       setUploadStatus("Song Uploaded Successfully");
       setLoading(false);
-  
+
       handleToggleUpload();
       fetchSongs();
     } catch (error) {
@@ -100,7 +101,6 @@ function Upload({ handleToggleUpload, fetchSongs }) {
       setLoading(false);
     }
   };
-  
 
   const resetUpload = () => {
     setFile(null);
@@ -154,13 +154,24 @@ function Upload({ handleToggleUpload, fetchSongs }) {
                 <textarea
                   id="songlyrics"
                   rows="6"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="bg-gray-50 border resize-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="Enter the song lyrics here..."
                   value={songLyrics}
                   onChange={(e) => setSongLyrics(e.target.value)}
                   required
                 ></textarea>
               </div>
+                <button
+                className={`px-4 py-2 w-full text-sm font-medium ${
+                  fileUploaded
+                    ? "text-white bg-black hover:outline outline-black outline-offset-2"
+                    : "text-gray-400 bg-gray-100 cursor-not-allowed"
+                } rounded-lg`}
+                onClick={submitForm}
+                disabled={!fileUploaded} // Disable until fileUploaded is true
+              >
+                Submit Song
+              </button>
             </form>
           </div>
           <div className="md:w-[40%]">
@@ -230,11 +241,12 @@ function Upload({ handleToggleUpload, fetchSongs }) {
               >
                 Upload
               </button>
+              {/* Reset Button */}
               <button
                 className="px-4 py-2 w-[45%] text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 hover:outline outline-gray-300 outline-offset-2"
-                onClick={submitForm}
+                onClick={resetUpload}
               >
-                Submit Song
+                Reset
               </button>
             </div>
           </div>
