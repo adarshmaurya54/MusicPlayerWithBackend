@@ -66,6 +66,9 @@ app.use(verifyToken); // Apply token verification middleware globally for all ro
 
 // Song Routes
 app.post('/song', upload.single('audioFile'), songController.createSong); // Create song with file upload
+app.get('/songById/:songId', songController.getSongById); // Get all songs with artist details
+app.put('/song/:songId', songController.updateSongById);
+app.delete('/song/:songId', songController.deleteSongById);
 
 // Artist Routes
 app.post('/artist', artistController.createArtist); // Create artist

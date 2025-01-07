@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaRegTimesCircle } from "react-icons/fa";
+import { FaArrowLeft, FaRegTimesCircle } from "react-icons/fa";
 import apiService from "../services/apiService"; // Import the apiService
 import { FaCloudUploadAlt } from "react-icons/fa";
 
@@ -52,28 +52,45 @@ function Upload({ handleToggleUpload, fetchSongs }) {
     }
   };
 
+  const generateRandomString = (length) => {
+    const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; // Lowercase, uppercase, and digits
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      result += characters[randomIndex];
+    }
+    return result;
+  };
+  
   const submitForm = async () => {
     if (!fileUploaded || !songName || !songLyrics) {
       alert("Please upload the file and fill in all fields.");
       return;
     }
-
+  
     setUploadStatus("Submitting...");
     const formData = new FormData();
-    formData.append("songId", songName.trim().replace(/\s+/g, ""));
+    
+    // Create songId based on songName
+    const formattedSongName = songName.trim().replace(/\s+/g, ""); // Remove spaces from the songName
+    const randomString = generateRandomString(8); // Generate 8 random characters
+  
+    const songId = formattedSongName + "-" + randomString; // Combine formatted songName and random string
+  
+    formData.append("songId", songId); // Use the generated songId
     formData.append("songName", songName.trim());
     formData.append("lyrics", songLyrics.trim());
     formData.append("audioFile", file);
-
+  
     try {
       setLoading(true);
       // Call the backend API to create the song and upload the file
       const response = await apiService.createSong(formData);
-
+  
       // Handle success response
       setUploadStatus("Song Uploaded Successfully");
       setLoading(false);
-
+  
       handleToggleUpload();
       fetchSongs();
     } catch (error) {
@@ -83,6 +100,7 @@ function Upload({ handleToggleUpload, fetchSongs }) {
       setLoading(false);
     }
   };
+  
 
   const resetUpload = () => {
     setFile(null);
@@ -95,14 +113,15 @@ function Upload({ handleToggleUpload, fetchSongs }) {
   };
 
   return (
-    <div className="fixed top-0 left-0 bg-black/10 flex justify-center items-center w-full h-full backdrop-blur-lg">
-      <div className="relative flex items-center justify-center w-full h-full md:w-[90%] md:h-[90%] bg-white md:rounded-3xl md:p-6 shadow-lg transition-all">
-        {/* Close Button */}
-        <FaRegTimesCircle
-          onClick={handleToggleUpload}
-          className="md:absolute fixed top-3 md:right-3 right-5 cursor-pointer text-gray-400 text-3xl"
-        />
-        <div className="md:flex items-center w-full overflow-auto md:p-0 p-10 h-full">
+    <div className="fixed z-50 top-0 left-0 bg-black/10 flex justify-center items-center w-full h-full backdrop-blur-lg">
+      <div className="relative flex items-center justify-center w-full h-full md:w-[90%] md:h-[95%] bg-white md:rounded-3xl md:p-6 shadow-lg transition-all">
+        <div className="flex text-black absolute md:top-7 md:left-7 top-5 left-4 justify-between items-center">
+          <FaArrowLeft
+            onClick={handleToggleUpload}
+            className="text-xl cursor-pointer"
+          />
+        </div>
+        <div className="md:flex items-center w-full overflow-auto md:p-0 px-10 py-14 h-full">
           <div className="form md:w-[60%]">
             <form
               className="max-w-sm mx-auto"
@@ -222,7 +241,7 @@ function Upload({ handleToggleUpload, fetchSongs }) {
         </div>
         {loading && (
           <div className="absolute top-0 left-0 h-full w-full flex items-center justify-center backdrop-blur-sm rounded-3xl">
-            <div className="bg-white w-[40%] h-[40%] border-2 rounded-3xl flex flex-col justify-center items-center">
+            <div className="bg-white transition-[width] md:w-[40%] w-[90%] h-[40%] border-2 rounded-3xl flex flex-col justify-center items-center">
               <FaCloudUploadAlt className="text-black text-9xl" />
               <span className="text-black">
                 Uploading your song please wait...

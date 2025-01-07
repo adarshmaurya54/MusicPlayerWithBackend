@@ -87,6 +87,36 @@ const apiService = {
       throw new Error("Error fetching song info: " + error.message);
     }
   },
+  // get song by songId
+  getSongById: async (songId) => {
+    try {
+      const response = await API.get(`/songById/${songId}`); // Endpoint to fetch the specific song
+      return response.data; // Return the song details
+    } catch (error) {
+      console.error("Error fetching song by ID:", error.response || error.message);
+      throw new Error("Failed to fetch song by ID");
+    }
+  },
+  // Update song by songId
+  updateSong: async (songId, updatedData) => {
+    try {
+      const response = await API.put(`/song/${songId}`, updatedData);
+      return response.data; // Return the updated song details
+    } catch (error) {
+      console.error("Error updating song:", error.response || error.message);
+      throw new Error("Failed to update song");
+    }
+  },
+  deleteSong: async (songId, filename) => {
+    try {
+      const response = await API.delete(`/song/${songId}`, { data: { filename } }); // Pass filename in the body
+      return response.data; // Return the success message
+    } catch (error) {
+      console.error("Error deleting song:", error.response || error.message);
+      throw new Error("Failed to delete song");
+    }
+  },
+  
   // Delete thumbnails by songId
   deleteThumbnails: async (songId) => {
     try {

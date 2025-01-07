@@ -52,13 +52,13 @@ const Header = ({ handleToggleUpload }) => {
   const handleLogout = () => {
     localStorage.removeItem("token"); // Clear the token
     setIsAuthenticated(false); // Set authentication state to false
-    navigate("/login"); // Redirect to login page
+    navigate("/"); // Redirect to login page
   };
 
 
 
   return (
-    <header className="sticky top-0 px-10 py-5">
+    <header className="sticky z-30 top-0 md:px-10 px-4 py-5">
       <div className="border p-5 rounded-2xl bg-white backdrop-blur-lg flex md:flex-row flex-col justify-between md:items-center gap-4">
         <h1 className="text-3xl font-bold">
           <Link to="/">PlayMusic</Link>

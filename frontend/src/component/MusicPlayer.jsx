@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FaArrowLeft, FaPlay, FaPause, FaHeart } from "react-icons/fa";
-import { CiHeart } from "react-icons/ci";
+import { FiHeart } from "react-icons/fi";
 import { HiSpeakerWave, HiSpeakerXMark } from "react-icons/hi2";
 import { PiShuffle } from "react-icons/pi";
 import { FaForward } from "react-icons/fa";
@@ -17,7 +17,7 @@ const MusicPlayer = ({
   handlePlayerClose,
   songId,
   audioUrl,
-  favourite
+  favourite,
 }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [totalDuration, setTotalDuration] = useState(0);
@@ -30,7 +30,7 @@ const MusicPlayer = ({
   const progressBarRef = useRef(null);
   useEffect(() => {
     setIsLiked(favourite);
-  },[isLoading, totalDuration]);
+  }, [isLoading, totalDuration]);
   const handleToggle = async () => {
     setIsLiked((prev) => !prev); // Toggle state
     try {
@@ -178,10 +178,10 @@ const MusicPlayer = ({
       if (audioRef.current) {
         audioRef.current.pause();
       }
-    
+
       setIsPlaying(false);
       setIsLoading(true); // Show loading state
-    
+
       if (playNextSong) {
         // Fetch the next song's data
         playNextSong()
@@ -208,8 +208,6 @@ const MusicPlayer = ({
           });
       }
     };
-    
-    
 
     if (audioRef.current) {
       audioRef.current.addEventListener("timeupdate", updateCurrentTime);
@@ -230,7 +228,7 @@ const MusicPlayer = ({
 
   return (
     <div
-      className="fixed top-0 left-0 w-full h-full backdrop-blur-md flex justify-center text-white items-center"
+      className="fixed z-50 top-0 left-0 w-full h-full backdrop-blur-md flex justify-center text-white items-center"
       onMouseMove={handleMove}
       onMouseUp={handleEnd}
       onTouchMove={handleMove}
@@ -242,7 +240,7 @@ const MusicPlayer = ({
             import.meta.env.VITE_BASEURL
           }/assets${backgroundImage})`,
         }}
-        className="transition-all duration-700 md:w-[90%] relative md:h-[98%] bg-no-repeat bg-center bg-cover overflow-auto no-scrollbar h-full w-full md:rounded-[30px]"
+        className="transition-all duration-700 md:w-[90%] relative md:h-[95%] bg-no-repeat bg-center bg-cover overflow-auto no-scrollbar h-full w-full md:rounded-[30px]"
       >
         <div className="bg-black/20 p-4 h-full overflow-auto no-scrollbar backdrop-blur-md">
           <div className="flex absolute md:top-7 md:left-7 justify-between items-center">
@@ -275,18 +273,20 @@ const MusicPlayer = ({
                   </div>
                   <div
                     onClick={handleToggle}
-                    className="w-[50px] h-full flex items-center justify-center cursor-pointer"
+                    className="h-full flex items-center justify-end cursor-pointer"
                   >
                     {isLiked ? (
                       <FaHeart className="md:text-4xl active:scale-75  transition-all text-3xl text-red-500" />
                     ) : (
-                      <CiHeart className="md:text-5xl active:scale-75  transition-all text-3xl" />
+                      <FiHeart className="md:text-4xl active:scale-75  transition-all text-3xl" />
                     )}
                   </div>
                 </div>
                 <div className="px-3 mt-5">
                   <div className="flex items-center justify-between text-sm text-gray-200">
-                    <span>{isLoading ? "Buffering..." : formatTime(currentTime)}</span>
+                    <span>
+                      {isLoading ? "Buffering..." : formatTime(currentTime)}
+                    </span>
                     <span>{formatTime(totalDuration)}</span>
                   </div>
                   <div

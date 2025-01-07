@@ -3,6 +3,102 @@ const path = require('path');
 const fs = require('fs');
 const musicMetadata = require('music-metadata');
 const sharp = require('sharp');  // For resizing image
+const { default: mongoose } = require('mongoose');
+
+// Get a specific song by songId
+exports.getSongById = async (req, res) => {
+  const { songId } = req.params; // Extract songId from the request URL
+
+  try {
+    // Find the song in the database by songId
+    const song = await Song.findOne({ songId });
+
+    // If the song doesn't exist, return a 404 response
+    if (!song) {
+      return res.status(404).json({ error: 'Song not found' });
+    }
+
+    // Respond with the song data
+    res.status(200).json({ message: 'Song fetched successfully', song });
+  } catch (error) {
+    console.error('Error fetching song:', error);
+
+    // Respond with a server error
+    res.status(500).json({ error: 'Server error while fetching song' });
+  }
+};
+// delete song by songid
+exports.deleteSongById = async (req, res) => {
+  try {
+    const { songId } = req.params; // Get songId from URL parameters
+    const { filename } = req.body; // Get filename from the request body
+
+    // Ensure the filename exists before trying to delete it
+    if (!filename) {
+      return res.status(400).json({ message: "Filename is required to delete the song file" });
+    }
+
+    // Construct the file path
+    const filePath = path.join(__dirname, '..', 'assets', 'audio', filename);
+
+    // Delete the file from the server
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.error("Error deleting file:", err);
+        return res.status(500).json({ message: "Error deleting song file from server" });
+      }
+
+      // If the file is deleted, proceed to delete the song record
+      Song.findByIdAndDelete(songId)
+        .then((song) => {
+          if (!song) {
+            return res.status(404).json({ message: "Song not found" });
+          }
+
+          // Send success response
+          res.status(200).json({ message: "Song deleted successfully" });
+        })
+        .catch((err) => {
+          console.error("Error deleting song:", err);
+          res.status(500).json({ message: "Server error while deleting song record" });
+        });
+    });
+  } catch (error) {
+    console.error("Error deleting song:", error);
+    res.status(500).json({ message: "Server error while deleting song" });
+  }
+};
+// Controller to update song details
+exports.updateSongById = async (req, res) => {
+  const { songId } = req.params; // Extract songId from URL parameters
+  const { songName, artistName, lyrics } = req.body; // Extract fields to update from the request body
+
+  try {
+    // Find the song by songId and update the fields
+    const updatedSong = await Song.findOneAndUpdate(
+      { songId }, // Find song by songId
+      {
+        $set: {
+          songName, // Update song name
+          artistName, // Update artist name
+          lyrics, // Update lyrics
+        }
+      },
+      { new: true } // Return the updated song
+    );
+
+    // If song not found
+    if (!updatedSong) {
+      return res.status(404).json({ message: 'Song not found' });
+    }
+
+    // Send the updated song details in the response
+    res.json(updatedSong);
+  } catch (error) {
+    console.error('Error updating song:', error);
+    res.status(500).json({ message: 'Failed to update song' });
+  }
+};
 
 // Create a new song
 exports.createSong = async (req, res) => {
@@ -114,7 +210,7 @@ exports.getSongWithMetadata = async (req, res) => {
         lowQualityThumbnailUrl = `/thumbnails/${filename}-low.jpg`; // URL to access low-quality thumbnail
       } else {
         // Fallback to a default thumbnail if no image is found
-        highQualityThumbnailUrl = '/thumbnails/default-thumbnail-high.jpg';
+        highQualityThumbnailUrl = '/thumbnails/default-thumbnail-low.jpg';
         lowQualityThumbnailUrl = '/thumbnails/default-thumbnail-low.jpg';
       }
 
