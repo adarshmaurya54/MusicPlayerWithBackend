@@ -24,8 +24,8 @@ const port = process.env.PORT || 8080;
 app.use(cors()); // Cross-origin resource sharing (for allowing frontend to communicate)
 app.use(express.json()); // Parses incoming JSON requests and puts the parsed data in `req.body`
 // Serve files from the 'public/assets/audio' folder
-app.use('/assets/audio', express.static(path.join(__dirname, 'assets', 'audio')));
 app.use('/assets/thumbnails', express.static(path.join(__dirname, 'assets', 'thumbnails')));
+
 
 // Set up Multer for file upload
 const storage = multer.diskStorage({
@@ -57,6 +57,46 @@ app.get('/artists', artistController.getAllArtists); // Get all artists
 app.get('/song/:filename', songController.getSongWithMetadata); // Get song by filename with metadata
 app.delete('/thumbnail/:songId', songController.deleteThumbnails); // Delete thumbnails by songId
 app.patch('/favourite/:songId', songController.toggleFavourite);
+app.get('/stream/audio/:filename', (req, res) => {
+  const filename = req.params.filename;
+  const audioFilePath = path.join(__dirname, 'assets', 'audio', `${filename}`);
+
+  if (!fs.existsSync(audioFilePath)) {
+    return res.status(404).send(audioFilePath);
+  }
+
+  const stat = fs.statSync(audioFilePath);
+  const fileSize = stat.size;
+  const range = req.headers.range;
+
+  if (range) {
+    const parts = range.replace(/bytes=/, '').split('-');
+    const start = parseInt(parts[0], 10);
+    const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+
+    if (start >= fileSize || end >= fileSize) {
+      return res.status(416).send('Requested range not satisfiable');
+    }
+
+    const chunkSize = end - start + 1;
+    const file = fs.createReadStream(audioFilePath, { start, end });
+
+    res.writeHead(206, {
+      'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+      'Accept-Ranges': 'bytes',
+      'Content-Length': chunkSize,
+      'Content-Type': 'audio/mpeg',
+    });
+
+    file.pipe(res);
+  } else {
+    res.writeHead(200, {
+      'Content-Length': fileSize,
+      'Content-Type': 'audio/mpeg',
+    });
+    fs.createReadStream(audioFilePath).pipe(res);
+  }
+});
 
 // Token Validation Route (no authentication required)
 app.post('/validate-token', authController.validateToken); // Token validation route

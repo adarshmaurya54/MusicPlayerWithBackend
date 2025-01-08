@@ -226,7 +226,7 @@ exports.getSongWithMetadata = async (req, res) => {
     // Respond with song details
     res.json({
       songName: song.songName || songName,
-      audioUrl: `/assets/audio/${filename}.mp3`, // Audio file URL
+      audioUrl: `/stream/audio/${filename}.mp3`, // Audio file URL
       artistName: song.artistName || artistName,
       favourite: song.favourite || false, // Include favourite status
       highQualityThumbnailUrl,
