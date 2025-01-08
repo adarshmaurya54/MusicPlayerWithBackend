@@ -263,7 +263,7 @@ const MusicPlayer = ({
                   <div className="flex flex-col">
                     <div
                       title={songName}
-                      className="font-extrabold line-clamp-2 md:text-4xl text-3xl"
+                      className="font-extrabold md:leading-[50px] line-clamp-2 md:text-4xl text-3xl"
                     >
                       {songName}
                     </div>

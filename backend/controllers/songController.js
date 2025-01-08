@@ -159,83 +159,82 @@ exports.getAllSongs = async (req, res) => {
 exports.getSongWithMetadata = async (req, res) => {
   const filename = req.params.filename;
   const audioFilePath = path.join(__dirname, '..', 'assets', 'audio', `${filename}.mp3`);
-  const thumbnailFolder = path.join(__dirname, '..', 'assets', 'thumbnails'); // Path to store the thumbnail images
+  const thumbnailFolder = path.join(__dirname, '..', 'assets', 'thumbnails'); // Path for thumbnail storage
 
   console.log('Audio file path:', audioFilePath);
   console.log('Thumbnail folder path:', thumbnailFolder);
 
   // Check if the audio file exists
-  if (fs.existsSync(audioFilePath)) {
-    try {
-      // Ensure the thumbnails folder exists, if not, create it
-      if (!fs.existsSync(thumbnailFolder)) {
-        console.log('Creating thumbnail folder...');
-        fs.mkdirSync(thumbnailFolder, { recursive: true });
-      }
+  if (!fs.existsSync(audioFilePath)) {
+    return res.status(404).json({ error: 'Audio file not found' });
+  }
 
-      // Extract metadata from the audio file
-      const metadata = await musicMetadata.parseFile(audioFilePath);
-
-      // Extract song title (or default to the filename)
-      const songName = metadata.common.title || filename;
-
-      // Extract artist (or default to 'Unknown Artist')
-      const artistName = metadata.common.artist || 'Unknown Artist';
-
-      // Extract thumbnail if available
-      const imageData = metadata.common.picture ? metadata.common.picture[0] : null;
-      let highQualityThumbnailUrl = null;
-      let lowQualityThumbnailUrl = null;
-
-      if (imageData) {
-        const imageBuffer = Buffer.from(imageData.data);
-
-        // Define file paths for high and low-quality thumbnails
-        const highQualityThumbnailPath = path.join(thumbnailFolder, `${filename}-high.jpg`);
-        const lowQualityThumbnailPath = path.join(thumbnailFolder, `${filename}-low.jpg`);
-
-        console.log('High-quality thumbnail path:', highQualityThumbnailPath);
-        console.log('Low-quality thumbnail path:', lowQualityThumbnailPath);
-
-        // Generate and save high-quality thumbnail (300x300)
-        await sharp(imageBuffer)
-          .resize(300, 300) // High-quality size
-          .toFile(highQualityThumbnailPath);
-        highQualityThumbnailUrl = `/thumbnails/${filename}-high.jpg`; // URL to access high-quality thumbnail
-
-        // Generate and save low-quality thumbnail (100x100)
-        await sharp(imageBuffer)
-          .resize(100, 100) // Low-quality size
-          .toFile(lowQualityThumbnailPath);
-        lowQualityThumbnailUrl = `/thumbnails/${filename}-low.jpg`; // URL to access low-quality thumbnail
-      } else {
-        // Fallback to a default thumbnail if no image is found
-        highQualityThumbnailUrl = '/thumbnails/default-thumbnail-low.jpg';
-        lowQualityThumbnailUrl = '/thumbnails/default-thumbnail-low.jpg';
-      }
-
-      // Fetch song details from the database
-      const song = await Song.findOne({ songId: filename });
-
-      if (!song) {
-        return res.status(404).json({ error: 'Song not found in the database.' });
-      }
-
-      // Respond with song details (audio URL, artist, song name, thumbnail URLs, and favourite)
-      res.json({
-        songName: song.songName || songName,
-        audioUrl: `/assets/audio/${filename}.mp3`, // URL to access the audio file
-        artistName: song.artistName || artistName,
-        favourite: song.favourite || false, // Include the favourite field
-        highQualityThumbnailUrl,
-        lowQualityThumbnailUrl,
-      });
-    } catch (error) {
-      console.error('Error extracting audio metadata:', error);
-      res.status(500).json({ error: 'Error processing the audio file.' });
+  try {
+    // Ensure the thumbnails folder exists
+    if (!fs.existsSync(thumbnailFolder)) {
+      console.log('Creating thumbnail folder...');
+      fs.mkdirSync(thumbnailFolder, { recursive: true });
     }
-  } else {
-    res.status(404).json({ error: 'Audio file not found' });
+
+    // Extract metadata from the audio file
+    const metadata = await musicMetadata.parseFile(audioFilePath);
+
+    // Extract song and artist details with fallbacks
+    const songName = metadata.common.title || filename;
+    const artistName = metadata.common.artist || 'Unknown Artist';
+
+    // Extract thumbnail data
+    const imageData = metadata.common.picture ? metadata.common.picture[0] : null;
+    let highQualityThumbnailUrl = null;
+    let lowQualityThumbnailUrl = null;
+
+    if (imageData) {
+      const imageBuffer = Buffer.from(imageData.data);
+
+      // Define file paths for high and low-quality thumbnails
+      const highQualityThumbnailPath = path.join(thumbnailFolder, `${filename}-high.jpg`);
+      const lowQualityThumbnailPath = path.join(thumbnailFolder, `${filename}-low.jpg`);
+
+      console.log('Generating high-quality thumbnail...');
+      await sharp(imageBuffer)
+        .resize({ width: 600, height: 600, fit: 'cover' }) // High-quality size (e.g., 600x600)
+        .toFormat('jpg')
+        .jpeg({ quality: 90 }) // High compression quality
+        .toFile(highQualityThumbnailPath);
+      highQualityThumbnailUrl = `/thumbnails/${filename}-high.jpg`;
+
+      console.log('Generating low-quality thumbnail...');
+      await sharp(imageBuffer)
+        .resize({ width: 100, height: 100, fit: 'cover' }) // Low-quality size (e.g., 100x100)
+        .toFormat('jpg')
+        .jpeg({ quality: 50 }) // Low compression quality
+        .toFile(lowQualityThumbnailPath);
+      lowQualityThumbnailUrl = `/thumbnails/${filename}-low.jpg`;
+    } else {
+      // Fallback to default thumbnails
+      highQualityThumbnailUrl = '/thumbnails/default-thumbnail-low.jpg';
+      lowQualityThumbnailUrl = '/thumbnails/default-thumbnail-low.jpg'; 
+    }
+
+    // Fetch song details from the database
+    const song = await Song.findOne({ songId: filename });
+
+    if (!song) {
+      return res.status(404).json({ error: 'Song not found in the database.' });
+    }
+
+    // Respond with song details
+    res.json({
+      songName: song.songName || songName,
+      audioUrl: `/assets/audio/${filename}.mp3`, // Audio file URL
+      artistName: song.artistName || artistName,
+      favourite: song.favourite || false, // Include favourite status
+      highQualityThumbnailUrl,
+      lowQualityThumbnailUrl,
+    });
+  } catch (error) {
+    console.error('Error processing the audio file:', error);
+    res.status(500).json({ error: 'Error processing the audio file.' });
   }
 };
 

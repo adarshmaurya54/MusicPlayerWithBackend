@@ -106,7 +106,7 @@ function Layout() {
           setSongClickLoading(false);
         } catch (err) {
           console.error("Failed to fetch song details:", err);
-          navigate("/");
+          navigate("/no-song-found");
           setSongClickLoading(false);
         }
       };
@@ -197,7 +197,7 @@ function Layout() {
     <>
       <div className="h-screen bg-fixed overflow-auto bg-[url(/bg.jpg)] bg-center bg-cover">
         <Header handleToggleUpload={handleToggleUpload} />
-        <div className="flex flex-col md:px-10 w-full text-white overflow-auto">
+        <div className="flex flex-col md:px-10 mb-5 w-full text-white overflow-auto">
           <div className="md:bg-white md:border p-4 pb-5 md:rounded-2xl">
             <div className="flex justify-between md:w-[500px]">
             <input

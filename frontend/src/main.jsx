@@ -1,10 +1,9 @@
 import ReactDOM from 'react-dom/client'
 import Layout from './component/Layout'
-import NotFoundPage from './component/NotFoundPage'
 import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import SongList from './component/SongList'
 import Login from './component/Login'
+import NoSongFound from './component/NoSongFound'
 
 const router = createBrowserRouter([
   {
@@ -20,8 +19,8 @@ const router = createBrowserRouter([
     element: <Layout />,
   },
   {
-    path: '*',
-    element: <NotFoundPage /> // 404 page route outside of Layout
+    path: '/no-song-found',
+    element: <NoSongFound /> // 404 page route outside of Layout
   }
 ])
 
