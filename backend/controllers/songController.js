@@ -161,9 +161,6 @@ exports.getSongWithMetadata = async (req, res) => {
   const audioFilePath = path.join(__dirname, '..', 'assets', 'audio', `${filename}.mp3`);
   const thumbnailFolder = path.join(__dirname, '..', 'assets', 'thumbnails'); // Path for thumbnail storage
 
-  console.log('Audio file path:', audioFilePath);
-  console.log('Thumbnail folder path:', thumbnailFolder);
-
   // Check if the audio file exists
   if (!fs.existsSync(audioFilePath)) {
     return res.status(404).json({ error: 'Audio file not found' });

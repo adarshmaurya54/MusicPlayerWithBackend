@@ -267,7 +267,7 @@ function Layout() {
             <div className="flex gap-5 md:flex-row flex-col items-center w-full text-black justify-between">
               <input
                 type="text"
-                className="md:w-[376px] w-full text-black border rounded-lg py-4 px-3 outline-none"
+                className="md:w-[376px] focus:outline-gray-300 focus:outline-2 outline-offset-2 w-full text-black border rounded-lg py-4 px-3 outline-none"
                 placeholder="Search what you love"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
