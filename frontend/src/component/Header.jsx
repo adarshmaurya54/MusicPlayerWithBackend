@@ -58,7 +58,7 @@ const Header = ({ handleToggleUpload }) => {
 
 
   return (
-    <header className="sticky z-30 top-0 md:px-10 px-4 py-5">
+    <header className="z-30 md:px-10 px-4 py-5">
       <div className="border p-5 rounded-2xl bg-white backdrop-blur-lg flex md:flex-row flex-col justify-between md:items-center gap-4">
         <h1 className="text-3xl font-bold">
           <Link to="/">PlayMusic</Link>

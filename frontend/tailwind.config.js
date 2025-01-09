@@ -10,26 +10,19 @@ export default {
         poppins: ['Poppins', 'sans-serif'],
         roboto: ['Roboto', 'sans-serif'], // Add Roboto font
       },
-      animation: {
-        wave: 'wave 0.6s ease-in-out infinite',
-        heartFilled: 'heartFilled 1s',
-        celebrate: 'celebrate 0.5s forwards',
-      },
       keyframes: {
-        wave: {
-          '0%, 100%': { transform: 'scaleY(1)' },
-          '50%': { transform: 'scaleY(1.5)' },
+        scroll: {
+          '0%': { transform: 'translateX(99%)' },
+          '100%': { transform: 'translateX(-100%)' },
         },
-        heartFilled: {
-          '0%': { transform: 'scale(0)' },
-          '25%': { transform: 'scale(1.2)' },
-          '50%': { transform: 'scale(1)', filter: 'brightness(1.5)' },
+        spin: {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' },
         },
-        celebrate: {
-          '0%': { transform: 'scale(0)' },
-          '50%': { opacity: '1', filter: 'brightness(1.5)' },
-          '100%': { transform: 'scale(1.4)', opacity: '0', display: 'none' },
-        },
+      },
+      animation: {
+        scroll: 'scroll 10s linear infinite',
+        'spin-slow': 'spin 4s linear infinite'
       },
     },
   },

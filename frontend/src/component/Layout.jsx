@@ -1,5 +1,5 @@
 import React, { Suspense, useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom"; // useParams for URL parameters and useNavigate for navigation
+import { useParams, useNavigate, Link } from "react-router-dom"; // useParams for URL parameters and useNavigate for navigation
 import apiService from "../services/apiService";
 
 // Lazy load the SongList component
@@ -10,6 +10,8 @@ import SongLoadingScalaton from "./SongLoadingScalaton";
 import Upload from "./Upload";
 import axios from "axios";
 import EditSong from "./EditSong";
+import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
+import SongClickLoader from "./SongClickLoader";
 
 function Layout() {
   const { songId } = useParams(); // Get songId from URL
@@ -24,8 +26,63 @@ function Layout() {
   const [editSongId, setEditSongId] = useState("");
   const [player, setPlayer] = useState(songId ? songId : 0); // To handle current song
   const [songClickLoading, setSongClickLoading] = useState(false);
-  const navigate = useNavigate();
+  const [currentPlayingSong, setCurrentPlayingSong] = useState({
+    id: 0,
+    name: "",
+    artist: "",
+  });
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Track if user is authenticated
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 9; // Number of songs per page
+  //pagination logic
+  // Filtered songs based on search query
+  const filteredSongs = songList.filter(
+    (song) =>
+      song.songName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      song.artistName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // Total pages based on the filtered list
+  const totalPages = Math.ceil(filteredSongs.length / itemsPerPage);
+
+  // Calculate page numbers to display
+  const pageNumbers = [];
+  for (let i = 1; i <= totalPages; i++) {
+    pageNumbers.push(i);
+  }
+
+  // Function to handle next page logic
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage((prev) => prev + 1);
+    }
+  };
+
+  // Function to handle previous page logic
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prev) => prev - 1);
+    }
+  };
+
+  // Calculate which page numbers to show (pagination range)
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedSongs = filteredSongs.slice(startIndex, endIndex);
+
+  // Function to handle direct page click
+  const handlePageClick = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // Update current page based on filtered search results
+  useEffect(() => {
+    // Reset to the first page if the search query changes
+    setCurrentPage(1);
+  }, [searchQuery]);
+  //pagination logic ended
+
+  const navigate = useNavigate();
 
   // authentication code to check whether admin is login or not
   // Get the base URL from the environment variables
@@ -99,7 +156,6 @@ function Layout() {
     if (songId) {
       const fetchSongDetails = async () => {
         try {
-          setSongClickLoading(true);
           const response = await apiService.getSongInfo(songId);
           setSongDetail(response);
           setHiddenPlayer(false); // Make the player visible when a song is selected
@@ -116,7 +172,13 @@ function Layout() {
   }, [songId]);
 
   // Handle song click to navigate and set player state
-  const handlePlayer = (id) => {
+  const handlePlayer = (id, title, artist) => {
+    setSongClickLoading(true);
+    setCurrentPlayingSong({
+      id,
+      name: title,
+      artist,
+    });
     setPlayer(id);
     navigate(`/${id}`);
   };
@@ -172,7 +234,12 @@ function Layout() {
   };
 
   // Function to close the player
-  const handlePlayerClose = async () => {
+  const handlePlayerClose = async (id, name, artist) => {
+    setCurrentPlayingSong({
+      id,
+      name,
+      artist,
+    });
     setHiddenPlayer(true); // Hide the player
     navigate(`/`); // Navigate to home page
     try {
@@ -190,8 +257,6 @@ function Layout() {
   if (error) {
     return <div>{error}</div>;
   }
-  console.log(songList);
-  
 
   return (
     <>
@@ -199,42 +264,114 @@ function Layout() {
         <Header handleToggleUpload={handleToggleUpload} />
         <div className="flex flex-col md:px-10 mb-5 w-full text-white overflow-auto">
           <div className="md:bg-white md:border p-4 pb-5 md:rounded-2xl">
-            <div className="flex justify-between md:w-[500px]">
-            <input
-              type="text"
-              className="md:w-[75%] w-full text-black border rounded-lg py-4 px-3 outline-none"
-              placeholder="Search what you love"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
+            <div className="flex gap-5 md:flex-row flex-col items-center w-full text-black justify-between">
+              <input
+                type="text"
+                className="md:w-[376px] w-full text-black border rounded-lg py-4 px-3 outline-none"
+                placeholder="Search what you love"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              {currentPlayingSong.id !== 0 && (
+                <Link
+                  className="w-full overflow-hidden rounded-xl md:w-[220px] inline-block"
+                  to={`/${currentPlayingSong.id}`}
+                  style={{
+                    backgroundImage: songDetail
+                      ? `url(${import.meta.env.VITE_BASEURL}/assets${
+                          songDetail?.lowQualityThumbnailUrl
+                        })`
+                      : "url(/player.png)", // Fallback to player.png if songDetail is not available
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
+                >
+                  <div className="flex bg-black/25 backdrop-blur-md w-full ps-2 pe-5 py-2 items-center gap-3">
+                    <img
+                      src={
+                        songDetail
+                          ? `${import.meta.env.VITE_BASEURL}/assets${
+                              songDetail?.lowQualityThumbnailUrl
+                            }`
+                          : "/player.png"
+                      }
+                      alt="player.png"
+                      className="w-14 h-14 rounded-full object-cover animate-spin-slow"
+                    />
+                    <div className="flex flex-col md:w-full w-fit">
+                      <p className="font-bold text-xl text-white">
+                        Now Playing
+                      </p>
+                      <marquee
+                        className="text-xs text-gray-200"
+                        behavior=""
+                        scrollamount="2"
+                      >
+                        {currentPlayingSong.name} • {currentPlayingSong.artist}
+                      </marquee>
+                    </div>
+                  </div>
+                </Link>
+              )}
+            </div>
+            {/* Song List */}
             <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-5">
               <Suspense fallback={<SongLoadingScalaton />}>
-                {songList
-                  .filter(
-                    (song) =>
-                      song.songName
-                        .toLowerCase()
-                        .includes(searchQuery.toLowerCase()) ||
-                      song.artistName
-                        .toLowerCase()
-                        .includes(searchQuery.toLowerCase())
-                  )
-                  .map((song) => (
-                    <SongList
-                      key={song.songId}
-                      handlePlayer={() => handlePlayer(song.songId)} // Handle song click and navigate
-                      id={song._id}
-                      songId={song.songId}
-                      title={song.songName}
-                      artist={song.artistName}
-                      favourite={song.favourite}
-                      isAdminLogin={isAuthenticated}
-                      handleToggleEdit={handleToggleEdit}
-                      fetchSongs={fetchSongs}
-                    />
-                  ))}
+                {paginatedSongs.map((song) => (
+                  <SongList
+                    key={song.songId}
+                    handlePlayer={() =>
+                      handlePlayer(song.songId, song.songName, song.artistName)
+                    }
+                    id={song._id}
+                    songId={song.songId}
+                    title={song.songName}
+                    artist={song.artistName}
+                    favourite={song.favourite}
+                    isAdminLogin={isAuthenticated}
+                    handleToggleEdit={handleToggleEdit}
+                    fetchSongs={fetchSongs}
+                  />
+                ))}
               </Suspense>
+            </div>
+
+            {/* Pagination Controls */}
+            <div className="flex justify-center mt-4 items-center">
+              {/* Previous Button */}
+              <button
+                onClick={handlePrevPage}
+                disabled={currentPage === 1}
+                className="rounded-lg md:text-black"
+              >
+                <FaAngleLeft className="text-2xl" />
+              </button>
+
+              {/* Page Numbers */}
+              <div className="flex space-x-2 px-4 py-2">
+                {pageNumbers.map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => handlePageClick(page)}
+                    className={`px-4 py-2 border rounded-lg ${
+                      page === currentPage
+                        ? "md:bg-black bg-white md:text-white text-black"
+                        : "md:text-black text-white "
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+              </div>
+
+              {/* Next Button */}
+              <button
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+                className="md:text-black"
+              >
+                <FaAngleRight className="text-2xl" />
+              </button>
             </div>
           </div>
 
@@ -269,6 +406,7 @@ function Layout() {
               songId={editSongId}
             />
           )}
+          {songClickLoading && <SongClickLoader />}
         </div>
       </div>
     </>
