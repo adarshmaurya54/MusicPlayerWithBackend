@@ -378,8 +378,8 @@ exports.toggleFavourite = async (req, res) => {
   console.log(songId);
 
   try {
-    // Find the song by songId
-    const song = await Song.findOne({ songId });
+    // Find the song by audioFile (which is equivalent to songId in your case)
+    const song = await Song.findOne({ audioFile: songId });
 
     if (!song) {
       return res.status(404).json({ message: "Song not found" });
@@ -400,3 +400,4 @@ exports.toggleFavourite = async (req, res) => {
     res.status(500).json({ error: "Failed to toggle favourite status" });
   }
 };
+

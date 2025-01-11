@@ -242,8 +242,8 @@ const MusicPlayer = ({
         }}
         className="transition-all duration-700 md:w-[90%] relative md:h-[95%] bg-no-repeat bg-center bg-cover overflow-auto no-scrollbar h-full w-full md:rounded-[30px]"
       >
-        <div className="bg-black/50 p-4 h-full overflow-auto no-scrollbar backdrop-blur-md">
-          <div className="flex absolute md:top-7 md:left-7 justify-between items-center">
+        <div className="bg-white md:bg-black/50 md:backdrop-blur-lg p-4 h-full overflow-auto no-scrollbar">
+          <div className="flex text-black md:text-white absolute md:top-7 md:left-7 justify-between items-center">
             <FaArrowLeft
               onClick={() => handlePlayerClose(songId, songName, artistName)}
               className="text-xl cursor-pointer"
@@ -254,12 +254,12 @@ const MusicPlayer = ({
               <img
                 src={`${import.meta.env.VITE_BASEURL}/assets${image}`}
                 alt="Album Art"
-                className="transition-all w-[80%]  rounded-3xl"
+                className="transition-all shadow-2xl w-[80%] rounded-3xl"
               />
             </div>
             <div className="transition-all flex items-center justify-center md:w-[60%]">
               <div className="md:rounded-3xl w-full md:p-2 md:border-2 md:border-white/20">
-                <div className="flex items-center px-3 justify-between">
+                <div className="flex items-center text-black md:text-white px-3 justify-between">
                   <div className="flex flex-col">
                     <div
                       title={songName}
@@ -267,7 +267,7 @@ const MusicPlayer = ({
                     >
                       {songName}
                     </div>
-                    <span className="md:text-xl capitalize font-thin text-lg text-gray-100">
+                    <span className="md:text-xl capitalize font-thin text-lg text-gray-700 md:text-gray-100">
                       {artistName}
                     </span>
                   </div>
@@ -283,14 +283,14 @@ const MusicPlayer = ({
                   </div>
                 </div>
                 <div className="px-3 mt-5">
-                  <div className="flex items-center justify-between text-sm text-gray-200">
+                  <div className="flex items-center justify-between text-sm text-gray-600 md:text-gray-200">
                     <span>
                       {isLoading ? "Buffering..." : formatTime(currentTime)}
                     </span>
                     <span>{formatTime(totalDuration)}</span>
                   </div>
                   <div
-                    className="relative w-full h-2 bg-white/20 rounded-lg mt-2 cursor-pointer"
+                    className="relative w-full h-2 md:bg-white/20 bg-black/10 rounded-lg mt-2 cursor-pointer"
                     ref={progressBarRef}
                     onMouseDown={handleStart}
                     onTouchStart={handleStart}
@@ -300,7 +300,7 @@ const MusicPlayer = ({
                       style={{ width: `${progressPercentage}%` }}
                     ></div>
                     <div
-                      className="absolute top-1/2 transform -translate-y-1/2 bg-white w-4 h-4 rounded-full cursor-pointer"
+                      className="absolute top-1/2 transform -translate-y-1/2 md:bg-white bg-orange-500 w-4 h-4 rounded-full cursor-pointer"
                       style={{ left: `${progressPercentage - 1}%` }}
                       draggable="false"
                     ></div>
@@ -308,16 +308,16 @@ const MusicPlayer = ({
                 </div>
                 <div className="flex items-center justify-center gap-5 mt-5">
                   <button className="p-3 rounded-full">
-                    <PiShuffle className="text-white md:text-lg text-3xl" />
+                    <PiShuffle className="md:text-white text-black md:text-lg text-3xl" />
                   </button>
                   <button
                     onClick={() => handlePrevSong(songId)}
                     className="p-3 rounded-full"
                   >
-                    <FaBackward className="text-white text-3xl" />
+                    <FaBackward className="md:text-white text-black text-3xl" />
                   </button>
                   <button
-                    className="p-3 bg-orange-500 rounded-full"
+                    className="p-3 md:bg-orange-500 bg-black rounded-full"
                     onClick={togglePlay}
                   >
                     {isPlaying ? (
@@ -330,13 +330,13 @@ const MusicPlayer = ({
                     onClick={() => handleNextSong(songId)}
                     className={`p-3 rounded-full ${songId}`}
                   >
-                    <FaForward className="text-white text-3xl" />
+                    <FaForward className="md:text-white text-black text-3xl" />
                   </button>
                   <button onClick={toggleMute} className="p-3 rounded-full">
                     {isMuted ? (
-                      <HiSpeakerXMark className="text-white md:text-lg text-3xl" />
+                      <HiSpeakerXMark className="md:text-white text-black md:text-lg text-3xl" />
                     ) : (
-                      <HiSpeakerWave className="text-white md:text-lg text-3xl" />
+                      <HiSpeakerWave className="md:text-white text-black md:text-lg text-3xl" />
                     )}
                   </button>
                 </div>
