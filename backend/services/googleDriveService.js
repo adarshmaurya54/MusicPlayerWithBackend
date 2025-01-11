@@ -6,14 +6,15 @@ let jwtClient;
 
 // Function to authorize the Google API
 async function authorize() {
-    
-  jwtClient = new google.auth.JWT(
-    process.env.CLIENT_EMAIL,  // Ensure this is set in your environment variables
-    null,
-    process.env.PRIVATE_KEY,  // Ensure this is set in your environment variables
-    SCOPE
-  );
-  await jwtClient.authorize();
+  if (!jwtClient) {
+    jwtClient = new google.auth.JWT(
+      process.env.CLIENT_EMAIL, // Ensure this is set in your environment variables
+      null,
+      process.env.PRIVATE_KEY, // Ensure this is set in your environment variables
+      SCOPE
+    );
+    await jwtClient.authorize();
+  }
   return jwtClient;
 }
 
@@ -34,11 +35,11 @@ async function uploadFileToDrive(
   // Default MIME type is set here
   try {
     // Authorize and get Google Drive service
-    await authorize();  // Make sure we have authorized the client
+    await authorize(); // Make sure we have authorized the client
     const drive = await getDriveService(); // Get the drive service
 
     const fileMetadata = {
-      name: fileName,  // File name on Google Drive
+      name: fileName, // File name on Google Drive
       parents: [process.env.FOLDER_ID], // Folder ID on Google Drive
       mimeType: mimeType, // MIME type (defaults to 'audio/mpeg')
     };

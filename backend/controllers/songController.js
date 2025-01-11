@@ -36,44 +36,31 @@ exports.getSongById = async (req, res) => {
 exports.deleteSongById = async (req, res) => {
   try {
     const { songId } = req.params; // Get songId from URL parameters
-    const { filename } = req.body; // Get filename from the request body
 
-    // Ensure the filename exists before trying to delete it
-    if (!filename) {
-      return res
-        .status(400)
-        .json({ message: "Filename is required to delete the song file" });
+    // Fetch the song record from the database
+    const song = await Song.findById(songId);
+    if (!song) {
+      return res.status(404).json({ message: "Song not found" });
     }
 
-    // Construct the file path
-    const filePath = path.join(__dirname, "..", "assets", "audio", filename);
+    const fileId = song.audioFile;  // The fileId of the song stored in Google Drive
 
-    // Delete the file from the server
-    fs.unlink(filePath, (err) => {
-      if (err) {
-        console.error("Error deleting file:", err);
-        return res
-          .status(500)
-          .json({ message: "Error deleting song file from server" });
-      }
+    // Authorize with Google Drive
+    const authClient = await authorize();
+    const drive = google.drive({ version: "v3", auth: authClient });
 
-      // If the file is deleted, proceed to delete the song record
-      Song.findByIdAndDelete(songId)
-        .then((song) => {
-          if (!song) {
-            return res.status(404).json({ message: "Song not found" });
-          }
+    // Delete the file from Google Drive
+    try {
+      await drive.files.delete({ fileId });  // Google Drive API delete call
+      console.log("File deleted from Google Drive");
 
-          // Send success response
-          res.status(200).json({ message: "Song deleted successfully" });
-        })
-        .catch((err) => {
-          console.error("Error deleting song:", err);
-          res
-            .status(500)
-            .json({ message: "Server error while deleting song record" });
-        });
-    });
+      // Now delete the song record from the database
+      await Song.findByIdAndDelete(songId);
+      res.status(200).json({ message: "Song deleted successfully from both database and Google Drive" });
+    } catch (driveError) {
+      console.error("Error deleting file from Google Drive:", driveError);
+      return res.status(500).json({ message: "Error deleting file from Google Drive" });
+    }
   } catch (error) {
     console.error("Error deleting song:", error);
     res.status(500).json({ message: "Server error while deleting song" });
@@ -165,12 +152,18 @@ exports.createSong = async (req, res) => {
 exports.getAllSongs = async (req, res) => {
   try {
     const songs = await Song.find().sort({ songName: 1 }); // Assuming you want to populate artist details
-    res.status(200).json(songs);
+    
+    if (songs.length === 0) {
+      return res.status(200).json([]); // Return an empty array instead of 404
+    }
+
+    res.status(200).json(songs); // Return songs if found
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to retrieve songs" });
   }
 };
+
 
 exports.getSongWithMetadata = async (req, res) => {
   const fileId = req.params.fileId; // Google Drive file ID

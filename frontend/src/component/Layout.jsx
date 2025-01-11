@@ -26,6 +26,7 @@ function Layout() {
   const [editSongId, setEditSongId] = useState("");
   const [player, setPlayer] = useState(songId ? songId : 0); // To handle current song
   const [songClickLoading, setSongClickLoading] = useState(false);
+  const [isNoSongsFound, setIsNoSongsFound] = useState(false);
   const [currentPlayingSong, setCurrentPlayingSong] = useState({
     id: 0,
     name: "",
@@ -134,15 +135,22 @@ function Layout() {
     setEditSongId(songId);
   };
 
-  // Fetch songs from the backend
   const fetchSongs = async () => {
     try {
       setLoading(true);
       const songs = await apiService.getSongs();
-      setSongList(songs);
+      if (songs.length === 0) {
+        setIsNoSongsFound(true); // Set state to true if no songs are found
+      } else {
+        setIsNoSongsFound(false); // Set state to false if songs are found
+      }
+
+      setSongList(songs); // If no songs, songs will be an empty array
       setLoading(false);
     } catch (err) {
       setError("Failed to fetch songs");
+      setSongList([]); // Ensure the song list is cleared in case of error
+      setIsNoSongsFound(false); // In case of error, assume songs are available
       setLoading(false);
     }
   };
@@ -154,10 +162,12 @@ function Layout() {
   // Fetch song details based on songId from URL
   useEffect(() => {
     if (songId) {
+      setSongClickLoading(true);
       const fetchSongDetails = async () => {
         try {
           const response = await apiService.getSongInfo(songId);
           setSongDetail(response);
+          setSongClickLoading(false);
           setHiddenPlayer(false); // Make the player visible when a song is selected
           setSongClickLoading(false);
         } catch (err) {
@@ -171,10 +181,9 @@ function Layout() {
     }
   }, [songId]);
   console.log(player);
-  
 
   // Handle song click to navigate and set player state
-  const handlePlayer = (id, title, artist, audioFile) => {
+  const handlePlayer = (id, title, artist) => {
     setSongClickLoading(true);
     setCurrentPlayingSong({
       id,
@@ -182,7 +191,7 @@ function Layout() {
       artist,
     });
     setPlayer(id);
-    navigate(`/${audioFile}`);
+    navigate(`/${id}`);
   };
 
   // Play the next song
@@ -200,6 +209,7 @@ function Layout() {
 
   // Play the previous song
   const playPrevSong = async () => {
+    setSongClickLoading(true);
     try {
       await apiService.deleteThumbnails(player);
       // console.log(`Thumbnails for songId ${player} deleted successfully.`);
@@ -216,23 +226,23 @@ function Layout() {
   // Get the next song ID
   const getNextSongId = (currentSongId) => {
     const currentIndex = songList.findIndex(
-      (song) => song.songId === currentSongId
+      (song) => song.audioFile === currentSongId
     );
     if (currentIndex === -1) return null;
 
     const nextIndex = (currentIndex + 1) % songList.length;
-    return songList[nextIndex].songId;
+    return songList[nextIndex].audioFile;
   };
 
   // Get the previous song ID
   const getPrevSongId = (currentSongId) => {
     const currentIndex = songList.findIndex(
-      (song) => song.songId === currentSongId
+      (song) => song.audioFile === currentSongId
     );
     if (currentIndex === -1) return null;
 
     const prevIndex = (currentIndex - 1 + songList.length) % songList.length;
-    return songList[prevIndex].songId;
+    return songList[prevIndex].audioFile;
   };
 
   // Function to close the player
@@ -266,115 +276,130 @@ function Layout() {
         <Header handleToggleUpload={handleToggleUpload} />
         <div className="flex flex-col md:px-10 mb-5 w-full text-white overflow-auto">
           <div className="md:bg-white md:border p-4 pb-5 md:rounded-2xl">
-            <div className="flex gap-5 md:flex-row flex-col items-center w-full text-black justify-between">
-              <input
-                type="text"
-                className="md:w-[376px] focus:outline-gray-300 focus:outline-2 outline-offset-2 w-full text-black border rounded-lg py-4 px-3 outline-none"
-                placeholder="Search what you love"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              {currentPlayingSong.id !== 0 && (
-                <Link
-                  className="w-full overflow-hidden rounded-xl md:w-[220px] inline-block"
-                  to={`/${currentPlayingSong.id}`}
-                  style={{
-                    backgroundImage: songDetail
-                      ? `url(${import.meta.env.VITE_BASEURL}/assets${
-                          songDetail?.lowQualityThumbnailUrl
-                        })`
-                      : "url(/player.png)", // Fallback to player.png if songDetail is not available
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                  }}
-                >
-                  <div className="flex bg-black/25 backdrop-blur-md w-full ps-2 pe-5 py-2 items-center gap-3">
-                    <img
-                      src={
-                        songDetail
-                          ? `${import.meta.env.VITE_BASEURL}/assets${
-                              songDetail?.lowQualityThumbnailUrl
-                            }`
-                          : "/player.png"
-                      }
-                      alt="player.png"
-                      className="w-14 h-14 rounded-full object-cover animate-spin-slow"
-                    />
-                    <div className="flex flex-col md:w-full w-fit">
-                      <p className="font-bold text-xl text-white">
-                        Now Playing
-                      </p>
-                      <marquee
-                        className="text-xs text-gray-200"
-                        behavior=""
-                        scrollamount="2"
-                      >
-                        {currentPlayingSong.name} • {currentPlayingSong.artist}
-                      </marquee>
-                    </div>
-                  </div>
-                </Link>
-              )}
-            </div>
-            {/* Song List */}
-            <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-5">
-              <Suspense fallback={<SongLoadingScalaton />}>
-                {paginatedSongs.map((song) => (
-                  <SongList
-                    key={song.songId}
-                    handlePlayer={() =>
-                      handlePlayer(song.songId, song.songName, song.artistName, song.audioFile)
-                    }
-                    id={song._id}
-                    songId={song.songId}
-                    title={song.songName}
-                    artist={song.artistName}
-                    favourite={song.favourite}
-                    isAdminLogin={isAuthenticated}
-                    handleToggleEdit={handleToggleEdit}
-                    fetchSongs={fetchSongs}
+            {!isNoSongsFound && (
+              <>
+                <div className="flex gap-5 md:flex-row flex-col items-center w-full text-black justify-between">
+                  <input
+                    type="text"
+                    className="md:w-[376px] focus:outline-gray-300 focus:outline-2 outline-offset-2 w-full text-black border rounded-lg py-4 px-3 outline-none"
+                    placeholder="Search what you love"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                   />
-                ))}
-              </Suspense>
-            </div>
+                  {currentPlayingSong.id !== 0 && (
+                    <Link
+                      className="w-full overflow-hidden rounded-xl md:w-[220px] inline-block"
+                      to={`/${currentPlayingSong.id}`}
+                      style={{
+                        backgroundImage: songDetail
+                          ? `url(${import.meta.env.VITE_BASEURL}/assets${
+                              songDetail?.lowQualityThumbnailUrl
+                            })`
+                          : "url(/player.png)", // Fallback to player.png if songDetail is not available
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                      }}
+                    >
+                      <div className="flex bg-black/25 backdrop-blur-md w-full ps-2 pe-5 py-2 items-center gap-3">
+                        <img
+                          src={
+                            songDetail
+                              ? `${import.meta.env.VITE_BASEURL}/assets${
+                                  songDetail?.lowQualityThumbnailUrl
+                                }`
+                              : "/player.png"
+                          }
+                          alt="player.png"
+                          className="w-14 h-14 rounded-full object-cover animate-spin-slow"
+                        />
+                        <div className="flex flex-col md:w-full w-fit">
+                          <p className="font-bold text-xl text-white">
+                            Now Playing
+                          </p>
+                          <marquee
+                            className="text-xs text-gray-200"
+                            behavior=""
+                            scrollamount="2"
+                          >
+                            {currentPlayingSong.name} •{" "}
+                            {currentPlayingSong.artist}
+                          </marquee>
+                        </div>
+                      </div>
+                    </Link>
+                  )}
+                </div>
+                {/* Song List */}
 
-            {/* Pagination Controls */}
-            <div className="flex justify-center mt-4 items-center">
-              {/* Previous Button */}
-              <button
-                onClick={handlePrevPage}
-                disabled={currentPage === 1}
-                className="rounded-lg md:text-black"
-              >
-                <FaAngleLeft className="text-2xl" />
-              </button>
+                <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-5">
+                  <Suspense fallback={<SongLoadingScalaton />}>
+                    {paginatedSongs.map((song) => (
+                      <SongList
+                        key={song.songId}
+                        handlePlayer={() =>
+                          handlePlayer(
+                            song.audioFile,
+                            song.songName,
+                            song.artistName
+                          )
+                        }
+                        id={song._id}
+                        songId={song.songId}
+                        title={song.songName}
+                        artist={song.artistName}
+                        favourite={song.favourite}
+                        isAdminLogin={isAuthenticated}
+                        handleToggleEdit={handleToggleEdit}
+                        fetchSongs={fetchSongs}
+                      />
+                    ))}
+                  </Suspense>
+                </div>
 
-              {/* Page Numbers */}
-              <div className="flex space-x-2 px-4 py-2">
-                {pageNumbers.map((page) => (
+                {/* Pagination Controls */}
+                <div className="flex justify-center mt-4 items-center">
+                  {/* Previous Button */}
                   <button
-                    key={page}
-                    onClick={() => handlePageClick(page)}
-                    className={`px-4 py-2 border rounded-lg ${
-                      page === currentPage
-                        ? "md:bg-black bg-white md:text-white text-black"
-                        : "md:text-black text-white "
-                    }`}
+                    onClick={handlePrevPage}
+                    disabled={currentPage === 1}
+                    className="rounded-lg md:text-black"
                   >
-                    {page}
+                    <FaAngleLeft className="text-2xl" />
                   </button>
-                ))}
-              </div>
 
-              {/* Next Button */}
-              <button
-                onClick={handleNextPage}
-                disabled={currentPage === totalPages}
-                className="md:text-black"
-              >
-                <FaAngleRight className="text-2xl" />
-              </button>
+                  {/* Page Numbers */}
+                  <div className="flex space-x-2 px-4 py-2">
+                    {pageNumbers.map((page) => (
+                      <button
+                        key={page}
+                        onClick={() => handlePageClick(page)}
+                        className={`px-4 py-2 border rounded-lg ${
+                          page === currentPage
+                            ? "md:bg-black bg-white md:text-white text-black"
+                            : "md:text-black text-white "
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Next Button */}
+                  <button
+                    onClick={handleNextPage}
+                    disabled={currentPage === totalPages}
+                    className="md:text-black"
+                  >
+                    <FaAngleRight className="text-2xl" />
+                  </button>
+                </div>
+              </>
+            )}
+          {isNoSongsFound && (
+            <div className="bg-white mt-8 rounded-xl text-center p-5 text-3xl text-black">
+              Song Database is empty :(
             </div>
+          )}
           </div>
 
           {/* Conditionally render MusicPlayer if songDetail is available */}
