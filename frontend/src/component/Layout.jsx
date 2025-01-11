@@ -170,9 +170,11 @@ function Layout() {
       fetchSongDetails();
     }
   }, [songId]);
+  console.log(player);
+  
 
   // Handle song click to navigate and set player state
-  const handlePlayer = (id, title, artist) => {
+  const handlePlayer = (id, title, artist, audioFile) => {
     setSongClickLoading(true);
     setCurrentPlayingSong({
       id,
@@ -180,7 +182,7 @@ function Layout() {
       artist,
     });
     setPlayer(id);
-    navigate(`/${id}`);
+    navigate(`/${audioFile}`);
   };
 
   // Play the next song
@@ -321,7 +323,7 @@ function Layout() {
                   <SongList
                     key={song.songId}
                     handlePlayer={() =>
-                      handlePlayer(song.songId, song.songName, song.artistName)
+                      handlePlayer(song.songId, song.songName, song.artistName, song.audioFile)
                     }
                     id={song._id}
                     songId={song.songId}

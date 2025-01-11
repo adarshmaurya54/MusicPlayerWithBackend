@@ -1,9 +1,14 @@
-const Song = require('../models/songModel');
-const path = require('path');
-const fs = require('fs');
-const musicMetadata = require('music-metadata');
-const sharp = require('sharp');  // For resizing image
-const { default: mongoose } = require('mongoose');
+const Song = require("../models/songModel");
+const path = require("path");
+const fs = require("fs");
+const musicMetadata = require("music-metadata");
+const sharp = require("sharp"); // For resizing image
+const { default: mongoose } = require("mongoose");
+const {
+  uploadFileToDrive,
+  authorize,
+} = require("../services/googleDriveService");
+const { google } = require("googleapis");
 
 // Get a specific song by songId
 exports.getSongById = async (req, res) => {
@@ -15,16 +20,16 @@ exports.getSongById = async (req, res) => {
 
     // If the song doesn't exist, return a 404 response
     if (!song) {
-      return res.status(404).json({ error: 'Song not found' });
+      return res.status(404).json({ error: "Song not found" });
     }
 
     // Respond with the song data
-    res.status(200).json({ message: 'Song fetched successfully', song });
+    res.status(200).json({ message: "Song fetched successfully", song });
   } catch (error) {
-    console.error('Error fetching song:', error);
+    console.error("Error fetching song:", error);
 
     // Respond with a server error
-    res.status(500).json({ error: 'Server error while fetching song' });
+    res.status(500).json({ error: "Server error while fetching song" });
   }
 };
 // delete song by songid
@@ -35,17 +40,21 @@ exports.deleteSongById = async (req, res) => {
 
     // Ensure the filename exists before trying to delete it
     if (!filename) {
-      return res.status(400).json({ message: "Filename is required to delete the song file" });
+      return res
+        .status(400)
+        .json({ message: "Filename is required to delete the song file" });
     }
 
     // Construct the file path
-    const filePath = path.join(__dirname, '..', 'assets', 'audio', filename);
+    const filePath = path.join(__dirname, "..", "assets", "audio", filename);
 
     // Delete the file from the server
     fs.unlink(filePath, (err) => {
       if (err) {
         console.error("Error deleting file:", err);
-        return res.status(500).json({ message: "Error deleting song file from server" });
+        return res
+          .status(500)
+          .json({ message: "Error deleting song file from server" });
       }
 
       // If the file is deleted, proceed to delete the song record
@@ -60,7 +69,9 @@ exports.deleteSongById = async (req, res) => {
         })
         .catch((err) => {
           console.error("Error deleting song:", err);
-          res.status(500).json({ message: "Server error while deleting song record" });
+          res
+            .status(500)
+            .json({ message: "Server error while deleting song record" });
         });
     });
   } catch (error) {
@@ -82,68 +93,73 @@ exports.updateSongById = async (req, res) => {
           songName, // Update song name
           artistName, // Update artist name
           lyrics, // Update lyrics
-        }
+        },
       },
       { new: true } // Return the updated song
     );
 
     // If song not found
     if (!updatedSong) {
-      return res.status(404).json({ message: 'Song not found' });
+      return res.status(404).json({ message: "Song not found" });
     }
 
     // Send the updated song details in the response
     res.json(updatedSong);
   } catch (error) {
-    console.error('Error updating song:', error);
-    res.status(500).json({ message: 'Failed to update song' });
+    console.error("Error updating song:", error);
+    res.status(500).json({ message: "Failed to update song" });
   }
 };
 
-// Create a new song
 exports.createSong = async (req, res) => {
-  const { songId, songName, poster, lyrics } = req.body;
+  const { songName, lyrics } = req.body;
+  const audioFile = req.file; // The uploaded file from the request
 
-  // Ensure the file is uploaded
-  if (!req.file) {
-    return res.status(400).json({ error: 'Audio file is required' });
+  if (!audioFile) {
+    return res.status(400).json({ message: "Audio file is required" });
   }
-
-  const audioFilePath = path.join(__dirname, '..', 'assets', 'audio', req.file.filename);
 
   try {
-    // Extract metadata from the audio file
-    const metadata = await musicMetadata.parseFile(audioFilePath);
+    // Read metadata from the audio file
+    const metadata = await musicMetadata.parseBuffer(audioFile.buffer);
 
-    // Extract artist name from metadata (default to 'Unknown Artist' if not available)
-    const artistName = metadata.common.artist || 'Unknown Artist';
+    // Extract song name from metadata (prefer metadata if available)
+    const extractedSongName = metadata.common.title || songName; // If title is not found, use songName from req.body
+    const extractedArtistName = metadata.common.artist || "Unknown Artist"; // Default to 'Unknown Artist' if no artist is found
 
-    // Extract song title from metadata (default to the provided songName or 'Untitled')
-    const extractedSongName = metadata.common.title || songName || 'Untitled';
+    // Construct the file name and MIME type based on metadata
+    const fileName = `${extractedSongName}.mp3`; // Save file as songName.mp3
 
-    // Create a new Song document
-    const song = new Song({
-      songId: songId.replace(/\s+/g, ''), // Remove spaces from songId
-      songName: extractedSongName,       // Use extracted song name
-      artistName,                        // Use extracted artist name
-      poster,
+    // Authorize with Google Drive
+    await authorize();
+
+    // Upload the audio file to Google Drive
+    const googleDriveFileData = await uploadFileToDrive(
+      audioFile.buffer,
+      fileName
+    );
+
+    // Save the song metadata (Google Drive file ID, etc.) in MongoDB
+    const newSong = new Song({
+      songId: extractedSongName.replace(/\s+/g, ""), // Remove spaces for songId
+      songName: extractedSongName,
+      artistName: extractedArtistName,
       lyrics,
-      audioFile: req.file.filename,      // Save the audio file name (e.g., songId.mp3)
+      audioFile: googleDriveFileData.id, // Save the Google Drive file ID
     });
 
-    // Save the song to the database
-    await song.save();
+    await newSong.save();
 
-    // Respond with success
-    res.status(201).json({ message: 'Song uploaded successfully', song });
+    res
+      .status(201)
+      .json({ message: "Song created and uploaded to Google Drive", newSong });
   } catch (error) {
-    console.error('Error processing audio metadata:', error);
-
-    // Respond with error
-    res.status(500).json({ error: 'Server error while processing audio metadata' });
+    console.error("Error creating song:", error);
+    res
+      .status(500)
+      .json({ message: "Error creating song and uploading to Google Drive" });
   }
 };
-
 
 // Get all songs with artist details
 exports.getAllSongs = async (req, res) => {
@@ -152,97 +168,184 @@ exports.getAllSongs = async (req, res) => {
     res.status(200).json(songs);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Failed to retrieve songs' });
+    res.status(500).json({ error: "Failed to retrieve songs" });
   }
 };
 
 exports.getSongWithMetadata = async (req, res) => {
-  const filename = req.params.filename;
-  const audioFilePath = path.join(__dirname, '..', 'assets', 'audio', `${filename}.mp3`);
-  const thumbnailFolder = path.join(__dirname, '..', 'assets', 'thumbnails'); // Path for thumbnail storage
+  const fileId = req.params.fileId; // Google Drive file ID
+  const thumbnailFolder = path.join(__dirname, "..", "assets", "thumbnails"); // Path for thumbnail storage
 
-  // Check if the audio file exists
-  if (!fs.existsSync(audioFilePath)) {
-    return res.status(404).json({ error: 'Audio file not found' });
+  // Ensure the thumbnails folder exists
+  if (!fs.existsSync(thumbnailFolder)) {
+    console.log("Creating thumbnail folder...");
+    fs.mkdirSync(thumbnailFolder, { recursive: true });
   }
 
   try {
-    // Ensure the thumbnails folder exists
-    if (!fs.existsSync(thumbnailFolder)) {
-      console.log('Creating thumbnail folder...');
-      fs.mkdirSync(thumbnailFolder, { recursive: true });
+    // Authorize and get Google Drive service
+    const authClient = await authorize();
+    const drive = google.drive({ version: "v3", auth: authClient });
+
+    // Get file metadata from Google Drive
+    const fileMetadata = await drive.files.get({
+      fileId,
+      fields: "name, mimeType, size",
+    });
+    const fileName = fileMetadata.data.name;
+    const mimeType = fileMetadata.data.mimeType;
+
+    if (!fileName || mimeType !== "audio/mpeg") {
+      return res
+        .status(404)
+        .json({ error: "Audio file not found or invalid format" });
     }
 
-    // Extract metadata from the audio file
-    const metadata = await musicMetadata.parseFile(audioFilePath);
+    // Extract song and artist details from metadata (using Google Drive API)
+    const audioFile = await drive.files.get(
+      { fileId, alt: "media" },
+      { responseType: "stream" }
+    );
 
-    // Extract song and artist details with fallbacks
-    const songName = metadata.common.title || filename;
-    const artistName = metadata.common.artist || 'Unknown Artist';
+    const audioBuffer = [];
+    audioFile.data.on("data", (chunk) => audioBuffer.push(chunk));
+    audioFile.data.on("end", async () => {
+      const buffer = Buffer.concat(audioBuffer);
 
-    // Extract thumbnail data
-    const imageData = metadata.common.picture ? metadata.common.picture[0] : null;
-    let highQualityThumbnailUrl = null;
-    let lowQualityThumbnailUrl = null;
+      try {
+        // Extract metadata using music-metadata
+        const metadata = await musicMetadata.parseBuffer(buffer);
 
-    if (imageData) {
-      const imageBuffer = Buffer.from(imageData.data);
+        // Extract song and artist details with fallbacks
+        const songName = metadata.common.title || fileName;
+        const artistName = metadata.common.artist || "Unknown Artist";
 
-      // Define file paths for high and low-quality thumbnails
-      const highQualityThumbnailPath = path.join(thumbnailFolder, `${filename}-high.jpg`);
-      const lowQualityThumbnailPath = path.join(thumbnailFolder, `${filename}-low.jpg`);
+        // Extract thumbnail data if available
+        const imageData = metadata.common.picture
+          ? metadata.common.picture[0]
+          : null;
+        let highQualityThumbnailUrl = null;
+        let lowQualityThumbnailUrl = null;
 
-      console.log('Generating high-quality thumbnail...');
-      await sharp(imageBuffer)
-        .resize({ width: 600, height: 600, fit: 'cover' }) // High-quality size (e.g., 600x600)
-        .toFormat('jpg')
-        .jpeg({ quality: 90 }) // High compression quality
-        .toFile(highQualityThumbnailPath);
-      highQualityThumbnailUrl = `/thumbnails/${filename}-high.jpg`;
+        if (imageData) {
+          const imageBuffer = Buffer.from(imageData.data);
 
-      console.log('Generating low-quality thumbnail...');
-      await sharp(imageBuffer)
-        .resize({ width: 100, height: 100, fit: 'cover' }) // Low-quality size (e.g., 100x100)
-        .toFormat('jpg')
-        .jpeg({ quality: 50 }) // Low compression quality
-        .toFile(lowQualityThumbnailPath);
-      lowQualityThumbnailUrl = `/thumbnails/${filename}-low.jpg`;
-    } else {
-      // Fallback to default thumbnails
-      highQualityThumbnailUrl = '/thumbnails/default-thumbnail-low.jpg';
-      lowQualityThumbnailUrl = '/thumbnails/default-thumbnail-low.jpg'; 
-    }
+          // Define file paths for high and low-quality thumbnails
+          const highQualityThumbnailPath = path.join(
+            thumbnailFolder,
+            `${fileId}-high.jpg`
+          );
+          const lowQualityThumbnailPath = path.join(
+            thumbnailFolder,
+            `${fileId}-low.jpg`
+          );
 
-    // Fetch song details from the database
-    const song = await Song.findOne({ songId: filename });
+          console.log("Generating high-quality thumbnail...");
+          await sharp(imageBuffer)
+            .resize({ width: 600, height: 600, fit: "cover" }) // High-quality size (e.g., 600x600)
+            .toFormat("jpg")
+            .jpeg({ quality: 90 }) // High compression quality
+            .toFile(highQualityThumbnailPath);
+          highQualityThumbnailUrl = `/thumbnails/${fileId}-high.jpg`;
 
-    if (!song) {
-      return res.status(404).json({ error: 'Song not found in the database.' });
-    }
+          console.log("Generating low-quality thumbnail...");
+          await sharp(imageBuffer)
+            .resize({ width: 100, height: 100, fit: "cover" }) // Low-quality size (e.g., 100x100)
+            .toFormat("jpg")
+            .jpeg({ quality: 50 }) // Low compression quality
+            .toFile(lowQualityThumbnailPath);
+          lowQualityThumbnailUrl = `/thumbnails/${fileId}-low.jpg`;
+        } else {
+          // Fallback to default thumbnails
+          highQualityThumbnailUrl = "/thumbnails/default-thumbnail-low.jpg";
+          lowQualityThumbnailUrl = "/thumbnails/default-thumbnail-low.jpg";
+        }
 
-    // Respond with song details
-    res.json({
-      songName: song.songName || songName,
-      audioUrl: `/stream/audio/${filename}.mp3`, // Audio file URL
-      artistName: song.artistName || artistName,
-      favourite: song.favourite || false, // Include favourite status
-      highQualityThumbnailUrl,
-      lowQualityThumbnailUrl,
+        // Fetch song details from the database (optional)
+        const song = await Song.findOne({ audioFile: fileId });
+
+        if (!song) {
+          return res
+            .status(404)
+            .json({ error: "Song not found in the database." });
+        }
+
+        // Respond with song details and thumbnail URLs
+        res.json({
+          songName: song.songName || songName,
+          audioUrl: `/stream/${fileId}`, // Stream URL for Google Drive file ID
+          artistName: song.artistName || artistName,
+          favourite: song.favourite || false, // Include favourite status
+          highQualityThumbnailUrl,
+          lowQualityThumbnailUrl,
+        });
+      } catch (error) {
+        console.error("Error extracting metadata:", error);
+        res
+          .status(500)
+          .json({ error: "Error extracting metadata from the audio file." });
+      }
     });
   } catch (error) {
-    console.error('Error processing the audio file:', error);
-    res.status(500).json({ error: 'Error processing the audio file.' });
+    console.error("Error fetching song metadata:", error);
+    res
+      .status(500)
+      .json({ error: "Error fetching song metadata from Google Drive." });
+  }
+};
+// Stream audio from Google Drive starting from a specific time
+exports.streamAudio = async (req, res) => {
+  const fileId = req.params.fileId;
+
+  try {
+    const authClient = await authorize();
+    const drive = google.drive({ version: "v3", auth: authClient });
+
+    // Get file metadata to determine file size
+    const fileMetadata = await drive.files.get({
+      fileId,
+      fields: "size, mimeType",
+    });
+    const fileSize = parseInt(fileMetadata.data.size, 10);
+    const mimeType = fileMetadata.data.mimeType || "audio/mpeg";
+
+    // Set headers for full file response
+    res.set({
+      "Content-Type": mimeType,
+      "Content-Length": fileSize,
+      "Accept-Ranges": "bytes",
+    });
+
+    // Stream the entire file from Google Drive
+    const fileStream = await drive.files.get(
+      {
+        fileId,
+        alt: "media",
+      },
+      { responseType: "stream" }
+    );
+
+    fileStream.data.pipe(res);
+  } catch (error) {
+    console.error("Error details:", error.response?.data || error.message);
+    res.status(error.response?.status || 500).send("Error fetching file.");
   }
 };
 
-
 exports.deleteThumbnails = async (req, res) => {
   const songId = req.params.songId; // Get songId from the route parameter
-  const thumbnailFolder = path.join(__dirname, '..', 'assets', 'thumbnails'); // Path to the thumbnails folder
+  console.log("songid",  songId);
+  const thumbnailFolder = path.join(__dirname, "..", "assets", "thumbnails"); // Path to the thumbnails folder
 
   // Define file paths for high and low-quality thumbnails
-  const highQualityThumbnailPath = path.join(thumbnailFolder, `${songId}-high.jpg`);
-  const lowQualityThumbnailPath = path.join(thumbnailFolder, `${songId}-low.jpg`);
+  const highQualityThumbnailPath = path.join(
+    thumbnailFolder,
+    `${songId}-high.jpg`
+  );
+  const lowQualityThumbnailPath = path.join(
+    thumbnailFolder,
+    `${songId}-low.jpg`
+  );
 
   try {
     // Check and delete the high-quality thumbnail if it exists
@@ -250,7 +353,9 @@ exports.deleteThumbnails = async (req, res) => {
       fs.unlinkSync(highQualityThumbnailPath);
       console.log(`Deleted: ${highQualityThumbnailPath}`);
     } else {
-      console.log(`High-quality thumbnail not found: ${highQualityThumbnailPath}`);
+      console.log(
+        `High-quality thumbnail not found: ${highQualityThumbnailPath}`
+      );
     }
 
     // Check and delete the low-quality thumbnail if it exists
@@ -258,31 +363,33 @@ exports.deleteThumbnails = async (req, res) => {
       fs.unlinkSync(lowQualityThumbnailPath);
       console.log(`Deleted: ${lowQualityThumbnailPath}`);
     } else {
-      console.log(`Low-quality thumbnail not found: ${lowQualityThumbnailPath}`);
+      console.log(
+        `Low-quality thumbnail not found: ${lowQualityThumbnailPath}`
+      );
     }
 
     // Respond with success
     res.json({
-      message: 'Thumbnails deleted successfully',
+      message: "Thumbnails deleted successfully",
       songId,
     });
   } catch (error) {
-    console.error('Error deleting thumbnails:', error);
-    res.status(500).json({ error: 'Error deleting thumbnails' });
+    console.error("Error deleting thumbnails:", error);
+    res.status(500).json({ error: "Error deleting thumbnails" });
   }
 };
 
 // Controller function to toggle the favourite field
 exports.toggleFavourite = async (req, res) => {
   const { songId } = req.params; // Get the songId from the URL parameter
-console.log(songId);
+  console.log(songId);
 
   try {
     // Find the song by songId
     const song = await Song.findOne({ songId });
 
     if (!song) {
-      return res.status(404).json({ message: 'Song not found' });
+      return res.status(404).json({ message: "Song not found" });
     }
 
     // Toggle the favourite field
@@ -296,7 +403,7 @@ console.log(songId);
       favourite: song.favourite,
     });
   } catch (error) {
-    console.error('Error toggling favourite status:', error);
-    res.status(500).json({ error: 'Failed to toggle favourite status' });
+    console.error("Error toggling favourite status:", error);
+    res.status(500).json({ error: "Failed to toggle favourite status" });
   }
 };

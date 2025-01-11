@@ -5,6 +5,7 @@ const connectDB = require("./config/db");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const { initializeAuth, getDriveService } = require("./services/googleDriveService");
 
 // Import controllers
 const artistController = require('./controllers/artistController');
@@ -27,23 +28,10 @@ app.use(express.json()); // Parses incoming JSON requests and puts the parsed da
 app.use('/assets/thumbnails', express.static(path.join(__dirname, 'assets', 'thumbnails')));
 
 
-// Set up Multer for file upload
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = path.join(__dirname, 'assets', 'audio');
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true }); // Create the folder if it doesn't exist
-    }
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    const songId = req.body.songId.replace(/\s+/g, ''); // Remove spaces for songId
-    cb(null, `${songId}.mp3`); // Save the audio file with songId.mp3
-  }
-});
 
-// Multer upload middleware
-const upload = multer({ storage });
+// Set up Multer for in-memory file upload (no local storage)
+const storage = multer.memoryStorage();  // Store file in memory, not on disk
+const upload = multer({ storage });  // Use multer middleware to handle file upload
 
 // Test Route
 app.get("/", (req, res) => {
@@ -54,49 +42,10 @@ app.get("/", (req, res) => {
 app.post('/login', authController.login);  // Login route
 app.get('/songs', songController.getAllSongs); // Get all songs with artist details
 app.get('/artists', artistController.getAllArtists); // Get all artists
-app.get('/song/:filename', songController.getSongWithMetadata); // Get song by filename with metadata
+app.get('/song/:fileId', songController.getSongWithMetadata); // Get song by filename with metadata
 app.delete('/thumbnail/:songId', songController.deleteThumbnails); // Delete thumbnails by songId
 app.patch('/favourite/:songId', songController.toggleFavourite);
-app.get('/stream/audio/:filename', (req, res) => {
-  const filename = req.params.filename;
-  const audioFilePath = path.join(__dirname, 'assets', 'audio', `${filename}`);
-
-  if (!fs.existsSync(audioFilePath)) {
-    return res.status(404).send(audioFilePath);
-  }
-
-  const stat = fs.statSync(audioFilePath);
-  const fileSize = stat.size;
-  const range = req.headers.range;
-
-  if (range) {
-    const parts = range.replace(/bytes=/, '').split('-');
-    const start = parseInt(parts[0], 10);
-    const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
-
-    if (start >= fileSize || end >= fileSize) {
-      return res.status(416).send('Requested range not satisfiable');
-    }
-
-    const chunkSize = end - start + 1;
-    const file = fs.createReadStream(audioFilePath, { start, end });
-
-    res.writeHead(206, {
-      'Content-Range': `bytes ${start}-${end}/${fileSize}`,
-      'Accept-Ranges': 'bytes',
-      'Content-Length': chunkSize,
-      'Content-Type': 'audio/mpeg',
-    });
-
-    file.pipe(res);
-  } else {
-    res.writeHead(200, {
-      'Content-Length': fileSize,
-      'Content-Type': 'audio/mpeg',
-    });
-    fs.createReadStream(audioFilePath).pipe(res);
-  }
-});
+app.get('/stream/:fileId', songController.streamAudio);
 
 // Token Validation Route (no authentication required)
 app.post('/validate-token', authController.validateToken); // Token validation route
