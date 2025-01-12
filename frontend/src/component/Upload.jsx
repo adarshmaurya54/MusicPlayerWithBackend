@@ -130,14 +130,14 @@ function Upload({ handleToggleUpload, fetchSongs }) {
               <div className="mb-5">
                 <label
                   htmlFor="songname"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  className="block mb-2 text-sm font-medium text-gray-900 "
                 >
                   Song Name
                 </label>
                 <input
                   type="text"
                   id="songname"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5    "
                   placeholder="Ex. O Mere Dil Ke Chain"
                   value={songName}
                   onChange={(e) => setSongName(e.target.value)}
@@ -147,14 +147,14 @@ function Upload({ handleToggleUpload, fetchSongs }) {
               <div className="mb-5">
                 <label
                   htmlFor="songlyrics"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  className="block mb-2 text-sm font-medium text-gray-900 "
                 >
                   Song Lyrics
                 </label>
                 <textarea
                   id="songlyrics"
                   rows="6"
-                  className="bg-gray-50 border resize-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="bg-gray-50 border resize-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5    "
                   placeholder="Enter the song lyrics here..."
                   value={songLyrics}
                   onChange={(e) => setSongLyrics(e.target.value)}

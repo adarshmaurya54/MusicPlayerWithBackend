@@ -18,6 +18,9 @@ const MusicPlayer = ({
   songId,
   audioUrl,
   favourite,
+  audioRef,
+  SetisPlayingOrNotForLayout,
+  setProgressPercentage
 }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [totalDuration, setTotalDuration] = useState(0);
@@ -26,14 +29,14 @@ const MusicPlayer = ({
   const [isMuted, setIsMuted] = useState(false);
   const [isLoading, setIsLoading] = useState(true); // New state for loading
   const [isLiked, setIsLiked] = useState(favourite); // State to track toggle
-  const audioRef = useRef(null);
+
   const progressBarRef = useRef(null);
   useEffect(() => {
     setIsLiked(favourite);
   }, [isLoading, totalDuration]);
   useEffect(() => {
     setIsLoading(true);
-  }, [songId])
+  }, [songId]);
   const handleToggle = async () => {
     setIsLiked((prev) => !prev); // Toggle state
     try {
@@ -45,6 +48,13 @@ const MusicPlayer = ({
   };
 
   const progressPercentage = (currentTime / totalDuration) * 100;
+
+  useEffect(() => {
+    if (totalDuration > 0) {
+      setProgressPercentage((currentTime / totalDuration) * 100);
+    }
+  }, [currentTime, totalDuration]); // This will run every time currentTime or totalDuration changes
+
 
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
@@ -97,6 +107,7 @@ const MusicPlayer = ({
     if (isPlaying) {
       audioRef.current.pause();
       setIsPlaying(false);
+      SetisPlayingOrNotForLayout(false);
     } else {
       setIsLoading(true); // Set loading state
       audioRef.current.play().catch((error) => {
@@ -107,7 +118,6 @@ const MusicPlayer = ({
   };
 
   useEffect(() => {
-    
     setIsLoading(true);
     const updateCurrentTime = () => {
       setCurrentTime(audioRef.current?.currentTime);
@@ -117,10 +127,12 @@ const MusicPlayer = ({
       audioRef.current.addEventListener("timeupdate", updateCurrentTime);
       audioRef.current.addEventListener("playing", () => {
         setIsPlaying(true);
+        SetisPlayingOrNotForLayout(true);
         setIsLoading(false); // Remove loading state when playing starts
       });
       audioRef.current.addEventListener("ended", () => {
         setIsPlaying(false);
+        SetisPlayingOrNotForLayout(false);
       });
     }
 
@@ -188,6 +200,7 @@ const MusicPlayer = ({
       }
 
       setIsPlaying(false);
+      SetisPlayingOrNotForLayout(false);
       setIsLoading(true); // Set loading state when the song ends
 
       if (playNextSong) {
@@ -196,7 +209,7 @@ const MusicPlayer = ({
           .then((newSongData) => {
             // Update the audio source with the new song's URL
             if (audioRef.current) {
-              audioRef.current.src = newSongData.audioUrl;
+              audioRef.current.src = newSongData?.audioUrl;
               setTotalDuration(0); // Reset total duration for the new song
               setCurrentTime(0); // Reset current time
             }
@@ -227,6 +240,7 @@ const MusicPlayer = ({
       audioRef.current.addEventListener("timeupdate", updateCurrentTime);
       audioRef.current.addEventListener("playing", () => {
         setIsPlaying(true);
+        SetisPlayingOrNotForLayout(true);
         setIsLoading(false); // Remove loading state when playback starts
       });
       audioRef.current.addEventListener("ended", handleAudioEnded);
@@ -256,7 +270,7 @@ const MusicPlayer = ({
         }}
         className="transition-all duration-700 md:w-[90%] relative md:h-[95%] bg-no-repeat bg-center bg-cover overflow-auto no-scrollbar h-full w-full md:rounded-[30px]"
       >
-        <div className="bg-white md:bg-black/50 md:backdrop-blur-lg p-4 h-full overflow-auto no-scrollbar">
+        <div className="bg-white md:bg-black/20 md:backdrop-blur-lg p-4 h-full overflow-auto no-scrollbar">
           <div className="flex text-black md:text-white absolute md:top-7 md:left-7 justify-between items-center">
             <FaArrowLeft
               onClick={() => handlePlayerClose(songId, songName, artistName)}
@@ -268,7 +282,7 @@ const MusicPlayer = ({
               <img
                 src={`${import.meta.env.VITE_BASEURL}/assets${image}`}
                 alt="Album Art"
-                className="transition-all shadow-2xl w-[80%] rounded-3xl"
+                className="transition-all shadow-2xl md:w-[80%] w-[270px] rounded-3xl"
               />
             </div>
             <div className="transition-all flex items-center justify-center md:w-[60%]">
@@ -331,13 +345,13 @@ const MusicPlayer = ({
                     <FaBackward className="md:text-white text-black text-3xl" />
                   </button>
                   <button
-                    className="p-3 md:bg-orange-500 bg-black rounded-full"
+                    className="md:p-3 p-4 flex items-center justify-center md:bg-orange-500 bg-black rounded-full"
                     onClick={togglePlay}
                   >
                     {isPlaying ? (
-                      <FaPause className="text-white text-lg" />
+                      <FaPause className="text-white text-2xl md:text-lg" />
                     ) : (
-                      <FaPlay className="text-white text-lg" />
+                      <FaPlay className="text-white text-2xl md:text-lg" />
                     )}
                   </button>
                   <button
@@ -358,21 +372,6 @@ const MusicPlayer = ({
             </div>
           </div>
         </div>
-        {/* {isLoading && (
-          <div className="absolute top-0 left-0 w-full h-full backdrop-blur-lg flex items-center justify-center">
-            <div className="flex items-center  rounded-3xl w-[300px] h-[200px] justify-center space-x-1">
-              {[...Array(5)].map((_, index) => (
-                <div
-                  key={index}
-                  className="bg-indigo-500 h-8 w-2 animate-wave rounded-full"
-                  style={{
-                    animationDelay: `${index * 0.2}s`,
-                  }}
-                ></div>
-              ))}
-            </div>
-          </div>
-        )} */}
       </div>
       <audio
         ref={audioRef}

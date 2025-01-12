@@ -151,10 +151,19 @@ exports.createSong = async (req, res) => {
 // Get all songs with artist details
 exports.getAllSongs = async (req, res) => {
   try {
-    const songs = await Song.find().sort({ songName: 1 }); // Assuming you want to populate artist details
+    const { favourite } = req.query; // Get 'favourite' flag from the query parameters
     
+    let filter = {}; // Default filter to get all songs
+
+    // If 'favourite' flag is provided and is true, filter songs with favourite set to true
+    if (favourite === 'true') {
+      filter = { favourite: true };
+    }
+
+    const songs = await Song.find(filter).sort({ songName: 1 }); // Apply filter and sort by songName
+
     if (songs.length === 0) {
-      return res.status(200).json([]); // Return an empty array instead of 404
+      return res.status(200).json([]); // Return an empty array if no songs found
     }
 
     res.status(200).json(songs); // Return songs if found
@@ -163,6 +172,7 @@ exports.getAllSongs = async (req, res) => {
     res.status(500).json({ error: "Failed to retrieve songs" });
   }
 };
+
 
 
 exports.getSongWithMetadata = async (req, res) => {
@@ -400,4 +410,3 @@ exports.toggleFavourite = async (req, res) => {
     res.status(500).json({ error: "Failed to toggle favourite status" });
   }
 };
-

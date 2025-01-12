@@ -1,4 +1,4 @@
-import React, { Suspense, useState, useEffect } from "react";
+import React, { Suspense, useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom"; // useParams for URL parameters and useNavigate for navigation
 import apiService from "../services/apiService";
 
@@ -34,6 +34,21 @@ function Layout() {
   });
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Track if user is authenticated
   const [currentPage, setCurrentPage] = useState(1);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef(null);
+  const [progressPercentage, setProgressPercentage] = useState(0);
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  const togglePlayPause = () => {
+    if (audioRef.current.paused) {
+      audioRef.current.play();
+      setIsPlaying(true);
+    } else {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    }
+  };
+
   const itemsPerPage = 9; // Number of songs per page
   //pagination logic
   // Filtered songs based on search query
@@ -138,7 +153,7 @@ function Layout() {
   const fetchSongs = async () => {
     try {
       setLoading(true);
-      const songs = await apiService.getSongs();
+      const songs = await apiService.getSongs(isFavorite);
       if (songs.length === 0) {
         setIsNoSongsFound(true); // Set state to true if no songs are found
       } else {
@@ -157,7 +172,7 @@ function Layout() {
 
   useEffect(() => {
     fetchSongs();
-  }, []);
+  }, [isFavorite]);
 
   // Fetch song details based on songId from URL
   useEffect(() => {
@@ -171,7 +186,6 @@ function Layout() {
     };
 
     const deleteThumbnails = async () => {
-      console.log(player);
       try {
         await apiService.deleteThumbnails(player);
         // console.log(`Thumbnails for songId ${player} deleted successfully.`);
@@ -296,21 +310,48 @@ function Layout() {
       <div className="h-screen bg-fixed overflow-auto bg-[url(/bg.jpg)] bg-center bg-cover">
         <Header handleToggleUpload={handleToggleUpload} />
         <div className="flex flex-col md:px-10 mb-5 w-full text-white overflow-auto">
-          <div className="md:bg-white md:border p-4 pb-5 md:rounded-2xl">
+          <div className="md:bg-white md:border p-4 pb-5 md:rounded-3xl">
+            {/* <div className="relative inline-block mb-4 border w-full md:w-fit py-3 px-2 rounded-lg bg-white">
+
+              <div
+                className="p-2 text-xs text-black bg-gray-200 border border-gray-300 rounded-xl cursor-pointer w-fit"
+                onClick={() => setIsOpen(!isOpen)} // Toggle dropdown
+              >
+                <span className="flex items-center gap-2">{selectedOption}  <FaAngleDown/></span>
+              </div>
+
+              
+              {isOpen && (
+                <ul className="absolute text-xs left-2 mt-1 overflow-hidden bg-gray-300 text-black border border-gray-300 rounded-lg shadow-lg w-fit z-10">
+                  {options.map((option) => (
+                    <li
+                      key={option}
+                      className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                      onClick={() => handleSelect(option)} // Handle option selection
+                    >
+                      {option}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div> */}
+
             {!isNoSongsFound && (
               <>
                 <div className="flex gap-5 md:flex-row flex-col items-center w-full text-black justify-between">
                   <input
                     type="text"
-                    className="md:w-[376px] focus:outline-gray-300 focus:outline-2 outline-offset-2 w-full text-black border rounded-lg py-4 px-3 outline-none"
-                    placeholder="Search what you love"
+                    className="md:w-[376px] w-full text-black border rounded-xl py-4 px-5 outline-none
+             bg-white shadow-lg focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50
+             transition-all duration-300 ease-in-out hover:shadow-xl placeholder:text-gray-500"
+                    placeholder="Search for music that matches your vibe..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
+
                   {currentPlayingSong.id !== 0 && (
                     <div
-                      className="w-full overflow-hidden rounded-xl md:w-[220px] inline-block cursor-pointer"
-                      onClick={() => setHiddenPlayer((prevState) => !prevState)} // Toggle visibility
+                      className="w-full flex items-center overflow-hidden rounded-xl md:w-[290px]"
                       style={{
                         backgroundImage: songDetail
                           ? `url(${import.meta.env.VITE_BASEURL}/assets${
@@ -321,40 +362,98 @@ function Layout() {
                         backgroundPosition: "center",
                       }}
                     >
-                      <div className="flex bg-black/25 backdrop-blur-md w-full ps-2 pe-5 py-2 items-center gap-3">
-                        <img
-                          src={
-                            songDetail
-                              ? `${import.meta.env.VITE_BASEURL}/assets${
-                                  songDetail?.lowQualityThumbnailUrl
-                                }`
-                              : "/player.png"
-                          }
-                          alt="player.png"
-                          className="w-14 h-14 rounded-full object-cover animate-spin-slow"
-                        />
-                        <div className="flex flex-col md:w-full w-fit">
-                          <p className="font-bold text-xl text-white">
-                            Now Playing
-                          </p>
-                          <marquee
-                            className="text-xs text-gray-200"
-                            behavior=""
-                            scrollamount="2"
-                          >
-                            {currentPlayingSong.name} •{" "}
-                            {currentPlayingSong.artist}
-                          </marquee>
+                      <div className="flex bg-black/25 w-full items-center justify-between backdrop-blur-md ">
+                        <div className="flex ps-2 pe-5 py-2 items-center gap-3">
+                          <img
+                            onClick={() =>
+                              setHiddenPlayer((prevState) => !prevState)
+                            } // Toggle visibility
+                            src={
+                              songDetail
+                                ? `${import.meta.env.VITE_BASEURL}/assets${
+                                    songDetail?.lowQualityThumbnailUrl
+                                  }`
+                                : "/player.png"
+                            }
+                            alt="player.png"
+                            className={`w-14 h-14 rounded-full cursor-pointer object-cover ${
+                              isPlaying ? "animate-spin-slow" : "" // Spin only when isPlaying is true
+                            }`}
+                          />
+                          <div className="flex flex-col md:w-full w-fit">
+                            <p className="font-bold text-xl text-white">
+                              {isPlaying ? "Now Playing" : "Paused"}
+                            </p>
+                            <marquee
+                              className="text-xs text-gray-200"
+                              behavior=""
+                              scrollamount="2"
+                            >
+                              {isPlaying
+                                ? `${currentPlayingSong.name} • ${currentPlayingSong.artist}`
+                                : "Click play to start the music!"}
+                            </marquee>
+                            <div className="relative w-full mt-3 bg-white/20 rounded-full h-1">
+                              <div
+                                className="absolute top-0 left-0 h-full bg-white rounded-full transition-all duration-300 ease-out"
+                                style={{ width: `${progressPercentage}%` }}
+                              ></div>
+                              <div
+                                className="absolute transition-all duration-700 top-1/2 transform -translate-y-1/2 bg-white w-3 h-3 rounded-full shadow-md"
+                                style={{
+                                  left: `${progressPercentage - 1}%`,
+                                  transition: "left 0.3s ease",
+                                }}
+                              ></div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          className="flex items-center justify-center me-4 cursor-pointer"
+                          onClick={togglePlayPause} // Trigger play/pause on click
+                        >
+                          {isPlaying ? (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="white"
+                              viewBox="0 0 24 24"
+                              className="w-8 h-8"
+                            >
+                              <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />{" "}
+                              {/* Pause Icon */}
+                            </svg>
+                          ) : (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="white"
+                              viewBox="0 0 24 24"
+                              className="w-8 h-8"
+                            >
+                              <path d="M8 5v14l11-7z" /> {/* Play Icon */}
+                            </svg>
+                          )}
                         </div>
                       </div>
                     </div>
                   )}
                 </div>
+                <div className="mt-5 md:p-0 p-3 rounded-xl bg-white">
+                  <label className="inline-flex text-xs items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      checked={isFavorite}
+                      onChange={(e) => setIsFavorite(e.target.checked)}
+                      className="hidden peer"
+                    />
+                    <span className="w-3 h-3 border-2 border-gray-800 rounded-md relative cursor-pointer peer-checked:bg-gray-800 peer-checked:after:content-[''] peer-checked:after:absolute peer-checked:after:top-1/2 peer-checked:after:left-1/2 peer-checked:after:transform peer-checked:after:-translate-x-1/2 peer-checked:after:-translate-y-1/2 peer-checked:after:w-1.5 peer-checked:after:h-1.5 peer-checked:after:bg-white peer-checked:after:rounded"></span>
+                    <span className="text-gray-800 ">Favourite</span>
+                  </label>
+                </div>
                 {/* Song List */}
 
                 {filteredSongs.length === 0 ? (
                   // Message when no songs match the search query
-                  <div className="flex flex-col items-center justify-center h-32">
+                  <div className="flex flex-col bg-white md:mt-0 mt-5 rounded-xl items-center justify-center h-32">
                     <p className="text-gray-500 text-lg font-semibold">
                       No songs match your search.
                     </p>
@@ -451,8 +550,17 @@ function Layout() {
 
           {/* Conditionally render MusicPlayer if songDetail is available */}
           {songDetail && (
-            <div className={`${hiddenPlayer ? "hidden" : "block"}`}>
+            <div
+              className={`transition-all ${
+                hiddenPlayer
+                  ? "opacity-0 z-[-1] duration-500"
+                  : "opacity-100 z-10 duration-500"
+              } 
+            ${hiddenPlayer ? "sm:block md:hidden" : "sm:block md:block"} 
+            `}
+            >
               <MusicPlayer
+                audioRef={audioRef}
                 songId={player}
                 handlePlayerClose={handlePlayerClose}
                 songName={songDetail.songName}
@@ -463,6 +571,8 @@ function Layout() {
                 favourite={songDetail.favourite}
                 playNextSong={playNextSong}
                 playPrevSong={playPrevSong}
+                SetisPlayingOrNotForLayout={setIsPlaying}
+                setProgressPercentage={setProgressPercentage}
               />
             </div>
           )}

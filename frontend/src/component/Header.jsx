@@ -69,7 +69,7 @@ const Header = ({ handleToggleUpload }) => {
         </h1>
         <nav>
           {isAuthenticated ? (
-            <div className="flex items-center gap-4">
+            <div className="flex text-xs md:text-base items-center gap-4">
               <button
                 onClick={handleToggleUpload}
                 className="bg-black md:w-auto w-[50%] flex items-center gap-2 text-white px-4 py-2 rounded-xl"
