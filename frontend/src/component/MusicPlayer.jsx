@@ -31,6 +31,9 @@ const MusicPlayer = ({
   useEffect(() => {
     setIsLiked(favourite);
   }, [isLoading, totalDuration]);
+  useEffect(() => {
+    setIsLoading(true);
+  }, [songId])
   const handleToggle = async () => {
     setIsLiked((prev) => !prev); // Toggle state
     try {
@@ -104,8 +107,10 @@ const MusicPlayer = ({
   };
 
   useEffect(() => {
+    
+    setIsLoading(true);
     const updateCurrentTime = () => {
-      setCurrentTime(audioRef.current.currentTime);
+      setCurrentTime(audioRef.current?.currentTime);
     };
 
     if (audioRef.current) {
@@ -114,7 +119,9 @@ const MusicPlayer = ({
         setIsPlaying(true);
         setIsLoading(false); // Remove loading state when playing starts
       });
-      audioRef.current.addEventListener("ended", () => setIsPlaying(false));
+      audioRef.current.addEventListener("ended", () => {
+        setIsPlaying(false);
+      });
     }
 
     return () => {
@@ -139,12 +146,13 @@ const MusicPlayer = ({
   };
 
   const handleNextSong = (songId) => {
+    setIsLoading(true);
     if (playNextSong) {
       playNextSong(songId);
       if (audioRef.current) {
         setIsLoading(true); // Show loading state
         setTimeout(() => {
-          audioRef.current.play().catch((error) => {
+          audioRef.current?.play().catch((error) => {
             console.error("Error playing the next song:", error);
           });
         }, 300); // Slight delay for smooth transition
@@ -153,6 +161,7 @@ const MusicPlayer = ({
   };
 
   const handlePrevSong = (songId) => {
+    setIsLoading(true);
     if (playPrevSong) {
       playPrevSong(songId);
       if (audioRef.current) {
@@ -174,13 +183,12 @@ const MusicPlayer = ({
     };
 
     const handleAudioEnded = () => {
-      // Pause the current song
       if (audioRef.current) {
-        audioRef.current.pause();
+        audioRef.current.pause(); // Pause the current song
       }
 
       setIsPlaying(false);
-      setIsLoading(true); // Show loading state
+      setIsLoading(true); // Set loading state when the song ends
 
       if (playNextSong) {
         // Fetch the next song's data
@@ -192,20 +200,26 @@ const MusicPlayer = ({
               setTotalDuration(0); // Reset total duration for the new song
               setCurrentTime(0); // Reset current time
             }
-            setIsLoading(false); // Remove loading state
+
             setTimeout(() => {
-              // Play the next song once it's ready
+              // Play the next song after a slight delay
               if (audioRef.current) {
-                audioRef.current.play().catch((error) => {
-                  console.error("Error playing the next song:", error);
-                });
+                audioRef.current
+                  .play()
+                  .then(() => setIsLoading(false)) // Remove loading state when playback starts
+                  .catch((error) => {
+                    console.error("Error playing the next song:", error);
+                    setIsLoading(false); // Remove loading state if playback fails
+                  });
               }
-            }, 300); // Slight delay for a smooth transition
+            }, 100); // Delay for a smooth transition
           })
           .catch((error) => {
             console.error("Error loading the next song:", error);
-            setIsLoading(false); // Remove loading state if an error occurs
+            setIsLoading(false); // Remove loading state if fetching fails
           });
+      } else {
+        setIsLoading(false); // Remove loading state if no next song is available
       }
     };
 
@@ -213,7 +227,7 @@ const MusicPlayer = ({
       audioRef.current.addEventListener("timeupdate", updateCurrentTime);
       audioRef.current.addEventListener("playing", () => {
         setIsPlaying(true);
-        setIsLoading(false); // Remove loading state when playing starts
+        setIsLoading(false); // Remove loading state when playback starts
       });
       audioRef.current.addEventListener("ended", handleAudioEnded);
     }

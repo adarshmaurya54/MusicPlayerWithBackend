@@ -2,9 +2,9 @@ import React from "react";
 
 function SongClickLoader() {
   return (
-    <div className="fixed z-50 top-0 left-0 w-full h-full backdrop-blur-md flex justify-center items-center">
-      <div className="transition-all duration-700 md:w-[90%] relative md:h-[98%] bg-gray-700 overflow-auto no-scrollbar h-full w-full md:rounded-[30px]">
-        <div className="bg-black/20 p-4 h-full overflow-auto no-scrollbar backdrop-blur-md">
+    <div className="fixed z-50 top-0 left-0 w-full backdrop-blur-md h-full flex justify-center items-center">
+      <div className="transition-all duration-700 md:w-[90%] border relative md:h-[98%] bg-white overflow-auto no-scrollbar h-full w-full md:rounded-[30px]">
+        <div className="p-4 h-full overflow-auto no-scrollbar">
           <div className="flex absolute md:top-7 md:left-7 justify-between items-center">
             <div className="w-8 h-8 bg-gray-500 animate-pulse rounded-full"></div>
           </div>
@@ -15,7 +15,7 @@ function SongClickLoader() {
             </div>
             {/* Skeleton for Song Info */}
             <div className="transition-all flex items-center justify-center md:w-[60%] w-full">
-              <div className="md:rounded-3xl w-full md:p-2 md:border-2 md:border-white/20">
+              <div className="md:rounded-3xl w-full md:p-2 md:py-4 md:border-2 md:border-black/20">
                 <div className="flex items-center px-3 justify-between">
                   <div className="flex flex-col gap-2">
                     <div className="w-40 h-8 bg-gray-500 animate-pulse rounded"></div>

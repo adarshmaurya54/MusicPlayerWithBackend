@@ -38,7 +38,6 @@ function SongList({
   return (
     <div
       onClick={() => {
-        console.log("Playing song:", { id, title, artist });
         handlePlayer(id,title,artist)}}
       className="relative group flex flex-col space-y-2 bg-white border border-gray-200 shadow-lg rounded-lg p-4 cursor-pointer hover:shadow-xl transition-all duration-300"
     >

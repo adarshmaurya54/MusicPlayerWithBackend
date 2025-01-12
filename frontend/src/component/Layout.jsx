@@ -161,26 +161,50 @@ function Layout() {
 
   // Fetch song details based on songId from URL
   useEffect(() => {
-    if (songId) {
-      setSongClickLoading(true);
-      const fetchSongDetails = async () => {
-        try {
-          const response = await apiService.getSongInfo(songId);
-          setSongDetail(response);
-          setSongClickLoading(false);
-          setHiddenPlayer(false); // Make the player visible when a song is selected
-          setSongClickLoading(false);
-        } catch (err) {
-          console.error("Failed to fetch song details:", err);
-          navigate("/no-song-found");
-          setSongClickLoading(false);
-        }
-      };
+    const resetPlayerState = () => {
+      setSongDetail(null);
+      setCurrentPlayingSong({
+        id: 0,
+        name: "",
+        artist: "",
+      });
+    };
 
+    const deleteThumbnails = async () => {
+      
+    console.log(player);
+      try {
+        await apiService.deleteThumbnails(player);
+        // console.log(`Thumbnails for songId ${player} deleted successfully.`);
+      } catch (error) {
+        console.error("Error deleting thumbnails:", error.message);
+      }
+    };
+
+    const fetchSongDetails = async () => {
+      setSongClickLoading(true); // Start loading
+      try {
+        const response = await apiService.getSongInfo(songId);
+        setSongDetail(response);
+        setHiddenPlayer(false); // Make the player visible
+      } catch (err) {
+        console.error("Failed to fetch song details:", err);
+        navigate("/no-song-found"); // Redirect on error
+      } finally {
+        setSongClickLoading(false); // Stop loading
+      }
+    };
+
+    // Reset state and delete thumbnails
+    resetPlayerState();
+    deleteThumbnails();
+    
+
+    // Fetch song details if `songId` exists
+    if (songId) {
       fetchSongDetails();
     }
   }, [songId]);
-  console.log(player);
 
   // Handle song click to navigate and set player state
   const handlePlayer = (id, title, artist) => {
@@ -253,7 +277,6 @@ function Layout() {
       artist,
     });
     setHiddenPlayer(true); // Hide the player
-    navigate(`/`); // Navigate to home page
     try {
       await apiService.deleteThumbnails(player);
       // console.log(`Thumbnails for songId ${player} deleted successfully.`);
@@ -287,9 +310,9 @@ function Layout() {
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                   {currentPlayingSong.id !== 0 && (
-                    <Link
-                      className="w-full overflow-hidden rounded-xl md:w-[220px] inline-block"
-                      to={`/${currentPlayingSong.id}`}
+                    <div
+                      className="w-full overflow-hidden rounded-xl md:w-[220px] inline-block cursor-pointer"
+                      onClick={() => setHiddenPlayer((prevState) => !prevState)} // Toggle visibility
                       style={{
                         backgroundImage: songDetail
                           ? `url(${import.meta.env.VITE_BASEURL}/assets${
@@ -326,7 +349,7 @@ function Layout() {
                           </marquee>
                         </div>
                       </div>
-                    </Link>
+                    </div>
                   )}
                 </div>
                 {/* Song List */}
@@ -395,11 +418,11 @@ function Layout() {
                 </div>
               </>
             )}
-          {isNoSongsFound && (
-            <div className="bg-white mt-8 rounded-xl text-center p-5 text-3xl text-black">
-              Song Database is empty :(
-            </div>
-          )}
+            {isNoSongsFound && (
+              <div className="bg-white mt-8 rounded-xl text-center p-5 text-3xl text-black">
+                Song Database is empty :(
+              </div>
+            )}
           </div>
 
           {/* Conditionally render MusicPlayer if songDetail is available */}
