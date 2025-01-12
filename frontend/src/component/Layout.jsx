@@ -26,7 +26,7 @@ function Layout() {
   const [editSongId, setEditSongId] = useState("");
   const [player, setPlayer] = useState(songId ? songId : 0); // To handle current song
   const [songClickLoading, setSongClickLoading] = useState(false);
-  const [isNoSongsFound, setIsNoSongsFound] = useState(false);
+  const [isNoSongsFound, setIsNoSongsFound] = useState(true);
   const [currentPlayingSong, setCurrentPlayingSong] = useState({
     id: 0,
     name: "",
@@ -171,8 +171,7 @@ function Layout() {
     };
 
     const deleteThumbnails = async () => {
-      
-    console.log(player);
+      console.log(player);
       try {
         await apiService.deleteThumbnails(player);
         // console.log(`Thumbnails for songId ${player} deleted successfully.`);
@@ -198,7 +197,6 @@ function Layout() {
     // Reset state and delete thumbnails
     resetPlayerState();
     deleteThumbnails();
-    
 
     // Fetch song details if `songId` exists
     if (songId) {
@@ -354,73 +352,99 @@ function Layout() {
                 </div>
                 {/* Song List */}
 
-                <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-5">
-                  <Suspense fallback={<SongLoadingScalaton />}>
-                    {paginatedSongs.map((song) => (
-                      <SongList
-                        key={song.songId}
-                        handlePlayer={() =>
-                          handlePlayer(
-                            song.audioFile,
-                            song.songName,
-                            song.artistName
-                          )
-                        }
-                        id={song._id}
-                        songId={song.songId}
-                        title={song.songName}
-                        artist={song.artistName}
-                        favourite={song.favourite}
-                        isAdminLogin={isAuthenticated}
-                        handleToggleEdit={handleToggleEdit}
-                        fetchSongs={fetchSongs}
-                      />
-                    ))}
-                  </Suspense>
-                </div>
+                {filteredSongs.length === 0 ? (
+                  // Message when no songs match the search query
+                  <div className="flex flex-col items-center justify-center h-32">
+                    <p className="text-gray-500 text-lg font-semibold">
+                      No songs match your search.
+                    </p>
+                    <p className="text-gray-400">
+                      Try searching with a different keyword.
+                    </p>
+                  </div>
+                ) : (
+                  // Display song list if there are matching results
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-5">
+                    <Suspense fallback={<SongLoadingScalaton />}>
+                      {paginatedSongs.map((song) => (
+                        <SongList
+                          key={song.songId}
+                          handlePlayer={() =>
+                            handlePlayer(
+                              song.audioFile,
+                              song.songName,
+                              song.artistName
+                            )
+                          }
+                          id={song._id}
+                          songId={song.songId}
+                          title={song.songName}
+                          artist={song.artistName}
+                          favourite={song.favourite}
+                          isAdminLogin={isAuthenticated}
+                          handleToggleEdit={handleToggleEdit}
+                          fetchSongs={fetchSongs}
+                        />
+                      ))}
+                    </Suspense>
+                  </div>
+                )}
 
                 {/* Pagination Controls */}
-                <div className="flex justify-center mt-4 items-center">
-                  {/* Previous Button */}
-                  <button
-                    onClick={handlePrevPage}
-                    disabled={currentPage === 1}
-                    className="rounded-lg md:text-black"
-                  >
-                    <FaAngleLeft className="text-2xl" />
-                  </button>
+                {filteredSongs.length > 0 && (
+                  <div className="flex justify-center mt-4 items-center">
+                    {/* Previous Button */}
+                    <button
+                      onClick={handlePrevPage}
+                      disabled={currentPage === 1}
+                      className="rounded-lg md:text-black"
+                    >
+                      <FaAngleLeft className="text-2xl" />
+                    </button>
 
-                  {/* Page Numbers */}
-                  <div className="flex space-x-2 px-4 py-2">
-                    {pageNumbers.map((page) => (
-                      <button
-                        key={page}
-                        onClick={() => handlePageClick(page)}
-                        className={`px-4 py-2 border rounded-lg ${
-                          page === currentPage
-                            ? "md:bg-black bg-white md:text-white text-black"
-                            : "md:text-black text-white "
-                        }`}
-                      >
-                        {page}
-                      </button>
-                    ))}
+                    {/* Page Numbers */}
+                    <div className="flex space-x-2 px-4 py-2">
+                      {pageNumbers.map((page) => (
+                        <button
+                          key={page}
+                          onClick={() => handlePageClick(page)}
+                          className={`px-4 py-2 border rounded-lg ${
+                            page === currentPage
+                              ? "md:bg-black bg-white md:text-white text-black"
+                              : "md:text-black text-white"
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Next Button */}
+                    <button
+                      onClick={handleNextPage}
+                      disabled={currentPage === totalPages}
+                      className="md:text-black"
+                    >
+                      <FaAngleRight className="text-2xl" />
+                    </button>
                   </div>
-
-                  {/* Next Button */}
-                  <button
-                    onClick={handleNextPage}
-                    disabled={currentPage === totalPages}
-                    className="md:text-black"
-                  >
-                    <FaAngleRight className="text-2xl" />
-                  </button>
-                </div>
+                )}
               </>
             )}
             {isNoSongsFound && (
-              <div className="bg-white mt-8 rounded-xl text-center p-5 text-3xl text-black">
-                Song Database is empty :(
+              <div className="bg-gray-100 rounded-xl text-center p-8 shadow-lg flex flex-col items-center">
+                <img
+                  src="/no-songs.svg"
+                  alt="No Songs Found"
+                  className="w-32 h-32 mb-4"
+                />
+                <h2 className="text-2xl font-bold text-gray-700 mb-2">
+                  Oops! No Songs Found
+                </h2>
+                <p className="text-gray-500 text-lg">
+                  It seems like the song database is currently empty. <br />
+                  Try searching with a different keyword or come back later!
+                </p>
               </div>
             )}
           </div>
