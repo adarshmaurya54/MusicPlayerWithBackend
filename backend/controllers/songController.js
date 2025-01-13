@@ -117,6 +117,20 @@ exports.createSong = async (req, res) => {
     // Construct the file name and MIME type based on metadata
     const fileName = `${extractedSongName}.mp3`; // Save file as songName.mp3
 
+    // Generate the songId
+    const songId = extractedSongName.replace(/\s+/g, ""); // Remove spaces for songId
+
+    // Check if the songId already exists in the database
+    const existingSong = await Song.findOne({ songId });
+
+    if (existingSong) {
+      return res.status(409).json({
+        message: "Song already exists in the database",
+        flag: "SONG_EXISTS",
+      });
+    }
+    
+
     // Authorize with Google Drive
     await authorize();
 
@@ -128,7 +142,7 @@ exports.createSong = async (req, res) => {
 
     // Save the song metadata (Google Drive file ID, etc.) in MongoDB
     const newSong = new Song({
-      songId: extractedSongName.replace(/\s+/g, ""), // Remove spaces for songId
+      songId,
       songName: extractedSongName,
       artistName: extractedArtistName,
       lyrics,
@@ -147,6 +161,7 @@ exports.createSong = async (req, res) => {
       .json({ message: "Error creating song and uploading to Google Drive" });
   }
 };
+
 
 // Get all songs with artist details
 exports.getAllSongs = async (req, res) => {

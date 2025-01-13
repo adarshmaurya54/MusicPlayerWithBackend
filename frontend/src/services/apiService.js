@@ -34,7 +34,7 @@ const apiService = {
     }
   },
   // Get all songs
-  getSongs: async (favourite='false') => {
+  getSongs: async (favourite = "false") => {
     try {
       const response = await API.get(`/songs/?favourite=${favourite}`);
       return response.data; // Return the data to be used in the component
@@ -63,8 +63,16 @@ const apiService = {
       });
       return response.data;
     } catch (error) {
-      console.error("Error in API call:", error.response || error.message);
-      throw new Error("Failed to create song");
+      // Check if the error response exists
+      if (error.response) {
+        console.error("Error in API call:", error.response.data);
+        // Throw the error from the server
+        throw error.response.data;
+      } else {
+        console.error("Error in API call:", error.message);
+        // Throw a generic error if no server response
+        throw new Error("Failed to create song");
+      }
     }
   },
 
@@ -93,7 +101,10 @@ const apiService = {
       const response = await API.get(`/songById/${songId}`); // Endpoint to fetch the specific song
       return response.data; // Return the song details
     } catch (error) {
-      console.error("Error fetching song by ID:", error.response || error.message);
+      console.error(
+        "Error fetching song by ID:",
+        error.response || error.message
+      );
       throw new Error("Failed to fetch song by ID");
     }
   },
@@ -109,14 +120,16 @@ const apiService = {
   },
   deleteSong: async (songId, filename) => {
     try {
-      const response = await API.delete(`/song/${songId}`, { data: { filename } }); // Pass filename in the body
+      const response = await API.delete(`/song/${songId}`, {
+        data: { filename },
+      }); // Pass filename in the body
       return response.data; // Return the success message
     } catch (error) {
       console.error("Error deleting song:", error.response || error.message);
       throw new Error("Failed to delete song");
     }
   },
-  
+
   // Delete thumbnails by songId
   deleteThumbnails: async (songId) => {
     try {
@@ -135,7 +148,10 @@ const apiService = {
       const response = await API.patch(`/favourite/${songId}`); // Endpoint for toggling the favourite status
       return response.data; // Return the updated data (favourite status and message)
     } catch (error) {
-      console.error("Error toggling favourite status:", error.response || error.message);
+      console.error(
+        "Error toggling favourite status:",
+        error.response || error.message
+      );
       throw new Error("Failed to toggle favourite status");
     }
   },

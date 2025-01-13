@@ -26,9 +26,9 @@ const Header = ({ handleToggleUpload }) => {
           },
         }
       );
-      
+
       if (response.status === 200) {
-        setIsAuthenticated(true);        
+        setIsAuthenticated(true);
       } else {
         setIsAuthenticated(false);
         localStorage.removeItem("token"); // Remove invalid token
@@ -55,16 +55,13 @@ const Header = ({ handleToggleUpload }) => {
     navigate("/"); // Redirect to login page
   };
 
-
-
   return (
     <header className="z-30 md:px-10 px-4 py-5">
       <div className="border p-5 rounded-2xl bg-white backdrop-blur-lg flex md:flex-row flex-col justify-between md:items-center gap-4">
         <h1 className="text-3xl font-bold">
           <Link to="/" className="flex gap-3 items-center">
-          <img src="./vite.svg" alt="./vite.svg" className="w-10" />
-          <span>PlayMusic</span>
-          
+            <img src="./vite.svg" alt="./vite.svg" className="w-10" />
+            <span>PlayMusic</span>
           </Link>
         </h1>
         <nav>
@@ -72,14 +69,16 @@ const Header = ({ handleToggleUpload }) => {
             <div className="flex text-xs md:text-base items-center gap-4">
               <button
                 onClick={handleToggleUpload}
-                className="bg-black md:w-auto w-[50%] flex items-center gap-2 text-white px-4 py-2 rounded-xl"
+                className="bg-black hover:ring-2 hover:ring-black
+           ring-offset-2  transition-all duration-300 md:w-auto w-[50%] flex items-center gap-2 text-white px-4 py-2 rounded-xl"
               >
                 <LuCloudUpload className="mt-1" />
                 <span>Upload Song</span>
               </button>
               <button
                 onClick={handleLogout}
-                className="bg-black md:w-auto w-[50%] justify-center flex items-center gap-2 text-white px-4 py-2 rounded-xl"
+                className="bg-black hover:ring-2 hover:ring-black
+           ring-offset-2  transition-all duration-300 md:w-auto w-[50%] justify-center flex items-center gap-2 text-white px-4 py-2 rounded-xl"
               >
                 <IoMdLogOut className="mt-1" />
                 <span>Logout</span>
@@ -88,7 +87,8 @@ const Header = ({ handleToggleUpload }) => {
           ) : (
             <button
               onClick={() => navigate("/login")}
-              className="bg-black md:w-auto w-[50%] justify-center flex items-center gap-2 text-white px-4 py-2 rounded-xl"
+              className="bg-black hover:ring-2 hover:ring-black
+           ring-offset-2  transition-all duration-300 md:w-auto w-[50%] justify-center flex items-center gap-2 text-white px-4 py-2 rounded-xl"
             >
               <AiOutlineLogin className="mt-1" />
               <span>Login</span>

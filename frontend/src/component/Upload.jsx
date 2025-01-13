@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FaArrowLeft, FaRegTimesCircle } from "react-icons/fa";
 import apiService from "../services/apiService"; // Import the apiService
 import { FaCloudUploadAlt } from "react-icons/fa";
+import { FaTimes } from "react-icons/fa";
 
 function Upload({ handleToggleUpload, fetchSongs }) {
   const [file, setFile] = useState(null);
@@ -11,6 +12,7 @@ function Upload({ handleToggleUpload, fetchSongs }) {
   const [songLyrics, setSongLyrics] = useState("");
   const [fileUploaded, setFileUploaded] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -85,22 +87,28 @@ function Upload({ handleToggleUpload, fetchSongs }) {
 
     try {
       setLoading(true);
-      // Call the backend API to create the song and upload the file
       const response = await apiService.createSong(formData);
 
-      // Handle success response
-      setUploadStatus("Song Uploaded Successfully");
-      setLoading(false);
+      if (response.flag === "SONG_EXISTS") {
+        setErrorMessage(response.message);
+        setUploadStatus(response.message); // Handle existing song case
+      } else {
+        setErrorMessage("");
+        setUploadStatus(response.message || "Song Uploaded Successfully");
+        handleToggleUpload();
+        fetchSongs();
+      }
 
-      handleToggleUpload();
-      fetchSongs();
-    } catch (error) {
-      // Handle error response
-      console.error("Error creating song:", error);
-      setUploadStatus("Upload Failed");
       setLoading(false);
+    } catch (error) {
+      setErrorMessage(error.message);
+      const errorMessage = error.message || "Upload Failed. Please try again.";
+      setUploadStatus(errorMessage);
+      setLoading(false);
+      console.error("Error creating song:", error.message);
     }
   };
+  console.log(uploadStatus);
 
   const resetUpload = () => {
     setFile(null);
@@ -115,6 +123,18 @@ function Upload({ handleToggleUpload, fetchSongs }) {
   return (
     <div className="fixed z-50 top-0 left-0 bg-black/10 flex justify-center items-center w-full h-full backdrop-blur-lg">
       <div className="relative flex items-center justify-center w-full h-full md:w-[90%] md:h-[95%] bg-white md:rounded-3xl md:p-6 shadow-lg transition-all">
+        {errorMessage !== "" && (
+          <div className="absolute top-12 md:top-4 md:right-4 right-auto md:w-fit w-[350px] p-4 bg-red-500 text-white rounded-lg shadow-lg flex items-center justify-between transition-all duration-300 ease-in-out">
+            <span>{errorMessage}</span>
+            <button
+              onClick={() => setErrorMessage("")}
+              className="ml-2 text-white font-semibold hover:text-gray-200"
+            >
+              <FaTimes />
+            </button>
+          </div>
+        )}
+
         <div className="flex text-black absolute md:top-7 md:left-7 top-5 left-4 justify-between items-center">
           <FaArrowLeft
             onClick={handleToggleUpload}
@@ -124,7 +144,7 @@ function Upload({ handleToggleUpload, fetchSongs }) {
         <div className="md:flex items-center w-full overflow-auto md:p-0 px-10 py-14 h-full">
           <div className="form md:w-[60%]">
             <form
-              className="max-w-sm mx-auto"
+              className="md:max-w-sm mx-auto"
               onSubmit={(e) => e.preventDefault()}
             >
               <div className="mb-5">
@@ -137,7 +157,7 @@ function Upload({ handleToggleUpload, fetchSongs }) {
                 <input
                   type="text"
                   id="songname"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5    "
+                  className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5    "
                   placeholder="Ex. O Mere Dil Ke Chain"
                   value={songName}
                   onChange={(e) => setSongName(e.target.value)}
@@ -154,14 +174,14 @@ function Upload({ handleToggleUpload, fetchSongs }) {
                 <textarea
                   id="songlyrics"
                   rows="6"
-                  className="bg-gray-50 border resize-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5    "
+                  className="border resize-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5    "
                   placeholder="Enter the song lyrics here..."
                   value={songLyrics}
                   onChange={(e) => setSongLyrics(e.target.value)}
                   required
                 ></textarea>
               </div>
-                <button
+              <button
                 className={`px-4 py-2 w-full text-sm font-medium ${
                   fileUploaded
                     ? "text-white bg-black hover:outline outline-black outline-offset-2"
@@ -174,22 +194,17 @@ function Upload({ handleToggleUpload, fetchSongs }) {
               </button>
             </form>
           </div>
-          <div className="md:w-[40%]">
+          <div className="md:w-[40%] md:mt-0 mt-4">
             {/* File Input UI */}
-            <div className="max-w-md mx-auto rounded-lg overflow-hidden md:max-w-xl mb-4">
+            <div className="rounded-lg overflow-hidden mb-4">
               <div className="md:flex">
-                <div className="w-full p-3">
-                  <div className="relative h-48 rounded-lg border-2 border-black flex justify-center items-center">
-                    <div className="absolute flex flex-col items-center">
-                      <img
-                        alt="File Icon"
-                        className="mb-3"
-                        src="https://img.icons8.com/dusk/64/000000/file.png"
-                      />
-                      <span className="block text-gray-500 font-semibold">
+                <div className="w-full">
+                  <div className="relative h-48 rounded-lg border-2 border-dashed border-gray-400 flex justify-center items-center">
+                    <div className="absolute flex flex-col items-center text-center">
+                      <span className="block text-gray-600 font-semibold text-lg">
                         Drag & drop your files here
                       </span>
-                      <span className="block text-gray-400 font-normal mt-1">
+                      <span className="block text-gray-500 font-normal mt-1">
                         or click to upload
                       </span>
                     </div>
@@ -197,6 +212,7 @@ function Upload({ handleToggleUpload, fetchSongs }) {
                       name="file"
                       className="h-full w-full opacity-0 cursor-pointer"
                       type="file"
+                      accept=".mp3"
                       onChange={handleFileChange}
                     />
                   </div>
@@ -220,9 +236,9 @@ function Upload({ handleToggleUpload, fetchSongs }) {
             {/* Progress Bar */}
             {file && (
               <div className="mb-4">
-                <div className="relative w-full h-4 bg-gray-200 rounded-lg">
+                <div className="relative w-full h-1 bg-gray-200 rounded-lg">
                   <div
-                    className={`absolute top-0 left-0 h-full bg-blue-500 rounded-lg transition-all duration-300`}
+                    className={`absolute top-0 left-0 h-full bg-black rounded-lg transition-all duration-500`}
                     style={{ width: `${progress}%` }}
                   ></div>
                 </div>
@@ -233,7 +249,7 @@ function Upload({ handleToggleUpload, fetchSongs }) {
             )}
 
             {/* Buttons */}
-            <div className="flex justify-between px-3">
+            <div className="flex justify-between">
               <button
                 className="px-4 py-2 w-[45%] text-sm font-medium bg-black text-white bg-black-500 rounded-lg hover:bg-black/90 hover:outline outline-black outline-offset-2"
                 onClick={uploadFile}

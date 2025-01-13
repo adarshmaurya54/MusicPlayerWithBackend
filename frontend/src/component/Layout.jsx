@@ -12,11 +12,13 @@ import axios from "axios";
 import EditSong from "./EditSong";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 import SongClickLoader from "./SongClickLoader";
+import Pagination from "./Pagination";
 
 function Layout() {
   const { songId } = useParams(); // Get songId from URL
   const [songDetail, setSongDetail] = useState(null);
   const [songList, setSongList] = useState([]);
+  const [songListCopy, setSongListCopy] = useState([]);
   const [hiddenPlayer, setHiddenPlayer] = useState(false); // Manage visibility
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
@@ -37,7 +39,7 @@ function Layout() {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
   const [progressPercentage, setProgressPercentage] = useState(0);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [isFavourite, setIsFavourite] = useState(false);
 
   const togglePlayPause = () => {
     if (audioRef.current.paused) {
@@ -153,7 +155,7 @@ function Layout() {
   const fetchSongs = async () => {
     try {
       setLoading(true);
-      const songs = await apiService.getSongs(isFavorite);
+      const songs = await apiService.getSongs(isFavourite);
       if (songs.length === 0) {
         setIsNoSongsFound(true); // Set state to true if no songs are found
       } else {
@@ -161,6 +163,7 @@ function Layout() {
       }
 
       setSongList(songs); // If no songs, songs will be an empty array
+      setSongListCopy(songs); // If no songs, songs will be an empty array
       setLoading(false);
     } catch (err) {
       setError("Failed to fetch songs");
@@ -172,7 +175,16 @@ function Layout() {
 
   useEffect(() => {
     fetchSongs();
-  }, [isFavorite]);
+  }, []);
+  useEffect(() => {
+    if (isFavourite) {
+      // Filter the songs to include only those with favourite = true
+      setSongList(songListCopy.filter((song) => song.favourite));
+    } else {
+      // Reset to the original song list
+      setSongList([...songListCopy]);
+    }
+  }, [isFavourite]);
 
   // Fetch song details based on songId from URL
   useEffect(() => {
@@ -311,38 +323,13 @@ function Layout() {
         <Header handleToggleUpload={handleToggleUpload} />
         <div className="flex flex-col md:px-10 mb-5 w-full text-white overflow-auto">
           <div className="md:bg-white md:border p-4 pb-5 md:rounded-3xl">
-            {/* <div className="relative inline-block mb-4 border w-full md:w-fit py-3 px-2 rounded-lg bg-white">
-
-              <div
-                className="p-2 text-xs text-black bg-gray-200 border border-gray-300 rounded-xl cursor-pointer w-fit"
-                onClick={() => setIsOpen(!isOpen)} // Toggle dropdown
-              >
-                <span className="flex items-center gap-2">{selectedOption}  <FaAngleDown/></span>
-              </div>
-
-              
-              {isOpen && (
-                <ul className="absolute text-xs left-2 mt-1 overflow-hidden bg-gray-300 text-black border border-gray-300 rounded-lg shadow-lg w-fit z-10">
-                  {options.map((option) => (
-                    <li
-                      key={option}
-                      className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                      onClick={() => handleSelect(option)} // Handle option selection
-                    >
-                      {option}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div> */}
-
             {!isNoSongsFound && (
               <>
                 <div className="flex gap-5 md:flex-row flex-col items-center w-full text-black justify-between">
                   <input
                     type="text"
                     className="md:w-[376px] w-full text-black border rounded-xl py-4 px-5 outline-none
-             bg-white shadow-lg focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50
+             bg-white shadow-lg md:focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50
              transition-all duration-300 ease-in-out hover:shadow-xl placeholder:text-gray-500"
                     placeholder="Search for music that matches your vibe..."
                     value={searchQuery}
@@ -363,7 +350,7 @@ function Layout() {
                       }}
                     >
                       <div className="flex bg-black/25 w-full items-center justify-between backdrop-blur-md ">
-                        <div className="flex ps-2 pe-5 py-2 items-center gap-3">
+                        <div className="flex w-full ps-2 pe-5 py-2 items-center gap-3">
                           <img
                             onClick={() =>
                               setHiddenPlayer((prevState) => !prevState)
@@ -380,7 +367,7 @@ function Layout() {
                               isPlaying ? "animate-spin-slow" : "" // Spin only when isPlaying is true
                             }`}
                           />
-                          <div className="flex flex-col md:w-full w-fit">
+                          <div className="flex flex-col w-full">
                             <p className="font-bold text-xl text-white">
                               {isPlaying ? "Now Playing" : "Paused"}
                             </p>
@@ -437,18 +424,18 @@ function Layout() {
                     </div>
                   )}
                 </div>
-                <div className="mt-5 md:p-0 p-3 rounded-xl bg-white">
+                {/* <div className="mt-5 md:p-0 p-3 rounded-xl bg-white">
                   <label className="inline-flex text-xs items-center space-x-2">
                     <input
                       type="checkbox"
-                      checked={isFavorite}
-                      onChange={(e) => setIsFavorite(e.target.checked)}
+                      checked={isFavourite}
+                      onChange={(e) => setIsFavourite(e.target.checked)}
                       className="hidden peer"
                     />
                     <span className="w-3 h-3 border-2 border-gray-800 rounded-md relative cursor-pointer peer-checked:bg-gray-800 peer-checked:after:content-[''] peer-checked:after:absolute peer-checked:after:top-1/2 peer-checked:after:left-1/2 peer-checked:after:transform peer-checked:after:-translate-x-1/2 peer-checked:after:-translate-y-1/2 peer-checked:after:w-1.5 peer-checked:after:h-1.5 peer-checked:after:bg-white peer-checked:after:rounded"></span>
                     <span className="text-gray-800 ">Favourite</span>
                   </label>
-                </div>
+                </div> */}
                 {/* Song List */}
 
                 {filteredSongs.length === 0 ? (
@@ -491,42 +478,14 @@ function Layout() {
 
                 {/* Pagination Controls */}
                 {filteredSongs.length > 0 && (
-                  <div className="flex justify-center mt-4 items-center">
-                    {/* Previous Button */}
-                    <button
-                      onClick={handlePrevPage}
-                      disabled={currentPage === 1}
-                      className="rounded-lg md:text-black"
-                    >
-                      <FaAngleLeft className="text-2xl" />
-                    </button>
-
-                    {/* Page Numbers */}
-                    <div className="flex space-x-2 px-4 py-2">
-                      {pageNumbers.map((page) => (
-                        <button
-                          key={page}
-                          onClick={() => handlePageClick(page)}
-                          className={`px-4 py-2 border rounded-lg ${
-                            page === currentPage
-                              ? "md:bg-black bg-white md:text-white text-black"
-                              : "md:text-black text-white"
-                          }`}
-                        >
-                          {page}
-                        </button>
-                      ))}
-                    </div>
-
-                    {/* Next Button */}
-                    <button
-                      onClick={handleNextPage}
-                      disabled={currentPage === totalPages}
-                      className="md:text-black"
-                    >
-                      <FaAngleRight className="text-2xl" />
-                    </button>
-                  </div>
+                  <Pagination
+                    filteredSongs={filteredSongs}
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    handlePageClick={handlePageClick}
+                    handlePrevPage={handlePrevPage}
+                    handleNextPage={handleNextPage}
+                  />
                 )}
               </>
             )}

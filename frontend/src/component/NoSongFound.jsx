@@ -7,9 +7,9 @@ const NoSongFound = () => {
 
   return (
     <div className="h-screen flex flex-col items-center justify-center">
-      <img src="/404.jpg" alt="404" className="w-96" />
-      <h1 className="text-5xl font-bold text-gray-800 my-4">Song Not Found</h1>
-      <p className="text-gray-600 text-lg mb-6">
+      <img src="/404.jpg" alt="404" className="md:w-96 w-80" />
+      <h1 className="md:text-5xl text-center text-3xl font-bold text-gray-800 my-4">Song Not Found</h1>
+      <p className="text-gray-500 text-center md:text-lg text-xs md:p-0 px-10 mb-6">
         The song you're looking for doesn't exist or has been removed.
       </p>
 
