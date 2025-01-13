@@ -2,6 +2,7 @@ import React, { Suspense, useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom"; // useParams for URL parameters and useNavigate for navigation
 import apiService from "../services/apiService";
 
+
 // Lazy load the SongList component
 const SongList = React.lazy(() => import("./SongList"));
 import MusicPlayer from "./MusicPlayer";
@@ -10,7 +11,6 @@ import SongLoadingScalaton from "./SongLoadingScalaton";
 import Upload from "./Upload";
 import axios from "axios";
 import EditSong from "./EditSong";
-import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 import SongClickLoader from "./SongClickLoader";
 import Pagination from "./Pagination";
 
@@ -50,6 +50,7 @@ function Layout() {
       setIsPlaying(false);
     }
   };
+
 
   const itemsPerPage = 9; // Number of songs per page
   //pagination logic
@@ -229,6 +230,12 @@ function Layout() {
       fetchSongDetails();
     }
   }, [songId]);
+  useEffect(() => {
+    // If no songId is provided, redirect to the main URL
+    if (!songId) {
+      navigate('/');  // Redirect to the main page
+    }
+  }, [songId, navigate]);
 
   // Handle song click to navigate and set player state
   const handlePlayer = (id, title, artist) => {
@@ -239,7 +246,7 @@ function Layout() {
       artist,
     });
     setPlayer(id);
-    navigate(`/${id}`);
+    navigate(`/song/${id}`);
   };
 
   // Play the next song
@@ -249,7 +256,7 @@ function Layout() {
       // console.log(`Thumbnails for songId ${player} deleted successfully.`);
       const nextSongId = getNextSongId(player);
       setPlayer(nextSongId);
-      navigate(`/${nextSongId}`);
+      navigate(`/song/${nextSongId}`);
     } catch (error) {
       console.error("Error deleting thumbnails:", error.message);
     }
@@ -264,7 +271,7 @@ function Layout() {
       const prevSongId = getPrevSongId(player);
       if (prevSongId) {
         setPlayer(prevSongId);
-        navigate(`/${prevSongId}`);
+        navigate(`/song/${prevSongId}`);
       }
     } catch (error) {
       console.error("Error deleting thumbnails:", error.message);

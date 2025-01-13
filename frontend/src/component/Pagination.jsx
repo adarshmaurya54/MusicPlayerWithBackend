@@ -16,13 +16,13 @@ const Pagination = ({
   );
 
   return (
-    filteredSongs.length > 0 && (
-      <div className="flex justify-center mt-4 items-center">
+    filteredSongs.length > 0 && totalPages !== 1  && (
+      <div className="flex bg-white rounded-xl justify-center mt-4 items-center">
         {/* Previous Button */}
         <button
           onClick={handlePrevPage}
           disabled={currentPage === 1}
-          className="rounded-lg md:text-black"
+          className="rounded-lg text-black"
         >
           <FaAngleLeft className="text-2xl" />
         </button>
@@ -35,14 +35,14 @@ const Pagination = ({
               <button
                 onClick={() => handlePageClick(1)}
                 className="px-4 md:hover:ring-2 hover:ring-gray-500 hover:ring-opacity-50
-           ring-offset-2  transition-all duration-300 py-2 border rounded-lg md:text-black text-white"
+           ring-offset-2  transition-all duration-300 py-2 border rounded-lg text-black"
               >
                 1
               </button>
             )}
 
             {/* Ellipsis if there are skipped pages between start and current */}
-            {currentPage > 3 && <span className="md:text-gray-500">•••</span>}
+            {currentPage > 3 && <span className="text-gray-500">•••</span>}
 
             {/* Show pages around the current page */}
             {pageNumbers.map((page) => {
@@ -54,8 +54,8 @@ const Pagination = ({
                     className={`px-4 md:hover:ring-2
            ring-offset-2  transition-all duration-300  py-2 border rounded-lg ${
                       page === currentPage
-                        ? "md:bg-black hover:ring-black bg-white md:text-white text-black"
-                        : "md:text-black hover:ring-gray-500 hover:ring-opacity-50 text-white"
+                        ? "bg-black hover:ring-black text-white"
+                        : "text-black hover:ring-gray-500 hover:ring-opacity-50"
                     }`}
                   >
                     {page}
@@ -67,7 +67,7 @@ const Pagination = ({
 
             {/* Ellipsis if there are skipped pages between the current and the last page */}
             {currentPage < totalPages - 1 && (
-              <span className="md:text-gray-500">•••</span>
+              <span className="text-gray-500">•••</span>
             )}
 
             {/* Show the last page number always */}
@@ -75,7 +75,7 @@ const Pagination = ({
               <button
                 onClick={() => handlePageClick(totalPages)}
                 className="px-4 py-2 md:hover:ring-2 hover:ring-gray-500 hover:ring-opacity-50
-           ring-offset-2  transition-all duration-300 border rounded-lg md:text-black text-white"
+           ring-offset-2  transition-all duration-300 border rounded-lg text-black"
               >
                 {totalPages}
               </button>
@@ -90,8 +90,8 @@ const Pagination = ({
                 onClick={() => handlePageClick(page)}
                 className={`px-4 py-2 border rounded-lg ${
                   page === currentPage
-                    ? "md:bg-black bg-white md:text-white text-black"
-                    : "md:text-black text-white"
+                    ? "bg-black text-white"
+                    : "text-black"
                 }`}
               >
                 {page}
@@ -104,7 +104,7 @@ const Pagination = ({
         <button
           onClick={handleNextPage}
           disabled={currentPage === totalPages}
-          className="md:text-black"
+          className="text-black"
         >
           <FaAngleRight className="text-2xl" />
         </button>

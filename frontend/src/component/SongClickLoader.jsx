@@ -3,7 +3,7 @@ import React from "react";
 function SongClickLoader() {
   return (
     <div className="fixed z-50 top-0 left-0 w-full backdrop-blur-md h-full flex justify-center items-center">
-      <div className="transition-all duration-700 md:w-[90%] border relative md:h-[98%] bg-white overflow-auto no-scrollbar h-full w-full md:rounded-[30px]">
+      <div className="transition-all duration-700 md:w-[90%] border relative md:h-[95%] bg-white overflow-auto no-scrollbar h-full w-full md:rounded-[30px]">
         <div className="p-4 h-full overflow-auto no-scrollbar">
           <div className="flex absolute md:top-7 md:left-7 justify-between items-center">
             <div className="w-8 h-8 bg-gray-500 animate-pulse rounded-full"></div>

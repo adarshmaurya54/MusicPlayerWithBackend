@@ -20,7 +20,7 @@ const MusicPlayer = ({
   favourite,
   audioRef,
   SetisPlayingOrNotForLayout,
-  setProgressPercentage
+  setProgressPercentage,
 }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [totalDuration, setTotalDuration] = useState(0);
@@ -54,7 +54,6 @@ const MusicPlayer = ({
       setProgressPercentage((currentTime / totalDuration) * 100);
     }
   }, [currentTime, totalDuration]); // This will run every time currentTime or totalDuration changes
-
 
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
@@ -303,11 +302,28 @@ const MusicPlayer = ({
                     onClick={handleToggle}
                     className="h-full flex items-center justify-end cursor-pointer"
                   >
-                    {isLiked ? (
+                    <svg
+                      fill={isLiked ? "#FD1D1D" : "none"}
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className={`${
+                        isLiked
+                          ? "stroke-[#FD1D1D]"
+                          : "md:stroke-white stroke-black"
+                      } md:text-4xl text-3xl active:scale-75 hover:scale-110 transition-all`}
+                      height="1em"
+                      width="1em"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
+                    {/* {isLiked ? (
                       <FaHeart className="md:text-4xl active:scale-75  transition-all text-3xl text-red-500" />
                     ) : (
                       <FiHeart className="md:text-4xl active:scale-75  transition-all text-3xl" />
-                    )}
+                    )} */}
                   </div>
                 </div>
                 <div className="px-3 mt-5">

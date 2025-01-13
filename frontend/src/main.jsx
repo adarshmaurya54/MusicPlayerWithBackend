@@ -15,13 +15,21 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
-    path: '/:songId',  // New route with songId
+    path: '/song',  // New route with songId
+    element: <Layout />,
+  },
+  {
+    path: '/song/:songId',  // New route with songId
     element: <Layout />,
   },
   {
     path: '/no-song-found',
     element: <NoSongFound /> // 404 page route outside of Layout
-  }
+  },
+  {
+    path: '/*',
+    element: <NoSongFound /> // 404 page route outside of Layout
+  },
 ])
 
 ReactDOM.createRoot(document.getElementById('root')).render(
