@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-function MessageCard({ type, message, subMessage,setError }) {
+function MessageCard({ type, message, subMessage,setError, crossbtn }) {
   useEffect(() => {
     setTimeout(() => {
         setError('')
@@ -23,7 +23,13 @@ function MessageCard({ type, message, subMessage,setError }) {
       bgColor: "#ebf8ff",   // blue-100
       iconColor: "#3182ce", // blue-500
     },
+    success: {
+      textColor: "#38a169", // green-600
+      bgColor: "#c6f6d5",   // green-100
+      iconColor: "#38a169", // green-600
+    },
   };
+  
   
 
   // Default color set for info type if type is undefined
@@ -52,13 +58,14 @@ function MessageCard({ type, message, subMessage,setError }) {
         style={{ backgroundColor: bgColor }}
       >
         <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 512 512"
-          className="w-[17px] h-[17px]"
-          style={{ fill: iconColor }}
-        >
-          <path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c-9.4 9.4-9.4 24.6 0 33.9l47 47-47 47c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l47-47 47 47c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-47-47 47-47c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-47 47-47-47c-9.4-9.4-24.6-9.4-33.9 0z"></path>
-        </svg>
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 512 512"
+  className="w-[17px] h-[17px]"
+  style={{ fill: iconColor }}
+>
+  <circle cx="256" cy="256" r="200" fill={iconColor} />
+  <circle cx="256" cy="256" r="40" fill="white" />
+</svg>
       </div>
 
       {/* Message Text */}
@@ -73,7 +80,7 @@ function MessageCard({ type, message, subMessage,setError }) {
       </div>
 
       {/* Cross Icon */}
-      <svg
+      {crossbtn && <svg
       onClick={() => {setError('')}}
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 15 15"
@@ -85,7 +92,7 @@ function MessageCard({ type, message, subMessage,setError }) {
           clipRule="evenodd"
           fillRule="evenodd"
         />
-      </svg>
+      </svg>}
     </div>
   );
 }

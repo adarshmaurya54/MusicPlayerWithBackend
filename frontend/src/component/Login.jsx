@@ -3,12 +3,13 @@ import apiService from "../services/apiService";
 import { useNavigate } from "react-router-dom";
 import MessageCard from "./MessageCard";
 import bg from "../assets/bg.jpg";
-import { FaArrowLeft } from "react-icons/fa";
+
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(""); // Error message state
+  const [loginLoading, setLoginLoading] = useState(false);
 
   const navigate = useNavigate(); // To navigate to another page on success
 
@@ -22,14 +23,14 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+    setLoginLoading(true);
     try {
       // Call the backend API for login
       const response = await apiService.login({ email, password });
 
       // Store the JWT token in localStorage
       localStorage.setItem("token", response.token);
-
+      setLoginLoading(false)
       navigate("/"); // Redirect to the dashboard or another page
     } catch (error) {
       setError("Please check your credentials and try again.");
@@ -51,6 +52,16 @@ function Login() {
             message="Login failed"
             subMessage={error}
             setError={setError}
+            crossbtn={true}
+          />
+        )}
+        {(
+          <MessageCard
+            type="info"
+            message="Please wait for a moment..."
+            subMessage="We are processing your login."
+            setError={setError}
+            crossbtn={false}
           />
         )}
         <form className="mt-5" onSubmit={handleLogin}>
