@@ -55,7 +55,7 @@ function Login() {
             crossbtn={true}
           />
         )}
-        {(
+        {loginLoading && (
           <MessageCard
             type="info"
             message="Please wait for a moment..."
@@ -95,11 +95,11 @@ function Login() {
           />
         </form>
         <button
-          class="bg-white border mt-5 text-center  w-full rounded-2xl h-14 relative text-black text-xl font-semibold group"
+          className="bg-white border mt-5 text-center  w-full rounded-2xl h-14 relative text-black text-xl font-semibold group"
           type="button"
           onClick={() => navigate('/')}
         >
-          <div class="bg-gradient-to-r from-blue-500 to-teal-500 text-white rounded-xl h-12 w-1/4 flex items-center justify-center absolute left-1 top-[4px] group-hover:w-full z-10 duration-500">
+          <div className="bg-gradient-to-r from-blue-500 to-teal-500 text-white rounded-xl h-12 w-1/4 flex items-center justify-center absolute left-1 top-[4px] group-hover:w-full z-10 duration-500">
           
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -117,7 +117,7 @@ function Login() {
               ></path>
             </svg>
           </div>
-          <p class="translate-x-2">Go Back</p>
+          <p className="translate-x-2">Go Back</p>
         </button>
       </div>
     </div>
