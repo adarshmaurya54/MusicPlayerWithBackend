@@ -2,7 +2,6 @@ import React, { Suspense, useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom"; // useParams for URL parameters and useNavigate for navigation
 import apiService from "../services/apiService";
 
-
 // Lazy load the SongList component
 const SongList = React.lazy(() => import("./SongList"));
 import MusicPlayer from "./MusicPlayer";
@@ -50,7 +49,6 @@ function Layout() {
       setIsPlaying(false);
     }
   };
-
 
   const itemsPerPage = 9; // Number of songs per page
   //pagination logic
@@ -233,13 +231,13 @@ function Layout() {
   useEffect(() => {
     // If no songId is provided, redirect to the main URL
     if (!songId) {
-      navigate('/');  // Redirect to the main page
+      navigate("/"); // Redirect to the main page
     }
   }, [songId, navigate]);
 
   // Handle song click to navigate and set player state
   const handlePlayer = (id, title, artist) => {
-    setHiddenPlayer(false)
+    setHiddenPlayer(false);
     setCurrentPlayingSong({
       id,
       name: title,
@@ -333,15 +331,36 @@ function Layout() {
             {!isNoSongsFound && (
               <>
                 <div className="flex gap-5 md:flex-row flex-col items-center w-full text-black justify-between">
-                  <input
-                    type="text"
-                    className="md:w-[376px] w-full text-black border rounded-xl py-4 px-5 outline-none
-             bg-white shadow-lg md:focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50
-             transition-all duration-300 ease-in-out hover:shadow-xl placeholder:text-gray-500"
-                    placeholder="Search for music that matches your vibe..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
+                  <div className="relative md:w-[376px] w-full">
+                    {/* Search Icon */}
+                    <span className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-gray-500">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"
+                        />
+                      </svg>
+                    </span>
+
+                    {/* Input Field */}
+                    <input
+                      type="text"
+                      className="w-full text-black border rounded-xl py-4 pl-12 pr-5 outline-none
+      bg-white shadow-lg md:focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50
+      transition-all duration-300 ease-in-out hover:shadow-xl placeholder:text-gray-300 placeholder:text-sm"
+                      placeholder="Search for music that matches your vibe"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                  </div>
 
                   {currentPlayingSong.id !== 0 && (
                     <div
