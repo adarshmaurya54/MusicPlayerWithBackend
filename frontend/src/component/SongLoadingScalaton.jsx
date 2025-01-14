@@ -1,8 +1,12 @@
 import React from "react";
+import bg from "../assets/bg.jpg";
 
 function SongLoadingScalaton() {
   return (
-    <div className="flex bg-[url(./bg.jpg)] bg-no-repeat bg-center bg-fixed bg-cover flex-col gap-4 md:p-10 ">
+    <div
+      className="flex bg-no-repeat bg-center bg-fixed bg-cover flex-col gap-4 md:p-10"
+      style={{ backgroundImage: `url(${bg})` }}
+    >
       <div className="md:p-0 p-4">
         <div className="bg-white rounded-2xl flex md:flex-row flex-col gap-3 justify-between md:border p-5 md:rounded-2xl animate-pulse">
           <div className="flex justify-between w-[200px] md:w-[500px]">

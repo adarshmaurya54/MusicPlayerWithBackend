@@ -6,6 +6,7 @@ import { LuCloudUpload } from "react-icons/lu";
 import axios from "axios"; // Import Axios
 import logo from "../assets/vite.svg"
 
+
 const Header = ({ handleToggleUpload }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Track if user is authenticated
   const navigate = useNavigate();

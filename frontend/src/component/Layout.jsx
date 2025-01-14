@@ -12,6 +12,7 @@ import axios from "axios";
 import EditSong from "./EditSong";
 import SongClickLoader from "./SongClickLoader";
 import Pagination from "./Pagination";
+import bg from "../assets/bg.jpg";
 
 function Layout() {
   const { songId } = useParams(); // Get songId from URL
@@ -324,7 +325,10 @@ function Layout() {
 
   return (
     <>
-      <div className="h-screen bg-fixed overflow-auto bg-[url(/bg.jpg)] bg-center bg-cover">
+      <div
+        className="h-screen bg-fixed overflow-auto bg-center bg-cover"
+        style={{ backgroundImage: `url(${bg})` }}
+      >
         <Header handleToggleUpload={handleToggleUpload} />
         <div className="flex flex-col md:px-10 mb-5 w-full text-white overflow-auto">
           <div className="md:bg-white md:border p-4 pb-5 md:rounded-3xl">
