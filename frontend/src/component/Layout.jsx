@@ -239,7 +239,7 @@ function Layout() {
 
   // Handle song click to navigate and set player state
   const handlePlayer = (id, title, artist) => {
-    setSongClickLoading(true);
+    setHiddenPlayer(false)
     setCurrentPlayingSong({
       id,
       name: title,
@@ -458,7 +458,7 @@ function Layout() {
                 ) : (
                   // Display song list if there are matching results
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-5">
-                    <Suspense fallback={<SongLoadingScalaton />}>
+                    <Suspense fallback={<div>Loading please wait...</div>}>
                       {paginatedSongs.map((song) => (
                         <SongList
                           key={song.songId}
