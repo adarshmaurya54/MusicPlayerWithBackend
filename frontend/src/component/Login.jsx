@@ -30,7 +30,7 @@ function Login() {
 
       navigate("/"); // Redirect to the dashboard or another page
     } catch (error) {
-      setError("Login failed. Please check your credentials and try again.");
+      setError("Please check your credentials and try again.");
     }
   };
 
@@ -46,7 +46,7 @@ function Login() {
         {error && (
           <MessageCard
             type="error"
-            message="Error message"
+            message="Login failed"
             subMessage={error}
             setError={setError}
           />

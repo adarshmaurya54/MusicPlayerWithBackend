@@ -4,7 +4,7 @@ const verifyToken = (req, res, next) => {
   const token = req.header("Authorization")?.replace("Bearer ", "");
 
   if (!token) {
-    return res.status(401).json({ error: "Access denied, token missing" });
+    return res.status(401).json({ message: "Token expire, Please login!!" });
   }
 
   try {

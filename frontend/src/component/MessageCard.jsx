@@ -31,8 +31,9 @@ function MessageCard({ type, message, subMessage,setError }) {
 
   return (
     <div
-      className={`w-fit h-[80px] transition-transform duration-500  absolute top-5 right-5 bg-white shadow-lg rounded-md p-2.5 flex items-center justify-between gap-3 overflow-hidden`}
-    >
+  className={`w-[350px] h-[80px] transition-transform duration-500 absolute top-2 right-auto left-1/2 -translate-x-1/2 md:top-5 md:right-5 md:left-auto md:translate-x-0 bg-white shadow-lg rounded-md p-2.5 flex items-center justify-between gap-3 overflow-hidden`}
+>
+
       {/* Wave SVG */}
       <svg
         className={`absolute transform rotate-90 left-[-32px] top-[32px] w-[80px]`}

@@ -39,7 +39,7 @@ exports.validateToken = (req, res) => {
   const token = req.header('Authorization')?.replace('Bearer ', ''); // Get token from headers
 
   if (!token) {
-    return res.status(403).json({ error: 'Access denied, no token provided' });
+    return res.status(403).json({ message: 'Please login!' });
   }
 
   try {
@@ -49,7 +49,7 @@ exports.validateToken = (req, res) => {
     res.status(200).json({ message: 'Token is valid', user: req.user });
   } catch (err) {
     console.error(err);
-    res.status(403).json({ error: 'Invalid or expired token' }); // Token verification failed
+    res.status(403).json({ message: 'Invalid or expired token' }); // Token verification failed
   }
 };
 
