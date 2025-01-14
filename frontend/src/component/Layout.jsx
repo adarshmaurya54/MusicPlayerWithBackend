@@ -174,8 +174,8 @@ function Layout() {
   };
 
   useEffect(() => {
-    fetchSongs();
-  }, []);
+    fetchSongs();  
+  }, []); 
   useEffect(() => {
     if (isFavourite) {
       // Filter the songs to include only those with favourite = true
@@ -358,8 +358,8 @@ function Layout() {
                     <input
                       type="text"
                       className="w-full text-black border rounded-xl py-4 pl-12 pr-5 outline-none
-      bg-white shadow-lg md:focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50
-      transition-all duration-300 ease-in-out hover:shadow-xl placeholder:text-gray-300 placeholder:text-sm"
+                            bg-white shadow-lg md:focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50
+                            transition-all duration-300 ease-in-out hover:shadow-xl placeholder:text-gray-300 placeholder:text-sm"
                       placeholder="Search for music that matches your vibe"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
