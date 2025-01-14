@@ -333,7 +333,7 @@ function Layout() {
                 <div className="flex gap-5 md:flex-row flex-col items-center w-full text-black justify-between">
                   <div className="relative md:w-[376px] w-full">
                     {/* Search Icon */}
-                    <span className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-gray-500">
+                    <span className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-gray-300">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-5 w-5"
