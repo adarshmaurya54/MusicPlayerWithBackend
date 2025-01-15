@@ -44,9 +44,9 @@ function Upload({ handleToggleUpload, fetchSongs }) {
             setFileUploaded(true);
             return 100;
           }
-          return prevProgress + 10; // Increment progress by 10%
+          return prevProgress + 1; // Increment progress by 10%
         });
-      }, 300); // Simulate upload speed
+      }, 10);
     } catch (error) {
       // Handle error response
       console.error("Error uploading file:", error);
@@ -118,6 +118,12 @@ function Upload({ handleToggleUpload, fetchSongs }) {
     setArtistName("");
     setSongLyrics("");
     setFileUploaded(false);
+  };
+  const formatFileSize = (size) => {
+    if (size < 1024) return `${size} Bytes`;
+    if (size < 1024 * 1024) return `${(size / 1024).toFixed(2)} KB`;
+    if (size < 1024 * 1024 * 1024) return `${(size / (1024 * 1024)).toFixed(2)} MB`;
+    return `${(size / (1024 * 1024 * 1024)).toFixed(2)} GB`;
   };
 
   return (
@@ -194,25 +200,33 @@ function Upload({ handleToggleUpload, fetchSongs }) {
               </button>
             </form>
           </div>
-          <div className="md:w-[40%] md:mt-0 mt-4">
+          <div className="md:w-[40%] md:p-3 md:mt-0 mt-10">
             {/* File Input UI */}
             <div className="rounded-lg overflow-hidden mb-4">
               <div className="md:flex">
                 <div className="w-full">
-                  <div className="relative h-48 rounded-lg border-2 border-dashed border-gray-400 flex justify-center items-center">
-                    <div className="absolute flex flex-col items-center text-center">
-                      <span className="block text-gray-600 font-semibold text-lg">
+                  <div className="relative  transition-all duration-500 group border-[3px] border-dashed border-gray-300 rounded-lg p-6 hover:shadow-lg hover:border-black">
+                    <div className="flex flex-col items-center justify-center h-48 space-y-3 text-center">
+                      <svg
+                        className="h-36 text-gray-500 transition-all duration-500 group-hover:text-black mb-4"
+                        viewBox="0 0 640 512"
+                        fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M144 480C64.5 480 0 415.5 0 336c0-62.8 40.2-116.2 96.2-135.9c-.1-2.7-.2-5.4-.2-8.1c0-88.4 71.6-160 160-160c59.3 0 111 32.2 138.7 80.2C409.9 102 428.3 96 448 96c53 0 96 43 96 96c0 12.2-2.3 23.8-6.4 34.6C596 238.4 640 290.1 640 352c0 70.7-57.3 128-128 128H144zm79-217c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l39-39V392c0 13.3 10.7 24 24 24s24-10.7 24-24V257.9l39 39c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-80-80c-9.4-9.4-24.6-9.4-33.9 0l-80 80z" />
+                      </svg>
+                      <span className="block text-gray-600 transition-all duration-500 font-semibold text-lg group-hover:text-black">
                         Drag & drop your files here
                       </span>
-                      <span className="block text-gray-500 font-normal mt-1">
-                        or click to upload
+                      <span className="block text-gray-500 font-normal text-sm">
+                        or click to upload a file
                       </span>
                     </div>
                     <input
                       name="file"
-                      className="h-full w-full opacity-0 cursor-pointer"
+                      className="absolute inset-0 opacity-0 cursor-pointer"
                       type="file"
-                      accept=".mp3"
+                      accept="audio/*"
                       onChange={handleFileChange}
                     />
                   </div>
@@ -223,14 +237,13 @@ function Upload({ handleToggleUpload, fetchSongs }) {
             {/* File Details */}
             {file && (
               <div className="mb-4">
-                <p className="text-sm text-gray-600">
-                  <span className="font-semibold">File Name:</span> {file.name}
-                </p>
-                <p className="text-sm text-gray-600">
-                  <span className="font-semibold">File Size:</span>{" "}
-                  {(file.size / 1024).toFixed(2)} KB
-                </p>
-              </div>
+              <p className="text-sm text-gray-600">
+                <span className="font-semibold">File Name:</span> {file.name}
+              </p>
+              <p className="text-sm text-gray-600">
+                <span className="font-semibold">File Size:</span> {formatFileSize(file.size)}
+              </p>
+            </div>
             )}
 
             {/* Progress Bar */}

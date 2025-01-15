@@ -174,8 +174,8 @@ function Layout() {
   };
 
   useEffect(() => {
-    fetchSongs();  
-  }, []); 
+    fetchSongs();
+  }, []);
   useEffect(() => {
     if (isFavourite) {
       // Filter the songs to include only those with favourite = true
@@ -480,8 +480,24 @@ function Layout() {
                   </div>
                 ) : (
                   // Display song list if there are matching results
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-5">
-                    <Suspense fallback={<div>Loading please wait...</div>}>
+                  <Suspense
+                    fallback={
+                      <div className="w-full px-4 py-8 mt-4 rounded-2xl flex items-center justify-center bg-white">
+                        <div className="flex items-center justify-center">
+                          <div className="flex flex-col items-center space-y-4">
+                            <div className="w-16 h-16 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
+                            <p className="text-xl text-center font-semibold text-gray-700">
+                              Please wait, the song is loading...
+                            </p>
+                            <p className="text-sm text-gray-500 italic">
+                              🎵 "Good things take time" 🎶
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    }
+                  >
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-5">
                       {paginatedSongs.map((song) => (
                         <SongList
                           key={song.songId}
@@ -502,8 +518,8 @@ function Layout() {
                           fetchSongs={fetchSongs}
                         />
                       ))}
-                    </Suspense>
-                  </div>
+                    </div>
+                  </Suspense>
                 )}
 
                 {/* Pagination Controls */}

@@ -11,7 +11,7 @@ function SongClickLoader() {
           <div className="flex md:flex-row h-full flex-col items-center justify-evenly">
             {/* Skeleton for Image */}
             <div className="transition-all md:mb-0 mb-5 px-3 py-5 md:w-[50%] w-full flex justify-center">
-              <div className="w-[80%] h-[200px] md:h-[300px] bg-gray-500 animate-pulse rounded-3xl"></div>
+              <div className="md:w-[80%] w-[270px] h-[200px] md:h-[300px] bg-gray-500 animate-pulse rounded-3xl"></div>
             </div>
             {/* Skeleton for Song Info */}
             <div className="transition-all flex items-center justify-center md:w-[60%] w-full">

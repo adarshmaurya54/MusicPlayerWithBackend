@@ -33,6 +33,7 @@ function Login() {
       setLoginLoading(false)
       navigate("/"); // Redirect to the dashboard or another page
     } catch (error) {
+      setLoginLoading(false)
       setError("Please check your credentials and try again.");
     }
   };

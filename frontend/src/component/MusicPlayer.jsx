@@ -269,7 +269,7 @@ const MusicPlayer = ({
         }}
         className="transition-all duration-700 md:w-[90%] relative md:h-[95%] bg-no-repeat bg-center bg-cover overflow-auto no-scrollbar h-full w-full md:rounded-[30px]"
       >
-        <div className="bg-white md:bg-black/20 md:backdrop-blur-lg p-4 h-full overflow-auto no-scrollbar">
+        <div className="bg-white/90 backdrop-blur-sm md:bg-black/20 md:backdrop-blur-lg p-4 h-full overflow-auto no-scrollbar">
           <div className="flex text-black md:text-white absolute md:top-7 md:left-7 justify-between items-center">
             <FaArrowLeft
               onClick={() => handlePlayerClose(songId, songName, artistName)}
