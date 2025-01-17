@@ -2,72 +2,69 @@ const { google } = require("googleapis");
 const { Readable } = require("stream");
 
 const SCOPE = ["https://www.googleapis.com/auth/drive"];
-let jwtClient;
+let jwtClient = null;
 
 // Function to authorize the Google API
 async function authorize() {
   if (!jwtClient) {
+    console.time("JWT Client Initialization");
     jwtClient = new google.auth.JWT(
-      process.env.CLIENT_EMAIL, // Ensure this is set in your environment variables
+      process.env.CLIENT_EMAIL,
       null,
-      process.env.PRIVATE_KEY, // Ensure this is set in your environment variables
+      process.env.PRIVATE_KEY.replace(/\\n/g, "\n"), // Handle multi-line keys
       SCOPE
     );
     await jwtClient.authorize();
+    console.timeEnd("JWT Client Initialization");
   }
   return jwtClient;
 }
 
 // Function to get the Google Drive service
-async function getDriveService() {
+function getDriveService() {
   if (!jwtClient) {
     throw new Error("Google Drive not initialized. Call authorize() first.");
   }
   return google.drive({ version: "v3", auth: jwtClient });
 }
 
-// Function to upload a file to Google Drive (modified to accept a file buffer)
-async function uploadFileToDrive(
-  fileBuffer,
-  fileName,
-  mimeType = "audio/mpeg"
-) {
-  // Default MIME type is set here
+// Function to upload a file to Google Drive (optimized for reuse)
+async function uploadFileToDrive(fileBuffer, fileName, mimeType = "audio/mpeg") {
   try {
-    // Authorize and get Google Drive service
-    await authorize(); // Make sure we have authorized the client
-    const drive = await getDriveService(); // Get the drive service
+    // Ensure the client is authorized
+    await authorize();
+    const drive = getDriveService();
 
     const fileMetadata = {
-      name: fileName, // File name on Google Drive
-      parents: [process.env.FOLDER_ID], // Folder ID on Google Drive
-      mimeType: mimeType, // MIME type (defaults to 'audio/mpeg')
+      name: fileName,
+      parents: [process.env.FOLDER_ID], // Ensure FOLDER_ID is set in env
     };
-
-    // Convert the file buffer into a readable stream
-    const bufferStream = Readable.from(fileBuffer);
 
     const media = {
-      mimeType: mimeType,
-      body: bufferStream, // Pass the buffer as a readable stream
+      mimeType,
+      body: Readable.from(fileBuffer), // Stream file buffer
     };
 
+    // Upload the file to Google Drive
+    console.time("File Upload");
     const response = await drive.files.create({
       resource: fileMetadata,
-      media: media,
-      fields: "id, name", // The fields you need to retrieve from the response
+      media,
+      fields: "id, name", // Retrieve file ID and name
     });
+    console.timeEnd("File Upload");
 
     console.log("File uploaded successfully:", response.data);
-    return response.data; // Return the file data (e.g., file ID) for reference
+    return response.data; // Return file data (e.g., file ID)
   } catch (error) {
-    console.error("Error uploading file:", error);
+    console.error("Error uploading file:", error.message);
     throw error;
   }
 }
 
+// Export functions
 module.exports = {
-  authorize, // Export the authorize function
-  getDriveService, // Export the getDriveService function
-  uploadFileToDrive, // Export the upload function
+  authorize,
+  getDriveService,
+  uploadFileToDrive,
 };

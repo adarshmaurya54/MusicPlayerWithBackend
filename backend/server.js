@@ -4,8 +4,6 @@ require("dotenv").config();
 const connectDB = require("./config/db");
 const multer = require("multer");
 const path = require("path");
-const fs = require("fs");
-const { initializeAuth, getDriveService } = require("./services/googleDriveService");
 
 // Import controllers
 const artistController = require('./controllers/artistController');
@@ -72,3 +70,4 @@ app.use((err, req, res, next) => {
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
+ 
