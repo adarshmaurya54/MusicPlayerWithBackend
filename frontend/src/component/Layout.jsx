@@ -459,14 +459,28 @@ function Layout() {
                   )}
                 </div>
                 {/* artist filter buttons */}
-                <ArtistButtons
-                  setSelectedArtist={setSelectedArtist}
-                  selectedArtist={selectedArtist}
-                />
+                {loading ? (
+                  <div className="relative mt-5 rounded-xl bg-white flex flex-wrap items-center md:gap-5 gap-3 md:p-0 p-3 animate-pulse">
+                    {/* Skeleton for Individual Artist Buttons */}
+                    <div className="flex flex-wrap gap-3">
+                      {[...Array(5)].map((_, index) => (
+                        <div
+                          key={index}
+                          className="bg-gray-300 w-32 h-10 rounded-xl flex items-center"
+                        ></div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <ArtistButtons
+                    setSelectedArtist={setSelectedArtist}
+                    selectedArtist={selectedArtist}
+                  />
+                )}
                 {/* Song List */}
 
                 {loading ? (
-                  <SongLoadingScalaton/>
+                  <SongLoadingScalaton />
                 ) : (
                   <>
                     {filteredSongs.length === 0 ? (

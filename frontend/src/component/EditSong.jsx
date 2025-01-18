@@ -90,7 +90,7 @@ function EditSong({ songId, fetchSongs, handleToggleEdit }) {
                   type="text"
                   id="songname"
                   name="songName" // Add name attribute to match the state key
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   value={song.songName} // Set song name from the fetched data
                   onChange={handleInputChange} // Handle input change
                   required
@@ -107,7 +107,7 @@ function EditSong({ songId, fetchSongs, handleToggleEdit }) {
                   type="text"
                   id="artistname"
                   name="artistName" // Add name attribute to match the state key
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   value={song.artistName} // Set artist name from the fetched data
                   onChange={handleInputChange} // Handle input change
                   required
@@ -124,7 +124,7 @@ function EditSong({ songId, fetchSongs, handleToggleEdit }) {
                   id="songlyrics"
                   name="lyrics" // Add name attribute to match the state key
                   rows="6"
-                  className="bg-gray-50 resize-none border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="resize-none border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   value={song.lyrics} // Set song lyrics from the fetched data
                   onChange={handleInputChange} // Handle input change
                 ></textarea>
