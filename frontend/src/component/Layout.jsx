@@ -32,7 +32,7 @@ function Layout() {
   const [editSongId, setEditSongId] = useState("");
   const [player, setPlayer] = useState(songId ? songId : 0); // To handle current song
   const [songClickLoading, setSongClickLoading] = useState(false);
-  const [isNoSongsFound, setIsNoSongsFound] = useState(true);
+  const [isNoSongsFound, setIsNoSongsFound] = useState(false);
   const [currentPlayingSong, setCurrentPlayingSong] = useState({
     id: 0,
     name: "",
@@ -465,86 +465,76 @@ function Layout() {
                 />
                 {/* Song List */}
 
-                {loading && (
-                  <div className="w-full px-4 py-8 mt-4 rounded-2xl flex items-center justify-center bg-white">
-                    <div className="flex items-center justify-center">
-                      <div className="flex flex-col items-center space-y-4">
-                        <div className="w-16 h-16 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
-                        <p className="text-xl text-center font-semibold text-gray-700">
-                          Please wait, the song is loading...
-                        </p>
-                        <p className="text-sm text-gray-500 italic">
-                          🎵 "Good things take time" 🎶
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-{filteredSongs.length === 0 ? (
-                  // Message when no songs match the search query
-                  <div className="flex flex-col bg-white md:mt-0 mt-5 rounded-xl items-center justify-center h-32">
-                    <p className="text-gray-500 text-lg font-semibold">
-                      No songs match your search.
-                    </p>
-                    <p className="text-gray-400">
-                      Try searching with a different keyword.
-                    </p>
-                  </div>
+                {loading ? (
+                  <SongLoadingScalaton/>
                 ) : (
-                  // Display song list if there are matching results
-                  <Suspense
-                    fallback={
-                      <div className="w-full px-4 py-8 mt-4 rounded-2xl flex items-center justify-center bg-white">
-                        <div className="flex items-center justify-center">
-                          <div className="flex flex-col items-center space-y-4">
-                            <div className="w-16 h-16 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
-                            <p className="text-xl text-center font-semibold text-gray-700">
-                              Please wait, the song is loading...
-                            </p>
-                            <p className="text-sm text-gray-500 italic">
-                              🎵 "Good things take time" 🎶
-                            </p>
-                          </div>
-                        </div>
+                  <>
+                    {filteredSongs.length === 0 ? (
+                      // Message when no songs match the search query
+                      <div className="flex flex-col bg-white md:mt-0 mt-5 rounded-xl items-center justify-center h-32">
+                        <p className="text-gray-500 text-lg font-semibold">
+                          No songs match your search.
+                        </p>
+                        <p className="text-gray-400">
+                          Try searching with a different keyword.
+                        </p>
                       </div>
-                    }
-                  >
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-5">
-                      {paginatedSongs.map((song) => (
-                        <SongList
-                          key={song.songId}
-                          handlePlayer={() =>
-                            handlePlayer(
-                              song.audioFile,
-                              song.songName,
-                              song.artistName
-                            )
-                          }
-                          id={song._id}
-                          songId={song.songId}
-                          title={song.songName}
-                          artist={song.artistName}
-                          favourite={song.favourite}
-                          isAdminLogin={isAuthenticated}
-                          handleToggleEdit={handleToggleEdit}
-                          fetchSongs={fetchSongs}
-                        />
-                      ))}
-                    </div>
-                  </Suspense>
-                )}
+                    ) : (
+                      // Display song list if there are matching results
+                      <Suspense
+                        fallback={
+                          <div className="w-full px-4 py-8 mt-4 rounded-2xl flex items-center justify-center bg-white">
+                            <div className="flex items-center justify-center">
+                              <div className="flex flex-col items-center space-y-4">
+                                <div className="w-16 h-16 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
+                                <p className="text-xl text-center font-semibold text-gray-700">
+                                  Please wait, the song is loading...
+                                </p>
+                                <p className="text-sm text-gray-500 italic">
+                                  🎵 "Good things take time" 🎶
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        }
+                      >
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-5">
+                          {paginatedSongs.map((song) => (
+                            <SongList
+                              key={song.songId}
+                              handlePlayer={() =>
+                                handlePlayer(
+                                  song.audioFile,
+                                  song.songName,
+                                  song.artistName
+                                )
+                              }
+                              id={song._id}
+                              songId={song.songId}
+                              title={song.songName}
+                              artist={song.artistName}
+                              favourite={song.favourite}
+                              isAdminLogin={isAuthenticated}
+                              handleToggleEdit={handleToggleEdit}
+                              fetchSongs={fetchSongs}
+                            />
+                          ))}
+                        </div>
+                      </Suspense>
+                    )}
 
-                {/* Pagination Controls */}
-                {filteredSongs.length > 0 && (
-                  <Pagination
-                    filteredSongs={filteredSongs}
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    handlePageClick={handlePageClick}
-                    handlePrevPage={handlePrevPage}
-                    handleNextPage={handleNextPage}
-                  />
+                    {/* Pagination Controls */}
+                    {filteredSongs.length > 0 && (
+                      <Pagination
+                        filteredSongs={filteredSongs}
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        handlePageClick={handlePageClick}
+                        handlePrevPage={handlePrevPage}
+                        handleNextPage={handleNextPage}
+                      />
+                    )}
+                  </>
                 )}
               </>
             )}
