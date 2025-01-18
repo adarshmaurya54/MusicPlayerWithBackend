@@ -1,9 +1,9 @@
 const Song = require("../models/songModel");
+const Artist = require("../models/artistModel");
 const path = require("path");
 const fs = require("fs");
 const musicMetadata = require("music-metadata");
-const sharp = require("sharp"); // For resizing image
-const { default: mongoose } = require("mongoose");
+const sharp = require("sharp"); 
 const {
   uploadFileToDrive,
   authorize,
@@ -99,7 +99,7 @@ exports.updateSongById = async (req, res) => {
 };
 
 exports.createSong = async (req, res) => {
-  const { songName, lyrics } = req.body;
+  const { songName } = req.body;
   const audioFile = req.file; // The uploaded file from the request
 
   if (!audioFile) {
@@ -110,12 +110,10 @@ exports.createSong = async (req, res) => {
     // Read metadata from the audio file
     const metadata = await musicMetadata.parseBuffer(audioFile.buffer);
 
-    // Extract song name from metadata (prefer metadata if available)
-    const extractedSongName = metadata.common.title || songName; // If title is not found, use songName from req.body
-    const extractedArtistName = metadata.common.artist || "Unknown Artist"; // Default to 'Unknown Artist' if no artist is found
-
-    // Construct the file name and MIME type based on metadata
-    const fileName = `${extractedSongName}.mp3`; // Save file as songName.mp3
+    // Extract metadata fields
+    const extractedSongName = metadata.common.title || songName; // Use metadata title if available, fallback to songName
+    const extractedArtistName = metadata.common.artist || "Unknown Artist"; // Use metadata artist, fallback to 'Unknown Artist'
+    const extractedLyrics = metadata.common.lyrics?.[0]?.text || "Lyrics not available"; // Extract lyrics from metadata, fallback to default
 
     // Generate the songId
     const songId = extractedSongName.replace(/\s+/g, ""); // Remove spaces for songId
@@ -129,53 +127,73 @@ exports.createSong = async (req, res) => {
         flag: "SONG_EXISTS",
       });
     }
-    
 
     // Authorize with Google Drive
     await authorize();
 
     // Upload the audio file to Google Drive
+    const fileName = `${extractedSongName}.mp3`; // Save file as songName.mp3
     const googleDriveFileData = await uploadFileToDrive(
       audioFile.buffer,
       fileName
     );
 
-    // Save the song metadata (Google Drive file ID, etc.) in MongoDB
+    // Save song data to MongoDB
     const newSong = new Song({
       songId,
       songName: extractedSongName,
       artistName: extractedArtistName,
-      lyrics,
+      lyrics: extractedLyrics,
       audioFile: googleDriveFileData.id, // Save the Google Drive file ID
     });
 
     await newSong.save();
 
-    res
-      .status(201)
-      .json({ message: "Song created and uploaded to Google Drive", newSong });
+    // Handle artist(s)
+    const artistNames = extractedArtistName.split(",").map((name) => name.trim()); // Handle multiple artists
+    for (const name of artistNames) {
+      const existingArtist = await Artist.findOne({ name });
+
+      if (!existingArtist) {
+        // If artist doesn't exist, create a new entry
+        const newArtist = new Artist({ name });
+        await newArtist.save();
+      }
+    }
+
+    res.status(201).json({
+      message: "Song created, uploaded to Google Drive, and artists saved",
+      newSong,
+    });
   } catch (error) {
     console.error("Error creating song:", error);
-    res
-      .status(500)
-      .json({ message: "Error creating song and uploading to Google Drive" });
+    res.status(500).json({
+      message: "Error creating song and uploading to Google Drive",
+      error: error.message,
+    });
   }
 };
 
 
-// Get all songs with artist details
 exports.getAllSongs = async (req, res) => {
   try {
-    const { favourite } = req.query; // Get 'favourite' flag from the query parameters
+    const { favourite, artist } = req.query; // Get 'favourite' and 'artist' flags from the query parameters
     
     let filter = {}; // Default filter to get all songs
 
     // If 'favourite' flag is provided and is true, filter songs with favourite set to true
     if (favourite === 'true') {
-      filter = { favourite: true };
+      filter.favourite = true;
     }
 
-    const songs = await Song.find(filter).sort({ songName: 1 }); // Apply filter and sort by songName
+    // If 'artist' is provided, check if the artist name contains 'Udit Narayan'
+    if (artist !== 'all') {
+      // Use regex to match 'Udit Narayan' in the artistName field
+      filter.artistName = { $regex: artist, $options: 'i' }; // 'i' for case-insensitive match
+    }
+
+    // Get the songs based on the filter, sorted by songName
+    const songs = await Song.find(filter).sort({ songName: 1 });
 
     if (songs.length === 0) {
       return res.status(200).json([]); // Return an empty array if no songs found
@@ -187,6 +205,9 @@ exports.getAllSongs = async (req, res) => {
     res.status(500).json({ error: "Failed to retrieve songs" });
   }
 };
+
+
+
 
 
 

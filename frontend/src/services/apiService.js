@@ -34,9 +34,9 @@ const apiService = {
     }
   },
   // Get all songs
-  getSongs: async (favourite = "false") => {
+  getSongs: async (favourite = "false", artist = 'all') => {
     try {
-      const response = await API.get(`/songs/?favourite=${favourite}`);
+      const response = await API.get(`/songs/?favourite=${favourite}&artist=${artist}`);
       return response.data; // Return the data to be used in the component
     } catch (error) {
       throw new Error("Error fetching songs: " + error.message);

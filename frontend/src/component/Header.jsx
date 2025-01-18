@@ -66,7 +66,7 @@ const Header = ({ handleToggleUpload }) => {
             <span>PlayMusic</span>
           </Link>
         </h1>
-        <nav>
+        {handleToggleUpload && <nav>
           {isAuthenticated ? (
             <div className="flex text-xs md:text-base items-center gap-4">
               <button
@@ -96,7 +96,7 @@ const Header = ({ handleToggleUpload }) => {
               <span>Login</span>
             </button>
           )}
-        </nav>
+        </nav>}
       </div>
     </header>
   );

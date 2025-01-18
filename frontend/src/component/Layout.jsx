@@ -13,10 +13,14 @@ import EditSong from "./EditSong";
 import SongClickLoader from "./SongClickLoader";
 import Pagination from "./Pagination";
 import bg from "../assets/bg.jpg";
+import { GoArrowUpRight } from "react-icons/go";
+import ArtistButtons from "./ArtistButtons";
 
 function Layout() {
   const { songId } = useParams(); // Get songId from URL
   const [songDetail, setSongDetail] = useState(null);
+  const [selectedArtist, setSelectedArtist] = useState("all");
+
   const [songList, setSongList] = useState([]);
   const [songListCopy, setSongListCopy] = useState([]);
   const [hiddenPlayer, setHiddenPlayer] = useState(false); // Manage visibility
@@ -155,7 +159,7 @@ function Layout() {
   const fetchSongs = async () => {
     try {
       setLoading(true);
-      const songs = await apiService.getSongs(isFavourite);
+      const songs = await apiService.getSongs(isFavourite, selectedArtist);
       if (songs.length === 0) {
         setIsNoSongsFound(true); // Set state to true if no songs are found
       } else {
@@ -175,7 +179,7 @@ function Layout() {
 
   useEffect(() => {
     fetchSongs();
-  }, []);
+  }, [selectedArtist]);
   useEffect(() => {
     if (isFavourite) {
       // Filter the songs to include only those with favourite = true
@@ -315,9 +319,9 @@ function Layout() {
     }
   };
 
-  if (loading) {
-    return <SongLoadingScalaton />;
-  }
+  // if (loading) {
+  //   return <SongLoadingScalaton />;
+  // }
 
   if (error) {
     return <div>{error}</div>;
@@ -330,7 +334,7 @@ function Layout() {
         style={{ backgroundImage: `url(${bg})` }}
       >
         <Header handleToggleUpload={handleToggleUpload} />
-        <div className="flex flex-col md:px-10 mb-5 w-full text-white overflow-auto">
+        <div className="flex flex-col md:px-10 mb-5 w-full text-white">
           <div className="md:bg-white md:border p-4 pb-5 md:rounded-3xl">
             {!isNoSongsFound && (
               <>
@@ -454,21 +458,30 @@ function Layout() {
                     </div>
                   )}
                 </div>
-                {/* <div className="mt-5 md:p-0 p-3 rounded-xl bg-white">
-                  <label className="inline-flex text-xs items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      checked={isFavourite}
-                      onChange={(e) => setIsFavourite(e.target.checked)}
-                      className="hidden peer"
-                    />
-                    <span className="w-3 h-3 border-2 border-gray-800 rounded-md relative cursor-pointer peer-checked:bg-gray-800 peer-checked:after:content-[''] peer-checked:after:absolute peer-checked:after:top-1/2 peer-checked:after:left-1/2 peer-checked:after:transform peer-checked:after:-translate-x-1/2 peer-checked:after:-translate-y-1/2 peer-checked:after:w-1.5 peer-checked:after:h-1.5 peer-checked:after:bg-white peer-checked:after:rounded"></span>
-                    <span className="text-gray-800 ">Favourite</span>
-                  </label>
-                </div> */}
+                {/* artist filter buttons */}
+                <ArtistButtons
+                  setSelectedArtist={setSelectedArtist}
+                  selectedArtist={selectedArtist}
+                />
                 {/* Song List */}
 
-                {filteredSongs.length === 0 ? (
+                {loading && (
+                  <div className="w-full px-4 py-8 mt-4 rounded-2xl flex items-center justify-center bg-white">
+                    <div className="flex items-center justify-center">
+                      <div className="flex flex-col items-center space-y-4">
+                        <div className="w-16 h-16 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
+                        <p className="text-xl text-center font-semibold text-gray-700">
+                          Please wait, the song is loading...
+                        </p>
+                        <p className="text-sm text-gray-500 italic">
+                          🎵 "Good things take time" 🎶
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+{filteredSongs.length === 0 ? (
                   // Message when no songs match the search query
                   <div className="flex flex-col bg-white md:mt-0 mt-5 rounded-xl items-center justify-center h-32">
                     <p className="text-gray-500 text-lg font-semibold">
