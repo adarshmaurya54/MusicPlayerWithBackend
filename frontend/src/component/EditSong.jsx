@@ -7,6 +7,7 @@ function EditSong({ songId, fetchSongs, handleToggleEdit }) {
   const [song, setSong] = useState(null); // State to store song data
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(null); // Error state
+  const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
     const fetchSong = async () => {
@@ -40,7 +41,9 @@ function EditSong({ songId, fetchSongs, handleToggleEdit }) {
         artistName: song.artistName,
         lyrics: song.lyrics,
       };
+      setUpdating(true);
       await apiService.updateSong(songId, updatedData);
+      setUpdating(false);
       fetchSongs();
       handleToggleEdit(); // Close the modal on success
     } catch (err) {
@@ -130,9 +133,10 @@ function EditSong({ songId, fetchSongs, handleToggleEdit }) {
                 <button
                   type="button"
                   onClick={handleUpdateSong}
-                  className="bg-black w-full hover:outline outline-offset-2 outline-black text-white px-4 py-2 rounded-lg"
+                  disabled={updating}
+                  className={`bg-black w-full hover:outline outline-offset-2 outline-black text-white px-4 py-2 rounded-lg ${updating && "cursor-not-allowed"}`}
                 >
-                  Update Song
+                  {updating ? "Updating..." : "Update song"}
                 </button>
               </div>
             </form>
