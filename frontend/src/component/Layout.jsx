@@ -1,5 +1,5 @@
 import React, { Suspense, useState, useEffect, useRef } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom"; // useParams for URL parameters and useNavigate for navigation
+import { useParams, useNavigate } from "react-router-dom"; // useParams for URL parameters and useNavigate for navigation
 import apiService from "../services/apiService";
 
 // Lazy load the SongList component
@@ -10,11 +10,13 @@ import SongLoadingScalaton from "./SongLoadingScalaton";
 import Upload from "./Upload";
 import axios from "axios";
 import EditSong from "./EditSong";
-import SongClickLoader from "./SongClickLoader";
 import Pagination from "./Pagination";
 import bg from "../assets/bg.jpg";
-import { GoArrowUpRight } from "react-icons/go";
 import ArtistButtons from "./ArtistButtons";
+import {
+  TbPlayerTrackNextFilled,
+  TbPlayerTrackPrevFilled,
+} from "react-icons/tb";
 
 function Layout() {
   const { songId } = useParams(); // Get songId from URL
@@ -23,7 +25,7 @@ function Layout() {
 
   const [songList, setSongList] = useState([]);
   const [songListCopy, setSongListCopy] = useState([]);
-  const [hiddenPlayer, setHiddenPlayer] = useState(false); // Manage visibility
+  const [hiddenPlayer, setHiddenPlayer] = useState(true); // Manage visibility
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -41,15 +43,18 @@ function Layout() {
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Track if user is authenticated
   const [currentPage, setCurrentPage] = useState(1);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // if song is loading in music player
   const audioRef = useRef(null);
   const [progressPercentage, setProgressPercentage] = useState(0);
   const [isFavourite, setIsFavourite] = useState(false);
 
   const togglePlayPause = () => {
     if (audioRef.current.paused) {
+      console.log("hi1");
       audioRef.current.play();
       setIsPlaying(true);
     } else {
+      console.log("hi");
       audioRef.current.pause();
       setIsPlaying(false);
     }
@@ -201,22 +206,13 @@ function Layout() {
         artist: "",
       });
     };
-
-    const deleteThumbnails = async () => {
-      try {
-        await apiService.deleteThumbnails(player);
-        // console.log(`Thumbnails for songId ${player} deleted successfully.`);
-      } catch (error) {
-        console.error("Error deleting thumbnails:", error.message);
-      }
-    };
-
     const fetchSongDetails = async () => {
       setSongClickLoading(true); // Start loading
       try {
         const response = await apiService.getSongInfo(songId);
         setSongDetail(response);
-        setHiddenPlayer(false); // Make the player visible
+
+        // setHiddenPlayer(false); // Make the player visible
       } catch (err) {
         console.error("Failed to fetch song details:", err);
         navigate("/no-song-found"); // Redirect on error
@@ -227,7 +223,6 @@ function Layout() {
 
     // Reset state and delete thumbnails
     resetPlayerState();
-    deleteThumbnails();
 
     // Fetch song details if `songId` exists
     if (songId) {
@@ -242,8 +237,10 @@ function Layout() {
   }, [songId, navigate]);
 
   // Handle song click to navigate and set player state
-  const handlePlayer = (id, title, artist) => {
-    setHiddenPlayer(false);
+  const handlePlayer = async (id, title, artist) => {
+    if (player !== 0) {
+      await apiService.deleteThumbnails(player);
+    }
     setCurrentPlayingSong({
       id,
       name: title,
@@ -253,32 +250,34 @@ function Layout() {
     navigate(`/song/${id}`);
   };
 
+  useEffect(() => {
+    setCurrentPlayingSong({
+      id: songDetail?.audioUrl,
+      name: songDetail?.songName,
+      artist: songDetail?.artistName,
+    });
+    setTimeout(async () => {
+      if (player !== 0) {
+        await apiService.deleteThumbnails(player);
+      }
+    }, 1000);
+  }, [songDetail]);
+
   // Play the next song
-  const playNextSong = async () => {
-    try {
-      await apiService.deleteThumbnails(player);
-      // console.log(`Thumbnails for songId ${player} deleted successfully.`);
-      const nextSongId = getNextSongId(player);
+  const playNextSong = () => {
+    const nextSongId = getNextSongId(player);
+    if (nextSongId) {
       setPlayer(nextSongId);
       navigate(`/song/${nextSongId}`);
-    } catch (error) {
-      console.error("Error deleting thumbnails:", error.message);
     }
   };
 
   // Play the previous song
   const playPrevSong = async () => {
-    setSongClickLoading(true);
-    try {
-      await apiService.deleteThumbnails(player);
-      // console.log(`Thumbnails for songId ${player} deleted successfully.`);
-      const prevSongId = getPrevSongId(player);
-      if (prevSongId) {
-        setPlayer(prevSongId);
-        navigate(`/song/${prevSongId}`);
-      }
-    } catch (error) {
-      console.error("Error deleting thumbnails:", error.message);
+    const prevSongId = getPrevSongId(player);
+    if (prevSongId) {
+      setPlayer(prevSongId);
+      navigate(`/song/${prevSongId}`);
     }
   };
 
@@ -311,18 +310,8 @@ function Layout() {
       name,
       artist,
     });
-    setHiddenPlayer(true); // Hide the player
-    try {
-      await apiService.deleteThumbnails(player);
-      // console.log(`Thumbnails for songId ${player} deleted successfully.`);
-    } catch (error) {
-      console.error("Error deleting thumbnails:", error.message);
-    }
+    setHiddenPlayer(true);
   };
-
-  // if (loading) {
-  //   return <SongLoadingScalaton />;
-  // }
 
   if (error) {
     return <div>{error}</div>;
@@ -371,9 +360,9 @@ function Layout() {
                     />
                   </div>
 
-                  {currentPlayingSong.id !== 0 && (
+                  {songId &&
                     <div
-                      className="w-full flex items-center overflow-hidden rounded-xl md:w-[290px]"
+                      className="w-full flex items-center overflow-hidden rounded-xl md:w-[330px]"
                       style={{
                         backgroundImage: songDetail
                           ? `url(${import.meta.env.VITE_BASEURL}/assets${
@@ -404,17 +393,31 @@ function Layout() {
                           />
                           <div className="flex flex-col w-full">
                             <p className="font-bold text-xl text-white">
-                              {isPlaying ? "Now Playing" : "Paused"}
+                              {currentPlayingSong?.name
+                                ? isLoading
+                                  ? "Buffering..."
+                                  : isPlaying
+                                  ? "Now Playing"
+                                  : "Paused"
+                                : "Please wait"}
                             </p>
-                            <marquee
-                              className="text-xs text-gray-200"
-                              behavior=""
-                              scrollamount="2"
-                            >
-                              {isPlaying
-                                ? `${currentPlayingSong.name} • ${currentPlayingSong.artist}`
-                                : "Click play to start the music!"}
-                            </marquee>
+                            {currentPlayingSong?.name ? (
+                              <marquee
+                                className="text-xs text-gray-200"
+                                behavior=""
+                                scrollamount="2"
+                              >
+                                {isPlaying
+                                  ? `${currentPlayingSong.name} • ${currentPlayingSong.artist}`
+                                  : isLoading
+                                  ? "Your song is loading please wait..."
+                                  : "Click play to start the music!"}
+                              </marquee>
+                            ) : (
+                              <div className="text-xs text-gray-200">
+                                Loading you next song...
+                              </div>
+                            )}
                             <div className="relative w-full mt-3 bg-white/20 rounded-full h-1">
                               <div
                                 className="absolute top-0 left-0 h-full bg-white rounded-full transition-all duration-300 ease-out"
@@ -430,34 +433,42 @@ function Layout() {
                             </div>
                           </div>
                         </div>
-                        <div
-                          className="flex items-center justify-center me-4 cursor-pointer"
-                          onClick={togglePlayPause} // Trigger play/pause on click
-                        >
+                        <div className="flex items-center gap-2 justify-between me-4">
+                          <TbPlayerTrackPrevFilled
+                            onClick={() => playPrevSong()}
+                            className="text-white text-xl hover:scale-110 transition-all cursor-pointer"
+                          />
+
                           {isPlaying ? (
                             <svg
+                              onClick={togglePlayPause}
                               xmlns="http://www.w3.org/2000/svg"
                               fill="white"
                               viewBox="0 0 24 24"
-                              className="w-8 h-8"
+                              className="w-8 h-8 cursor-pointer"
                             >
                               <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />{" "}
                               {/* Pause Icon */}
                             </svg>
                           ) : (
                             <svg
+                              onClick={togglePlayPause}
                               xmlns="http://www.w3.org/2000/svg"
                               fill="white"
                               viewBox="0 0 24 24"
-                              className="w-8 h-8"
+                              className="w-8 h-8 cursor-pointer"
                             >
                               <path d="M8 5v14l11-7z" /> {/* Play Icon */}
                             </svg>
                           )}
+                          <TbPlayerTrackNextFilled
+                            onClick={() => playNextSong()}
+                            className="text-white text-xl cursor-pointer hover:scale-110 transition-all"
+                          />
                         </div>
                       </div>
                     </div>
-                  )}
+                  }
                 </div>
                 {/* artist filter buttons */}
                 {loading ? (
@@ -571,34 +582,34 @@ function Layout() {
             )}
           </div>
 
-          {/* Conditionally render MusicPlayer if songDetail is available */}
-          {songDetail && (
-            <div
-              className={`transition-all ${
-                hiddenPlayer
-                  ? "opacity-0 z-[-1] duration-500"
-                  : "opacity-100 z-10 duration-500"
-              } 
+          <div
+            className={`transition-all ${
+              hiddenPlayer
+                ? "opacity-0 z-[-1] duration-500"
+                : "opacity-100 z-10 duration-500"
+            } 
             ${hiddenPlayer ? "sm:block md:hidden" : "sm:block md:block"} 
             `}
-            >
-              <MusicPlayer
-                audioRef={audioRef}
-                songId={player}
-                handlePlayerClose={handlePlayerClose}
-                songName={songDetail.songName}
-                artistName={songDetail.artistName}
-                image={songDetail.highQualityThumbnailUrl}
-                audioUrl={songDetail.audioUrl}
-                backgroundImage={songDetail.lowQualityThumbnailUrl}
-                favourite={songDetail.favourite}
-                playNextSong={playNextSong}
-                playPrevSong={playPrevSong}
-                SetisPlayingOrNotForLayout={setIsPlaying}
-                setProgressPercentage={setProgressPercentage}
-              />
-            </div>
-          )}
+          >
+            <MusicPlayer
+              audioRef={audioRef}
+              songId={player}
+              handlePlayerClose={handlePlayerClose}
+              songName={songDetail?.songName}
+              artistName={songDetail?.artistName}
+              image={songDetail?.highQualityThumbnailUrl}
+              audioUrl={songDetail?.audioUrl}
+              backgroundImage={songDetail?.lowQualityThumbnailUrl}
+              favourite={songDetail?.favourite}
+              playNextSong={playNextSong}
+              playPrevSong={playPrevSong}
+              SetisPlayingOrNotForLayout={setIsPlaying}
+              setProgressPercentage={setProgressPercentage}
+              songClickLoading={songClickLoading}
+              setIsLoading={setIsLoading} // this is for song if song is buffering...
+              isLoading={isLoading}
+            />
+          </div>
 
           {upload && (
             <Upload
@@ -613,7 +624,6 @@ function Layout() {
               songId={editSongId}
             />
           )}
-          {songClickLoading && <SongClickLoader />}
         </div>
       </div>
     </>

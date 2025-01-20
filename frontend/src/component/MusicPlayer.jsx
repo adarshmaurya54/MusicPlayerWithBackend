@@ -7,6 +7,8 @@ import { FaForward } from "react-icons/fa";
 import { FaBackward } from "react-icons/fa";
 import apiService from "../services/apiService";
 
+
+
 const MusicPlayer = ({
   songName,
   playNextSong,
@@ -21,13 +23,16 @@ const MusicPlayer = ({
   audioRef,
   SetisPlayingOrNotForLayout,
   setProgressPercentage,
+  songClickLoading,
+  isLoading,
+  setIsLoading
 }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [totalDuration, setTotalDuration] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
-  const [isLoading, setIsLoading] = useState(true); // New state for loading
+ // New state for loading
   const [isLiked, setIsLiked] = useState(favourite); // State to track toggle
 
   const progressBarRef = useRef(null);
@@ -263,129 +268,168 @@ const MusicPlayer = ({
     >
       <div
         style={{
-          backgroundImage: `url(${
-            import.meta.env.VITE_BASEURL
-          }/assets${backgroundImage})`,
+          backgroundImage: songClickLoading
+            ? "none" // No image when true
+            : `url(${import.meta.env.VITE_BASEURL}/assets${backgroundImage})`, // Image when false
         }}
         className="transition-all duration-700 md:w-[90%] relative md:h-[95%] bg-no-repeat bg-center bg-cover overflow-auto no-scrollbar h-full w-full md:rounded-[30px]"
       >
-        <div className="bg-white/80 backdrop-blur-xl md:bg-black/20 md:backdrop-blur-lg p-4 h-full overflow-auto no-scrollbar">
+        <div
+          className={`${
+            songClickLoading ? "bg-white" : "bg-white/80 md:bg-black/20"
+          } backdrop-blur-xl md:backdrop-blur-lg p-4 h-full overflow-auto no-scrollbar`}
+        >
           <div className="flex text-black md:text-white absolute md:top-7 md:left-7 justify-between items-center">
-            <FaArrowLeft
-              onClick={() => handlePlayerClose(songId, songName, artistName)}
-              className="text-xl cursor-pointer"
-            />
+            {songClickLoading ? (
+                <div className="w-8 h-8 bg-gray-500 animate-pulse rounded-full"></div>
+            ) : (
+              <FaArrowLeft
+                onClick={() => handlePlayerClose(songId, songName, artistName)}
+                className="text-xl cursor-pointer"
+              />
+            )}
           </div>
           <div className="flex md:flex-row h-full flex-col items-center justify-evenly">
-            <div className="transition-all md:mb-0 mb-5 px-3 py-5 md:w-[50%] w-full flex justify-center">
-              <img
-                src={`${import.meta.env.VITE_BASEURL}/assets${image}`}
-                alt="Album Art"
-                className="transition-all shadow-2xl md:w-[80%] w-[270px] rounded-3xl"
-              />
-            </div>
-            <div className="transition-all flex items-center justify-center md:w-[60%]">
-              <div className="md:rounded-3xl w-full md:p-2 md:border-2 md:border-white/20">
-                <div className="flex items-center text-black md:text-white px-3 justify-between">
-                  <div className="flex flex-col">
-                    <div
-                      title={songName}
-                      className="font-extrabold md:leading-[50px] line-clamp-2 md:text-4xl text-3xl"
-                    >
-                      {songName}
+            {songClickLoading ? (
+              <div className="transition-all md:mb-0 mb-5 px-3 py-5 md:w-[50%] w-full flex justify-center">
+                <div className="md:w-[80%] w-[270px] h-[200px] md:h-[300px] bg-gray-500 animate-pulse rounded-3xl"></div>
+              </div>
+            ) : (
+              <div className="transition-all md:mb-0 mb-5 px-3 py-5 md:w-[50%] w-full flex justify-center">
+                <img
+                  src={`${import.meta.env.VITE_BASEURL}/assets${image}`}
+                  alt="Album Art"
+                  className="transition-all shadow-2xl md:w-[80%] w-[270px] rounded-3xl"
+                />
+              </div>
+            )}
+            {songClickLoading ? (
+              <div className="transition-all flex items-center justify-center md:w-[60%] w-full">
+                <div className="md:rounded-3xl w-full md:p-2 md:py-4 md:border-2 md:border-black/20">
+                  <div className="flex items-center px-3 justify-between">
+                    <div className="flex flex-col gap-2">
+                      <div className="w-40 h-8 bg-gray-500 animate-pulse rounded"></div>
+                      <div className="w-32 h-5 bg-gray-500 animate-pulse rounded"></div>
                     </div>
-                    <span className="md:text-xl capitalize font-thin text-lg text-gray-700 md:text-gray-100">
-                      {artistName}
-                    </span>
+                    <div className="w-8 h-8 bg-gray-500 animate-pulse rounded-full"></div>
                   </div>
-                  <div
-                    onClick={handleToggle}
-                    className="h-full flex items-center justify-end cursor-pointer"
-                  >
-                    <svg
-                      fill={isLiked ? "#FD1D1D" : "none"}
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className={`${
-                        isLiked
-                          ? "stroke-[#FD1D1D]"
-                          : "md:stroke-white stroke-black"
-                      } md:text-4xl text-3xl active:scale-75 hover:scale-110 transition-all`}
-                      height="1em"
-                      width="1em"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                    </svg>
-                    {/* {isLiked ? (
-                      <FaHeart className="md:text-4xl active:scale-75  transition-all text-3xl text-red-500" />
-                    ) : (
-                      <FiHeart className="md:text-4xl active:scale-75  transition-all text-3xl" />
-                    )} */}
+                  <div className="px-3 mt-5">
+                    <div className="flex items-center justify-between text-sm text-gray-200">
+                      <div className="w-16 h-4 bg-gray-500 animate-pulse rounded"></div>
+                      <div className="w-16 h-4 bg-gray-500 animate-pulse rounded"></div>
+                    </div>
+                    <div className="relative w-full h-2 bg-gray-500 rounded-lg mt-2">
+                      <div className="absolute top-1/2 transform -translate-y-1/2 bg-gray-500 w-4 h-4 rounded-full"></div>
+                    </div>
                   </div>
-                </div>
-                <div className="px-3 mt-5">
-                  <div className="flex items-center justify-between text-sm text-gray-600 md:text-gray-200">
-                    <span>
-                      {isLoading ? "Buffering..." : formatTime(currentTime)}
-                    </span>
-                    <span>{formatTime(totalDuration)}</span>
+                  <div className="flex items-center md:justify-center justify-evenly gap-5 mt-5">
+                    <div className="p-3 rounded-full bg-gray-500 animate-pulse w-[30px] h-[30px]"></div>
+                    <div className="p-3 rounded-full bg-gray-500 animate-pulse w-[40px] h-[40px]"></div>
+                    <div className="p-3 rounded-full bg-gray-500 animate-pulse md:w-[50px] md:h-[50px] w-[60px] h-[60px]"></div>
+                    <div className="p-3 rounded-full bg-gray-500 animate-pulse w-[40px] h-[40px]"></div>
+                    <div className="p-3 rounded-full bg-gray-500 animate-pulse w-[30px] h-[30px]"></div>
                   </div>
-                  <div
-                    className="relative w-full h-2 md:bg-white/20 bg-black/10 rounded-lg mt-2 cursor-pointer"
-                    ref={progressBarRef}
-                    onMouseDown={handleStart}
-                    onTouchStart={handleStart}
-                  >
-                    <div
-                      className="absolute top-0 left-0 h-2 bg-orange-500 rounded-lg"
-                      style={{ width: `${progressPercentage}%` }}
-                    ></div>
-                    <div
-                      className="absolute top-1/2 transform -translate-y-1/2 md:bg-white bg-orange-500 w-4 h-4 rounded-full cursor-pointer"
-                      style={{ left: `${progressPercentage - 1}%` }}
-                      draggable="false"
-                    ></div>
-                  </div>
-                </div>
-                <div className="flex items-center justify-center gap-5 mt-5">
-                  <button className="p-3 rounded-full">
-                    <PiShuffle className="md:text-white text-black md:text-lg text-3xl" />
-                  </button>
-                  <button
-                    onClick={() => handlePrevSong(songId)}
-                    className="p-3 rounded-full"
-                  >
-                    <FaBackward className="md:text-white text-black text-3xl" />
-                  </button>
-                  <button
-                    className="md:p-3 p-4 flex items-center justify-center md:bg-orange-500 bg-black rounded-full"
-                    onClick={togglePlay}
-                  >
-                    {isPlaying ? (
-                      <FaPause className="text-white text-2xl md:text-lg" />
-                    ) : (
-                      <FaPlay className="text-white text-2xl md:text-lg" />
-                    )}
-                  </button>
-                  <button
-                    onClick={() => handleNextSong(songId)}
-                    className={`p-3 rounded-full ${songId}`}
-                  >
-                    <FaForward className="md:text-white text-black text-3xl" />
-                  </button>
-                  <button onClick={toggleMute} className="p-3 rounded-full">
-                    {isMuted ? (
-                      <HiSpeakerXMark className="md:text-white text-black md:text-lg text-3xl" />
-                    ) : (
-                      <HiSpeakerWave className="md:text-white text-black md:text-lg text-3xl" />
-                    )}
-                  </button>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="transition-all flex items-center justify-center md:w-[60%]">
+                <div className="md:rounded-3xl w-full md:p-2 md:border-2 md:border-white/20">
+                  <div className="flex items-center text-black md:text-white px-3 justify-between">
+                    <div className="flex flex-col">
+                      <div
+                        title={songName}
+                        className="font-extrabold md:leading-[50px] line-clamp-2 md:text-4xl text-3xl"
+                      >
+                        {songName}
+                      </div>
+                      <span className="md:text-xl capitalize font-thin text-lg text-gray-700 md:text-gray-100">
+                        {artistName}
+                      </span>
+                    </div>
+                    <div
+                      onClick={handleToggle}
+                      className="h-full flex items-center justify-end cursor-pointer"
+                    >
+                      <svg
+                        fill={isLiked ? "#FD1D1D" : "none"}
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className={`${
+                          isLiked
+                            ? "stroke-[#FD1D1D]"
+                            : "md:stroke-white stroke-black"
+                        } md:text-4xl text-3xl active:scale-75 hover:scale-110 transition-all`}
+                        height="1em"
+                        width="1em"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                      </svg>
+                    </div>
+                  </div>
+                  <div className="px-3 mt-5">
+                    <div className="flex items-center justify-between text-sm text-gray-600 md:text-gray-200">
+                      <span>
+                        {isLoading ? "Buffering..." : formatTime(currentTime)}
+                      </span>
+                      <span>{formatTime(totalDuration)}</span>
+                    </div>
+                    <div
+                      className="relative w-full h-2 md:bg-white/20 bg-black/10 rounded-lg mt-2 cursor-pointer"
+                      ref={progressBarRef}
+                      onMouseDown={handleStart}
+                      onTouchStart={handleStart}
+                    >
+                      <div
+                        className="absolute top-0 left-0 h-2 bg-orange-500 rounded-lg"
+                        style={{ width: `${progressPercentage}%` }}
+                      ></div>
+                      <div
+                        className="absolute top-1/2 transform -translate-y-1/2 md:bg-white bg-orange-500 w-4 h-4 rounded-full cursor-pointer"
+                        style={{ left: `${progressPercentage - 1}%` }}
+                        draggable="false"
+                      ></div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center gap-5 mt-5">
+                    <button className="p-3 rounded-full">
+                      <PiShuffle className="md:text-white text-black md:text-lg text-3xl" />
+                    </button>
+                    <button
+                      onClick={() => handlePrevSong(songId)}
+                      className="p-3 rounded-full"
+                    >
+                      <FaBackward className="md:text-white text-black text-3xl" />
+                    </button>
+                    <button
+                      className="md:p-3 p-4 flex items-center justify-center md:bg-orange-500 bg-black rounded-full"
+                      onClick={togglePlay}
+                    >
+                      {isPlaying ? (
+                        <FaPause className="text-white text-2xl md:text-lg" />
+                      ) : (
+                        <FaPlay className="text-white text-2xl md:text-lg" />
+                      )}
+                    </button>
+                    <button
+                      onClick={() => handleNextSong(songId)}
+                      className={`p-3 rounded-full ${songId}`}
+                    >
+                      <FaForward className="md:text-white text-black text-3xl" />
+                    </button>
+                    <button onClick={toggleMute} className="p-3 rounded-full">
+                      {isMuted ? (
+                        <HiSpeakerXMark className="md:text-white text-black md:text-lg text-3xl" />
+                      ) : (
+                        <HiSpeakerWave className="md:text-white text-black md:text-lg text-3xl" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
