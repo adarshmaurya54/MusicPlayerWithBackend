@@ -158,6 +158,7 @@ function Layout() {
 
   const fetchSongs = async () => {
     try {
+      setCurrentPage(1);
       setLoading(true);
       const songs = await apiService.getSongs(isFavourite, selectedArtist);
       if (songs.length === 0) {

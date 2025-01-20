@@ -8,7 +8,7 @@ function SongClickLoader() {
           <div className="flex absolute md:top-7 md:left-7 justify-between items-center">
             <div className="w-8 h-8 bg-gray-500 animate-pulse rounded-full"></div>
           </div>
-          <div className="flex md:flex-row h-full flex-col items-center justify-evenly">
+          <div className="flex md:flex-row h-full flex-col items-center justify-around">
             {/* Skeleton for Image */}
             <div className="transition-all md:mb-0 mb-5 px-3 py-5 md:w-[50%] w-full flex justify-center">
               <div className="md:w-[80%] w-[270px] h-[200px] md:h-[300px] bg-gray-500 animate-pulse rounded-3xl"></div>
@@ -32,19 +32,22 @@ function SongClickLoader() {
                     <div className="absolute top-1/2 transform -translate-y-1/2 bg-gray-500 w-4 h-4 rounded-full"></div>
                   </div>
                 </div>
-                <div className="flex items-center justify-center gap-5 mt-5">
-                  {Array(5)
-                    .fill(0)
-                    .map((_, index) => (
-                      <div
-                        key={index}
-                        className="p-3 rounded-full bg-gray-500 animate-pulse"
-                        style={{
-                          width: index === 0 || index === 4 ? "20px" : "50px", // 20px for first and last, 50px for others
-                          height: index === 0 || index === 4 ? "20px" : "50px", // Same for height
-                        }}
-                      ></div>
-                    ))}
+                <div className="flex items-center md:justify-center justify-evenly gap-5 mt-5">
+                  <div
+                    className="p-3 rounded-full bg-gray-500 animate-pulse w-[30px] h-[30px]"
+                  ></div>
+                  <div
+                    className="p-3 rounded-full bg-gray-500 animate-pulse w-[40px] h-[40px]"
+                  ></div>
+                  <div
+                    className="p-3 rounded-full bg-gray-500 animate-pulse md:w-[50px] md:h-[50px] w-[60px] h-[60px]"
+                  ></div>
+                  <div
+                    className="p-3 rounded-full bg-gray-500 animate-pulse w-[40px] h-[40px]"
+                  ></div>
+                  <div
+                    className="p-3 rounded-full bg-gray-500 animate-pulse w-[30px] h-[30px]"
+                  ></div>
                 </div>
               </div>
             </div>
