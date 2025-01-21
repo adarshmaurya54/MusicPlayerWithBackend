@@ -22,7 +22,7 @@ function Layout() {
   const { songId } = useParams(); // Get songId from URL
   const [songDetail, setSongDetail] = useState(null);
   const [selectedArtist, setSelectedArtist] = useState("all");
-
+  const [songLoop, setSongLoop] = useState(false);
   const [songList, setSongList] = useState([]);
   const [songListCopy, setSongListCopy] = useState([]);
   const [hiddenPlayer, setHiddenPlayer] = useState(true); // Manage visibility
@@ -527,6 +527,7 @@ function Layout() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-5">
                           {paginatedSongs.map((song) => (
                             <SongList
+                              isPlaying={player === song.audioFile}
                               key={song.songId}
                               handlePlayer={() =>
                                 handlePlayer(
@@ -608,6 +609,8 @@ function Layout() {
               songClickLoading={songClickLoading}
               setIsLoading={setIsLoading} // this is for song if song is buffering...
               isLoading={isLoading}
+              songLoop = {songLoop}
+              setSongLoop = {setSongLoop}
             />
           </div>
 

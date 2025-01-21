@@ -19,10 +19,20 @@ export default {
           '0%': { transform: 'rotate(0deg)' },
           '100%': { transform: 'rotate(360deg)' },
         },
+        // Add the new wave animation
+        waveUpDown: {
+          '0%': { transform: 'scaleY(0.2)' },  // Start with no height (scaled down)
+          '50%': { transform: 'scaleY(1.5)' }, // Increase the height (pulsing)
+          '100%': { transform: 'scaleY(0.2)' }, // Return to original height (scaled down)
+        },
       },
       animation: {
         scroll: 'scroll 10s linear infinite',
-        'spin-slow': 'spin 4s linear infinite'
+        'spin-slow': 'spin 4s linear infinite',
+        // Add the custom wave animation with delay
+        wave1: 'waveUpDown 1s ease-in-out infinite alternate',
+        wave2: 'waveUpDown 1s ease-in-out infinite  alternate 0.6s', // Delay added
+        wave3: 'waveUpDown 1s ease-in-out infinite alternate 0.4s', // Delay added
       },
     },
   },

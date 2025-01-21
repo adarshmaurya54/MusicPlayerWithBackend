@@ -1,13 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FaArrowLeft, FaPlay, FaPause, FaHeart } from "react-icons/fa";
-import { FiHeart } from "react-icons/fi";
+import { FaArrowLeft, FaPlay, FaPause } from "react-icons/fa";
 import { HiSpeakerWave, HiSpeakerXMark } from "react-icons/hi2";
 import { PiShuffle } from "react-icons/pi";
 import { FaForward } from "react-icons/fa";
 import { FaBackward } from "react-icons/fa";
 import apiService from "../services/apiService";
-
-
+import { BsRepeat1 } from "react-icons/bs";
 
 const MusicPlayer = ({
   songName,
@@ -25,14 +23,16 @@ const MusicPlayer = ({
   setProgressPercentage,
   songClickLoading,
   isLoading,
-  setIsLoading
+  setIsLoading,
+  songLoop,
+  setSongLoop,
 }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [totalDuration, setTotalDuration] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
- // New state for loading
+  // New state for loading
   const [isLiked, setIsLiked] = useState(favourite); // State to track toggle
 
   const progressBarRef = useRef(null);
@@ -281,7 +281,7 @@ const MusicPlayer = ({
         >
           <div className="flex text-black md:text-white absolute md:top-7 md:left-7 justify-between items-center">
             {songClickLoading ? (
-                <div className="w-8 h-8 bg-gray-500 animate-pulse rounded-full"></div>
+              <div className="w-8 h-8 bg-gray-500 animate-pulse rounded-full"></div>
             ) : (
               <FaArrowLeft
                 onClick={() => handlePlayerClose(songId, songName, artistName)}
@@ -394,8 +394,12 @@ const MusicPlayer = ({
                     </div>
                   </div>
                   <div className="flex items-center justify-center gap-5 mt-5">
-                    <button className="p-3 rounded-full">
-                      <PiShuffle className="md:text-white text-black md:text-lg text-3xl" />
+                    <button  onClick={() => setSongLoop(!songLoop)} className="p-3 rounded-full">
+                      {!songLoop ? (
+                        <PiShuffle className="md:text-white hover:scale-110 transition-all text-black md:text-lg text-3xl" />
+                      ) : (
+                        <BsRepeat1 className="md:text-white hover:scale-110 transition-all text-black md:text-lg text-3xl" />
+                      )}
                     </button>
                     <button
                       onClick={() => handlePrevSong(songId)}
@@ -421,9 +425,9 @@ const MusicPlayer = ({
                     </button>
                     <button onClick={toggleMute} className="p-3 rounded-full">
                       {isMuted ? (
-                        <HiSpeakerXMark className="md:text-white text-black md:text-lg text-3xl" />
+                        <HiSpeakerXMark className="md:text-white  hover:scale-110 transition-all text-black md:text-lg text-3xl" />
                       ) : (
-                        <HiSpeakerWave className="md:text-white text-black md:text-lg text-3xl" />
+                        <HiSpeakerWave className="md:text-white  hover:scale-110 transition-all text-black md:text-lg text-3xl" />
                       )}
                     </button>
                   </div>

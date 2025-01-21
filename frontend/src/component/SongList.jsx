@@ -3,6 +3,7 @@ import { MdOutlineDeleteSweep } from "react-icons/md";
 import { FiEdit2 } from "react-icons/fi";
 import { AiOutlineDelete } from "react-icons/ai";
 import apiService from "../services/apiService"; // Import your apiService
+import MusicAnimation from "./MusicAnimation";
 
 function SongList({
   id,
@@ -14,6 +15,7 @@ function SongList({
   handleToggleEdit,
   fetchSongs,
   songId,
+  isPlaying
 }) {
   const [isDeleting, setIsDeleting] = useState(false); // State to track if a song is being deleted
 
@@ -35,6 +37,8 @@ function SongList({
       }
     }
   };
+  console.log(id);
+  
   return (
     <div
       onClick={() => {
@@ -43,6 +47,9 @@ function SongList({
       className="relative group flex flex-col space-y-2 bg-white border border-gray-200 shadow-lg rounded-xl p-4 md:hover:ring-2 hover:ring-gray-500 hover:ring-opacity-50
            ring-offset-2  transition-all duration-300 ease-in-out cursor-pointer hover:shadow-xl"
     >
+      {isPlaying && <div className="absolute top-3 right-3">
+        <MusicAnimation /> 
+      </div>}
       {!isDeleting && isAdminLogin && (
         <>
           <button
