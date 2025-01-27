@@ -37,7 +37,7 @@ const Pagination = ({
                 <button
                   onClick={() => handlePageClick(1)}
                   className="md:px-4 px-3 md:hover:ring-2 hover:ring-gray-500 hover:ring-opacity-50
-           ring-offset-2  transition-all duration-300 py-2 border rounded-lg text-black"
+           ring-offset-2  py-2 border rounded-lg text-black"
                 >
                   1
                 </button>
@@ -56,7 +56,7 @@ const Pagination = ({
                       key={page}
                       onClick={() => handlePageClick(page)}
                       className={`md:px-4 px-3 md:hover:ring-2
-           ring-offset-2  transition-all duration-300  py-2 border rounded-lg ${
+           ring-offset-2 md:transition duration-300  py-2 border rounded-lg ${
              page === currentPage
                ? "bg-black hover:ring-black text-white"
                : "text-black hover:ring-gray-500 hover:ring-opacity-50"

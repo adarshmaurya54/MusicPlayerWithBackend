@@ -6,6 +6,7 @@ import { FaForward } from "react-icons/fa";
 import { FaBackward } from "react-icons/fa";
 import apiService from "../services/apiService";
 import { BsRepeat1 } from "react-icons/bs";
+import logo from "../assets/vite.svg"
 
 const MusicPlayer = ({
   songName,
@@ -36,6 +37,11 @@ const MusicPlayer = ({
   const [isLiked, setIsLiked] = useState(favourite); // State to track toggle
 
   const progressBarRef = useRef(null);
+  useEffect(() => {
+    const favicon = document.querySelector("link[rel='icon']");
+    favicon.href = image ? `${import.meta.env.VITE_BASEURL}/assets${image}` : logo; // Set your new icon path
+  }, [image]);
+
   useEffect(() => {
     setIsLiked(favourite);
   }, [isLoading, totalDuration]);
@@ -277,7 +283,7 @@ const MusicPlayer = ({
         <div
           className={`${
             songClickLoading ? "bg-white" : "bg-white/80 md:bg-black/20"
-          } backdrop-blur-xl md:backdrop-blur-lg p-4 h-full overflow-auto no-scrollbar`}
+          } backdrop-blur-xl p-4 h-full overflow-auto no-scrollbar`}
         >
           <div className="flex text-black md:text-white absolute md:top-7 md:left-7 justify-between items-center">
             {songClickLoading ? (
@@ -360,7 +366,7 @@ const MusicPlayer = ({
                           isLiked
                             ? "stroke-[#FD1D1D]"
                             : "md:stroke-white stroke-black"
-                        } md:text-4xl text-3xl active:scale-75 hover:scale-110 transition-all`}
+                        } md:text-4xl text-3xl active:scale-90 hover:scale-110 transition-all duration-500`}
                         height="1em"
                         width="1em"
                         xmlns="http://www.w3.org/2000/svg"

@@ -37,8 +37,6 @@ function SongList({
       }
     }
   };
-  console.log(id);
-  
   return (
     <div
       onClick={() => {
@@ -47,9 +45,9 @@ function SongList({
       className="relative group flex flex-col space-y-2 bg-white border border-gray-200 shadow-lg rounded-xl p-4 md:hover:ring-2 hover:ring-gray-500 hover:ring-opacity-50
            ring-offset-2  transition-all duration-300 ease-in-out cursor-pointer hover:shadow-xl"
     >
-      {isPlaying && <div className="absolute top-3 right-3">
-        <MusicAnimation /> 
-      </div>}
+      {/* {isPlaying && <div className="absolute top-3 right-3">
+        
+      </div>} */}
       {!isDeleting && isAdminLogin && (
         <>
           <button
@@ -88,7 +86,7 @@ function SongList({
             isAdminLogin ? "w-[100px] h-[100px]" : "w-16 h-16"
           } rounded-md bg-gray-300 flex items-center justify-center`}
         >
-          <svg
+          {!isPlaying ? <svg
             className="h-8 w-8 text-gray-500"
             fill="none"
             stroke="currentColor"
@@ -100,7 +98,7 @@ function SongList({
             <path d="M9 18V5l12-2v13"></path>
             <circle cx="6" cy="18" r="3"></circle>
             <circle cx="18" cy="16" r="3"></circle>
-          </svg>
+          </svg> : <MusicAnimation /> }
         </div>
 
         {/* Song Details */}

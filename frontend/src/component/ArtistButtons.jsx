@@ -54,7 +54,7 @@ function ArtistButtons({ selectedArtist, setSelectedArtist }) {
         )}
       </div>
       {openArtistPopup && (
-        <div className="bg-white no-scrollbar overflow-auto max-h-[300px] flex flex-wrap gap-3 text-black mt-4 border p-4 absolute top-full left-0 z-50 rounded-xl w-full md:w-1/2">
+        <div className="bg-white no-scrollbar overflow-auto max-h-[300px] flex flex-wrap gap-3 text-black mt-4 border p-4 absolute top-full left-0 z-10 rounded-xl w-full md:w-1/2">
           {loading && (
             <div className="w-full px-4 py-8 mt-4 rounded-2xl flex items-center justify-center bg-white">
               <div className="flex items-center justify-center">
@@ -74,7 +74,7 @@ function ArtistButtons({ selectedArtist, setSelectedArtist }) {
             <>
               <LiaTimesSolid
                 onClick={() => setOpenArtistPopup(false)}
-                className="absolute top-3 z-50 right-3 cursor-pointer"
+                className="absolute top-3 z-40 right-3 cursor-pointer"
               />
               <div className="relative h-fit w-full">
                 {/* Search Icon */}
