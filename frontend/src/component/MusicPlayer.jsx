@@ -37,10 +37,6 @@ const MusicPlayer = ({
   const [isLiked, setIsLiked] = useState(favourite); // State to track toggle
 
   const progressBarRef = useRef(null);
-  useEffect(() => {
-    const favicon = document.querySelector("link[rel='icon']");
-    favicon.href = image ? `${import.meta.env.VITE_BASEURL}/assets${image}` : logo; // Set your new icon path
-  }, [image]);
 
   useEffect(() => {
     setIsLiked(favourite);
