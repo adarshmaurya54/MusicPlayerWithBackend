@@ -4,7 +4,7 @@ import { AiOutlineLogin } from "react-icons/ai";
 import { IoMdLogOut } from "react-icons/io";
 import { LuCloudUpload } from "react-icons/lu";
 import axios from "axios"; // Import Axios
-import logo from "../assets/vite.svg"
+import logo from "../assets/icon.png"
 
 
 const Header = ({ handleToggleUpload }) => {
@@ -62,7 +62,7 @@ const Header = ({ handleToggleUpload }) => {
       <div className="border p-5 rounded-3xl bg-white backdrop-blur-lg flex md:flex-row flex-col justify-between md:items-center gap-4">
         <h1 className="text-3xl font-bold">
           <Link to="/" className="flex gap-3 items-center">
-            <img src={logo} alt="./vite.svg" className="w-10" />
+            <img src={logo} alt="./vite.svg" className="w-14" />
             <span>PlayMusic</span>
           </Link>
         </h1>
@@ -93,7 +93,7 @@ const Header = ({ handleToggleUpload }) => {
            ring-offset-2  transition-all duration-300 md:w-auto w-[50%] justify-center flex items-center gap-2 text-white px-4 py-2 rounded-xl"
             >
               <AiOutlineLogin className="mt-1" />
-              <span>Login</span>
+              <span>Admin Login</span>
             </button>
           )}
         </nav>}

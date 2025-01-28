@@ -33,6 +33,7 @@ export default {
         wave1: 'waveUpDown 1s ease-in-out infinite alternate',
         wave2: 'waveUpDown 1s ease-in-out infinite  alternate 0.6s', // Delay added
         wave3: 'waveUpDown 1s ease-in-out infinite alternate 0.4s', // Delay added
+        wave4: 'waveUpDown 1s ease-in-out infinite alternate 0.2s', // Delay added
       },
     },
   },

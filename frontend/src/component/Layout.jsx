@@ -363,7 +363,7 @@ function Layout() {
 
                   {songId &&
                     <div className="relative group w-full md:w-auto">
-                      <div onClick={()=> navigate("/")} className="opacity-0 group-hover:opacity-100  transition-opacity duration-300 absolute -top-2 text-xs right-[2px] cursor-pointer border rounded-full p-[2px] text-gray-500 bg-white z-40">
+                      <div onClick={()=> navigate("/")} className="opacity-0 group-hover:opacity-100  transition-opacity duration-300 absolute -top-2 text-xs right-[2px] cursor-pointer border rounded-full p-[2px] text-gray-500 bg-white z-20">
                         <LiaTimesSolid />
                       </div>
                       <div

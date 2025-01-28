@@ -7,7 +7,7 @@ function MusicAnimation() {
         <div className="bg-gray-500 w-[3px] h-5 animate-wave1"></div>
         <div className="bg-gray-500 w-[3px] h-5 animate-wave2"></div>
         <div className="bg-gray-500 w-[3px] h-5 animate-wave3"></div>
-        <div className="bg-gray-500 w-[3px] h-5 animate-wave3"></div>
+        <div className="bg-gray-500 w-[3px] h-5 animate-wave4"></div>
       </div>
     </div>
   );
