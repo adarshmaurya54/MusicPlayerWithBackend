@@ -59,7 +59,7 @@ const Header = ({ handleToggleUpload }) => {
 
   return (
     <header className="z-30 md:px-10 px-4 py-5">
-      <div className="border p-5 rounded-2xl bg-white backdrop-blur-lg flex md:flex-row flex-col justify-between md:items-center gap-4">
+      <div className="border p-5 rounded-3xl bg-white backdrop-blur-lg flex md:flex-row flex-col justify-between md:items-center gap-4">
         <h1 className="text-3xl font-bold">
           <Link to="/" className="flex gap-3 items-center">
             <img src={logo} alt="./vite.svg" className="w-10" />

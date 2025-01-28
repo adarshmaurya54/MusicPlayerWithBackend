@@ -44,7 +44,7 @@ function Login() {
       style={{ backgroundImage: `url(${bg})` }}
     >
       <div className="max-w-xs bg-gradient-to-t from-white to-blue-50 rounded-3xl p-6 border-4 border-white shadow-lg mx-auto my-5">
-        <div className="text-center font-extrabold text-2xl text-blue-500">
+        <div className="text-center font-extrabold text-2xl text-black">
           Sign In
         </div>
         {error && (
@@ -86,11 +86,11 @@ function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <span className="block mt-3 ml-3 text-xs text-blue-400">
+          <span className="block mt-3 ml-3 text-xs text-gray-400">
             <a href="#">Forgot Password ?</a>
           </span>
           <input
-            className="block w-full font-bold bg-gradient-to-r from-blue-500 to-teal-500 text-white py-3 mt-5 rounded-2xl shadow-lg transform transition-transform hover:scale-105 active:scale-95"
+            className="block w-full font-bold bg-black text-white py-3 mt-5 rounded-2xl shadow-lg transform transition-transform hover:scale-105 active:scale-95"
             type="submit"
             value="Sign In"
           />
@@ -100,7 +100,7 @@ function Login() {
           type="button"
           onClick={() => navigate('/')}
         >
-          <div className="bg-gradient-to-r from-blue-500 to-teal-500 text-white rounded-xl h-12 w-1/4 flex items-center justify-center absolute left-1 top-[4px] group-hover:w-full z-10 duration-500">
+          <div className="bg-black text-white rounded-xl h-12 w-1/4 flex items-center justify-center absolute left-1 top-[4px] group-hover:w-[calc(100%-8px)] z-10 duration-500">
           
             <svg
               xmlns="http://www.w3.org/2000/svg"
