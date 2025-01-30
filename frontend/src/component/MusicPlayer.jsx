@@ -17,7 +17,6 @@ const MusicPlayer = ({
   backgroundImage,
   handlePlayerClose,
   songId,
-  audioUrl,
   favourite,
   audioRef,
   SetisPlayingOrNotForLayout,
@@ -164,8 +163,11 @@ const MusicPlayer = ({
   };
 
   const handleNextSong = (songId) => {
-    setIsLoading(true);
-    if (playNextSong) {
+    if(songLoop){
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
+    }else if (playNextSong) {
+      setIsLoading(true);
       playNextSong(songId);
       if (audioRef.current) {
         setIsLoading(true); // Show loading state
@@ -179,8 +181,11 @@ const MusicPlayer = ({
   };
 
   const handlePrevSong = (songId) => {
-    setIsLoading(true);
-    if (playPrevSong) {
+    if(songLoop){
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
+    }else if (playPrevSong) {
+      setIsLoading(true);
       playPrevSong(songId);
       if (audioRef.current) {
         setIsLoading(true); // Show loading state
@@ -210,33 +215,7 @@ const MusicPlayer = ({
       setIsLoading(true); // Set loading state when the song ends
 
       if (playNextSong) {
-        // Fetch the next song's data
-        playNextSong()
-          .then((newSongData) => {
-            // Update the audio source with the new song's URL
-            if (audioRef.current) {
-              audioRef.current.src = newSongData?.audioUrl;
-              setTotalDuration(0); // Reset total duration for the new song
-              setCurrentTime(0); // Reset current time
-            }
-
-            setTimeout(() => {
-              // Play the next song after a slight delay
-              if (audioRef.current) {
-                audioRef.current
-                  .play()
-                  .then(() => setIsLoading(false)) // Remove loading state when playback starts
-                  .catch((error) => {
-                    console.error("Error playing the next song:", error);
-                    setIsLoading(false); // Remove loading state if playback fails
-                  });
-              }
-            }, 100); // Delay for a smooth transition
-          })
-          .catch((error) => {
-            console.error("Error loading the next song:", error);
-            setIsLoading(false); // Remove loading state if fetching fails
-          });
+        handleNextSong(songId);
       } else {
         setIsLoading(false); // Remove loading state if no next song is available
       }
@@ -353,16 +332,17 @@ const MusicPlayer = ({
                       className="h-full flex items-center justify-end cursor-pointer"
                     >
                       <svg
-                        fill={isLiked ? "#FD1D1D" : "none"}
+                        fill={isLiked ? "#e7125c" : "none"}
                         strokeWidth="2"
                         viewBox="0 0 24 24"
                         strokeLinecap="round"
                         strokeLinejoin="round"
+                        style={{ transition: "all 0.5s ease, stroke 0.1s"}}
                         className={`${
                           isLiked
-                            ? "stroke-[#FD1D1D]"
+                            ? "stroke-[#e7125c]"
                             : "md:stroke-white stroke-black"
-                        } md:text-4xl text-3xl active:scale-90 hover:scale-110 transition-all duration-500`}
+                        } md:text-4xl text-3xl active:scale-90 hover:scale-110  duration-500`}
                         height="1em"
                         width="1em"
                         xmlns="http://www.w3.org/2000/svg"
@@ -441,7 +421,7 @@ const MusicPlayer = ({
       </div>
       <audio
         ref={audioRef}
-        src={`${import.meta.env.VITE_BASEURL}${audioUrl}`}
+        src={`${import.meta.env.VITE_BASEURL}/stream/${songId}`}
         preload="auto"
         onLoadedMetadata={handleLoadedMetadata}
       />

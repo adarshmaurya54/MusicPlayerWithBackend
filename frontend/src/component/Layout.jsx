@@ -212,7 +212,6 @@ function Layout() {
       try {
         const response = await apiService.getSongInfo(songId);
         setSongDetail(response);
-
         // setHiddenPlayer(false); // Make the player visible
       } catch (err) {
         console.error("Failed to fetch song details:", err);
@@ -261,7 +260,7 @@ function Layout() {
       if (player !== 0) {
         await apiService.deleteThumbnails(player);
       }
-    }, 5000);
+    }, 10000);
   }, [songDetail]);
 
   // Play the next song
@@ -361,9 +360,12 @@ function Layout() {
                     />
                   </div>
 
-                  {songId &&
+                  {songId && (
                     <div className="relative group w-full md:w-auto">
-                      <div onClick={()=> navigate("/")} className="opacity-0 group-hover:opacity-100  transition-opacity duration-300 absolute -top-2 text-xs right-[2px] cursor-pointer border rounded-full p-[2px] text-gray-500 bg-white z-10">
+                      <div
+                        onClick={() => navigate("/")}
+                        className="opacity-0 group-hover:opacity-100  transition-opacity duration-300 absolute -top-2 text-xs right-[2px] cursor-pointer border rounded-full p-[2px] text-gray-500 bg-white z-10"
+                      >
                         <LiaTimesSolid />
                       </div>
                       <div
@@ -474,7 +476,7 @@ function Layout() {
                         </div>
                       </div>
                     </div>
-                  }
+                  )}
                 </div>
                 {/* artist filter buttons */}
                 {loading ? (
@@ -589,36 +591,38 @@ function Layout() {
             )}
           </div>
 
-          <div
-            className={`transition-all ${
-              hiddenPlayer
-                ? "opacity-0 z-[-1] duration-500"
-                : "opacity-100 z-10 duration-500"
-            } 
+          {songId && (
+            <div
+              className={`transition-all ${
+                hiddenPlayer
+                  ? "opacity-0 z-[-1] duration-500"
+                  : "opacity-100 z-10 duration-500"
+              } 
             ${hiddenPlayer ? "sm:block md:hidden" : "sm:block md:block"} 
             `}
-          >
-            <MusicPlayer
-              audioRef={audioRef}
-              songId={player}
-              handlePlayerClose={handlePlayerClose}
-              songName={songDetail?.songName}
-              artistName={songDetail?.artistName}
-              image={songDetail?.highQualityThumbnailUrl}
-              audioUrl={songDetail?.audioUrl}
-              backgroundImage={songDetail?.lowQualityThumbnailUrl}
-              favourite={songDetail?.favourite}
-              playNextSong={playNextSong}
-              playPrevSong={playPrevSong}
-              SetisPlayingOrNotForLayout={setIsPlaying}
-              setProgressPercentage={setProgressPercentage}
-              songClickLoading={songClickLoading}
-              setIsLoading={setIsLoading} // this is for song if song is buffering...
-              isLoading={isLoading}
-              songLoop={songLoop}
-              setSongLoop={setSongLoop}
-            />
-          </div>
+            >
+              <MusicPlayer
+                audioRef={audioRef}
+                songId={player}
+                handlePlayerClose={handlePlayerClose}
+                songName={songDetail?.songName}
+                artistName={songDetail?.artistName}
+                image={songDetail?.highQualityThumbnailUrl}
+                audioUrl={songDetail?.audioUrl}
+                backgroundImage={songDetail?.lowQualityThumbnailUrl}
+                favourite={songDetail?.favourite}
+                playNextSong={playNextSong}
+                playPrevSong={playPrevSong}
+                SetisPlayingOrNotForLayout={setIsPlaying}
+                setProgressPercentage={setProgressPercentage}
+                songClickLoading={songClickLoading}
+                setIsLoading={setIsLoading} // this is for song if song is buffering...
+                isLoading={isLoading}
+                songLoop={songLoop}
+                setSongLoop={setSongLoop}
+              />
+            </div>
+          )}
 
           {upload && (
             <Upload
