@@ -296,8 +296,8 @@ exports.getSongWithMetadata = async (req, res) => {
           lowQualityThumbnailUrl = `/thumbnails/${fileId}-low.jpg`;
         } else {
           // Fallback to default thumbnails
-          highQualityThumbnailUrl = "/thumbnails/default-thumbnail-low.jpg";
-          lowQualityThumbnailUrl = "/thumbnails/default-thumbnail-low.jpg";
+          highQualityThumbnailUrl = "/thumbnails/default-thumbnail-low.png";
+          lowQualityThumbnailUrl = "/thumbnails/default-thumbnail-low.png";
         }
 
         // Fetch song details from the database (optional)
