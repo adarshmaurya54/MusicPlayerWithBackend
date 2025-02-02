@@ -192,7 +192,7 @@ function Upload({ handleToggleUpload, fetchSongs }) {
                   fileUploaded
                     ? "text-white bg-black hover:outline outline-black outline-offset-2"
                     : "text-gray-400 bg-gray-100 cursor-not-allowed"
-                } rounded-lg`}
+                } rounded-xl`}
                 onClick={submitForm}
                 disabled={!fileUploaded} // Disable until fileUploaded is true
               >
@@ -202,10 +202,10 @@ function Upload({ handleToggleUpload, fetchSongs }) {
           </div>
           <div className="md:w-[40%] md:p-3 md:mt-0 mt-10">
             {/* File Input UI */}
-            <div className="rounded-lg overflow-hidden mb-4">
+            <div className="mb-4">
               <div className="md:flex">
                 <div className="w-full">
-                  <div className="relative  transition-all duration-500 group border-[3px] border-dashed border-gray-300 rounded-lg p-6 hover:shadow-lg hover:border-black">
+                  <div className="relative  transition-all duration-500 group border-[3px] border-dashed border-gray-300 rounded-3xl p-6 hover:shadow-lg hover:border-black">
                     <div className="flex flex-col items-center justify-center h-48 space-y-3 text-center">
                       <svg
                         className="h-36 text-gray-500 transition-all duration-500 group-hover:text-black mb-4"
@@ -213,8 +213,7 @@ function Upload({ handleToggleUpload, fetchSongs }) {
                         fill="currentColor"
                         xmlns="http://www.w3.org/2000/svg"
                       >
-                        <path d="M144 480C64.5 480 0 415.5 0 336c0-62.8 40.2-116.2 96.2-135.9c-.1-2.7-.2-5.4-.2-8.1c0-88.4 71.6-160 160-160c59.3 0 111 32.2 138.7 80.2C409.9 102 428.3 96 448 96c53 0 96 43 96 96c0 12.2-2.3 23.8-6.4 34.6C596 238.4 640 290.1 640 352c0 70.7-57.3 128-128 128H144zm79-217c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l39-39V392c0 13.3 10.7 24 24 24s24-10.7 24-24V257.9l39 39c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-80-80c-9.4-9.4-24.6-9.4-33.9 0l-80 80z" />
-                      </svg>
+                        <g stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g transform="translate(5 1)"> <path style={{fill : "#Fff"}} d="M460.067,122.733v341.333c0,18.773-15.36,34.133-34.133,34.133h-358.4 c-18.773,0-34.133-15.36-34.133-34.133V37.4c0-18.773,15.36-34.133,34.133-34.133H340.6V88.6c0,18.773,15.36,34.133,34.133,34.133 H460.067z"></path> <path style={{fill :"#FFf"}} d="M460.067,122.733h-85.333c-18.773,0-34.133-15.36-34.133-34.133V3.267L460.067,122.733z"></path> <path style={{fill:"#e3e3e3"}} d="M169.933,412.867c18.773,0,34.133-15.36,34.133-34.133c0-18.773-15.36-34.133-34.133-34.133 S135.8,359.96,135.8,378.733C135.8,397.507,151.16,412.867,169.933,412.867z M306.467,378.733c18.773,0,34.133-15.36,34.133-34.133 s-15.36-34.133-34.133-34.133c-18.773,0-34.133,15.36-34.133,34.133S287.693,378.733,306.467,378.733z"></path> </g> <path style={{fill:"#51565F"}} d="M430.933,503.467h-358.4c-21.333,0-38.4-17.067-38.4-38.4V38.4C34.133,17.067,51.2,0,72.533,0H345.6 c0.853,0,2.56,0.853,3.413,0.853l85.333,85.333c1.707,1.707,1.707,4.267,0,5.973c-1.707,1.707-4.267,1.707-5.973,0l-84.48-84.48 H72.533c-16.213,0-29.867,13.653-29.867,29.867v426.667c0,16.213,13.653,29.867,29.867,29.867h358.4 c16.213,0,29.867-13.653,29.867-29.867V127.147h-81.067c-21.333,0-38.4-17.067-38.4-38.4V46.08c0-2.56,1.707-4.267,4.267-4.267 s4.267,1.707,4.267,4.267v42.667c0,16.213,13.653,29.867,29.867,29.867h85.333c2.56,0,4.267,1.707,4.267,4.267v341.333 C469.333,486.4,452.267,503.467,430.933,503.467z M174.933,418.133c-21.333,0-38.4-17.067-38.4-38.4c0-21.333,17.067-38.4,38.4-38.4 c2.56,0,4.267,1.707,4.267,4.267c0,2.56-1.707,4.267-4.267,4.267c-16.213,0-29.867,13.653-29.867,29.867 c0,16.213,13.653,29.867,29.867,29.867s29.867-13.653,29.867-29.867v-153.6c0-1.707,1.707-3.413,3.413-4.267l136.533-34.133 c0.853,0,2.56,0,3.413,0.853c0.853,0.853,1.707,1.707,1.707,3.413v153.6c0,21.333-17.067,38.4-38.4,38.4s-38.4-17.067-38.4-38.4 c0-21.333,17.067-38.4,38.4-38.4c2.56,0,4.267,1.707,4.267,4.267c0,2.56-1.707,4.267-4.267,4.267 c-16.213,0-29.867,13.653-29.867,29.867c0,16.213,13.653,29.867,29.867,29.867s29.867-13.653,29.867-29.867V197.12l-128,32.427 v150.187C213.333,401.067,196.267,418.133,174.933,418.133z"></path> </g></svg>
                       <span className="block text-gray-600 transition-all duration-500 font-semibold text-lg group-hover:text-black">
                         Drag & drop your files here
                       </span>
@@ -264,7 +263,7 @@ function Upload({ handleToggleUpload, fetchSongs }) {
             {/* Buttons */}
             <div className="flex justify-between">
               <button
-                className="px-4 py-2 w-[45%] text-sm font-medium bg-black text-white bg-black-500 rounded-lg hover:bg-black/90 hover:outline outline-black outline-offset-2"
+                className="px-4 py-2 w-[45%] text-sm font-medium bg-black text-white bg-black-500 rounded-xl hover:bg-black/90 hover:outline outline-black outline-offset-2"
                 onClick={uploadFile}
                 disabled={progress > 0 && progress < 100}
               >
@@ -272,7 +271,7 @@ function Upload({ handleToggleUpload, fetchSongs }) {
               </button>
               {/* Reset Button */}
               <button
-                className="px-4 py-2 w-[45%] text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 hover:outline outline-gray-300 outline-offset-2"
+                className="px-4 py-2 w-[45%] text-sm font-medium text-gray-700 bg-gray-200 rounded-xl hover:bg-gray-300 hover:outline outline-gray-300 outline-offset-2"
                 onClick={resetUpload}
               >
                 Reset

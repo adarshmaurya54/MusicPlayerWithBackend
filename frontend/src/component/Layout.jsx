@@ -51,11 +51,9 @@ function Layout() {
 
   const togglePlayPause = () => {
     if (audioRef.current.paused) {
-      console.log("hi1");
       audioRef.current.play();
       setIsPlaying(true);
     } else {
-      console.log("hi");
       audioRef.current.pause();
       setIsPlaying(false);
     }
@@ -312,6 +310,11 @@ function Layout() {
     });
     setHiddenPlayer(true);
   };
+  useEffect(()=> {
+    const link = document.getElementsByTagName('link')[0];
+    link.href = songDetail?.highQualityThumbnailUrl ? `${import.meta.env.VITE_BASEURL}/assets` + songDetail?.highQualityThumbnailUrl : "src/assets/icon.png";
+    
+  }, [songDetail?.highQualityThumbnailUrl])
 
   if (error) {
     return <div>{error}</div>;
@@ -535,8 +538,10 @@ function Layout() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-5">
                           {paginatedSongs.map((song) => (
                             <SongList
-                              isPlaying={songId === song.audioFile}
+                              currentlyPlaying={songId === song.audioFile}
+                              isPlaying={isPlaying}
                               key={song.songId}
+                              image={songDetail?.highQualityThumbnailUrl ? songDetail?.highQualityThumbnailUrl : "/thumbnails/default-thumbnail-low.jpg"}
                               handlePlayer={() =>
                                 handlePlayer(
                                   song.audioFile,

@@ -21,9 +21,9 @@ export default {
         },
         // Add the new wave animation
         waveUpDown: {
-          '0%': { transform: 'scaleY(0.2)' },  // Start with no height (scaled down)
-          '50%': { transform: 'scaleY(1.5)' }, // Increase the height (pulsing)
-          '100%': { transform: 'scaleY(0.2)' }, // Return to original height (scaled down)
+          '0%': { height: '6px' },   // Start with minimal height
+          '50%': { height: '30px' },  // Increase to maximum height
+          '100%': { height: '6px' }, // Return to minimal height
         },
       },
       animation: {

@@ -8,7 +8,9 @@ import MusicAnimation from "./MusicAnimation";
 function SongList({
   id,
   title,
+  image,
   isAdminLogin,
+  currentlyPlaying,
   artist,
   favourite,
   handlePlayer,
@@ -83,10 +85,10 @@ function SongList({
         {/* Album Artwork Placeholder */}
         <div
           className={`flex-shrink-0 ${
-            isAdminLogin ? "w-[100px] h-[100px]" : "w-16 h-16"
-          } rounded-md bg-gray-300 flex items-center justify-center`}
+            isAdminLogin ? "w-[100px] h-[100px]" : "w-16 h-16"} bg-cover overflow-hidden rounded-md bg-gray-300 flex items-center justify-center`}
+            style={currentlyPlaying && image ? {backgroundImage: `url(${import.meta.env.VITE_BASEURL}/assets${image})`} : {}}
         >
-          {!isPlaying ? <svg className="w-full h-full"
+          {!currentlyPlaying ? <svg className="w-full h-full"
             stroke="currentColor"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -125,7 +127,7 @@ function SongList({
             C-71.01686249 44.70770615 -70.88528748 43.91931854 -70.74972534 43.10704041 
             C-70.25518591 40.13601045 -69.76167593 37.16494038 -69.28485107 34.19100952 
             C-64.38777303 3.65418473 -64.38777303 3.65418473 -52.5 -6.1875 
-            C-34.45823271 -19.08302521 -17.30418406 -9.43145152 0 0 Z " fill="" /></svg> : <MusicAnimation /> }
+            C-34.45823271 -19.08302521 -17.30418406 -9.43145152 0 0 Z " fill="" /></svg> : <MusicAnimation isPlaying={isPlaying} /> }
         </div>
 
         {/* Song Details */}

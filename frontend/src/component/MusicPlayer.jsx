@@ -241,7 +241,7 @@ const MusicPlayer = ({
 
   return (
     <div
-      className="fixed z-50 top-0 left-0 w-full h-full backdrop-blur-md flex justify-center text-white items-center"
+      className="fixed z-50 top-0 left-0 w-full h-full bg-black/30 flex justify-center text-white items-center"
       onMouseMove={handleMove}
       onMouseUp={handleEnd}
       onTouchMove={handleMove}
@@ -253,12 +253,12 @@ const MusicPlayer = ({
             ? "none" // No image when true
             : `url(${import.meta.env.VITE_BASEURL}/assets${backgroundImage})`, // Image when false
         }}
-        className="transition-all duration-700 md:w-[90%] relative md:h-[95%] bg-no-repeat bg-center bg-cover overflow-auto no-scrollbar h-full w-full md:rounded-[30px]"
+        className="transition-all duration-700 md:w-[100%] relative md:h-[100%] bg-no-repeat bg-center bg-cover overflow-auto no-scrollbar h-full w-full "
       >
         <div
           className={`${
             songClickLoading ? "bg-white" : "bg-white/80 md:bg-black/20"
-          } backdrop-blur-xl p-4 h-full overflow-auto no-scrollbar`}
+          } backdrop-blur-2xl p-4 h-full overflow-auto no-scrollbar`}
         >
           <div className="flex text-black md:text-white absolute md:top-7 md:left-7 justify-between items-center">
             {songClickLoading ? (
