@@ -4,6 +4,7 @@ import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Login from './component/Login'
 import NoSongFound from './component/NoSongFound'
+import PageNotFount_404 from './component/PageNotFount_404'
 
 const router = createBrowserRouter([
   {
@@ -28,7 +29,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/*',
-    element: <NoSongFound /> // 404 page route outside of Layout
+    element: <PageNotFount_404 /> // 404 page route outside of Layout
   },
 ])
 

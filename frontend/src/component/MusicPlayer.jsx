@@ -34,12 +34,12 @@ const MusicPlayer = ({
   const [isMuted, setIsMuted] = useState(false);
   // New state for loading
   const [isLiked, setIsLiked] = useState(favourite); // State to track toggle
-
+  
   const progressBarRef = useRef(null);
-
+  
   useEffect(() => {
     setIsLiked(favourite);
-  }, [isLoading, totalDuration]);
+  }, [favourite]);
   useEffect(() => {
     setIsLoading(true);
   }, [songId]);
