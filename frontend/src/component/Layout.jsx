@@ -312,7 +312,9 @@ function Layout() {
   };
   useEffect(()=> {
     const link = document.getElementsByTagName('link')[0];
+    const title = document.getElementsByTagName('title')[0];
     link.href = songDetail?.highQualityThumbnailUrl ? `${import.meta.env.VITE_BASEURL}/assets` + songDetail?.highQualityThumbnailUrl : "src/assets/icon.png";
+    title.innerText = songDetail?.songName ? songDetail?.songName + " • " + songDetail?.artistName : "PlayMusic";
     
   }, [songDetail?.highQualityThumbnailUrl])
 
