@@ -285,7 +285,7 @@ exports.getSongWithMetadata = async (req, res) => {
             .toFormat("jpg")
             .jpeg({ quality: 90 }) // High compression quality
             .toFile(highQualityThumbnailPath);
-          highQualityThumbnailUrl = `/thumbnails/${fileId}-high.jpg`;
+          highQualityThumbnailUrl = `/thumbnails/${fileId}-high.png`;
 
           console.log("Generating low-quality thumbnail...");
           await sharp(imageBuffer)
@@ -293,7 +293,7 @@ exports.getSongWithMetadata = async (req, res) => {
             .toFormat("jpg")
             .jpeg({ quality: 50 }) // Low compression quality
             .toFile(lowQualityThumbnailPath);
-          lowQualityThumbnailUrl = `/thumbnails/${fileId}-low.jpg`;
+          lowQualityThumbnailUrl = `/thumbnails/${fileId}-low.png`;
         } else {
           // Fallback to default thumbnails
           highQualityThumbnailUrl = "/thumbnails/default-thumbnail-low.png";
