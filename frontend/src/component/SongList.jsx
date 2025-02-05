@@ -17,7 +17,7 @@ function SongList({
   handleToggleEdit,
   fetchSongs,
   songId,
-  isPlaying
+  isPlaying,
 }) {
   const [isDeleting, setIsDeleting] = useState(false); // State to track if a song is being deleted
 
@@ -80,20 +80,38 @@ function SongList({
           Deleting...
         </div>
       )}
+      {currentlyPlaying && <div className="absolute top-0 text-xs right-2 px-2 py-1 bg-white text-black border rounded-md transition-opacity duration-300">
+        Now playing
+      </div>}
 
       <div className="flex w-full h-full space-x-4 items-center">
         {/* Album Artwork Placeholder */}
         <div
           className={`flex-shrink-0 ${
-            isAdminLogin ? "w-[100px] h-[100px]" : "w-16 h-16"} bg-cover overflow-hidden rounded-md bg-gray-300 flex items-center justify-center`}
-            style={currentlyPlaying && image ? {backgroundImage: `url(${import.meta.env.VITE_BASEURL}/assets${image})`} : {}}
+            isAdminLogin ? "w-[100px] h-[100px]" : "w-16 h-16"
+          } bg-cover overflow-hidden rounded-md bg-gray-300 flex items-center justify-center`}
+          style={
+            currentlyPlaying && image
+              ? {
+                  backgroundImage: `url(${
+                    import.meta.env.VITE_BASEURL
+                  }/assets${image})`,
+                }
+              : {}
+          }
         >
-          {!currentlyPlaying ? <svg className="w-full h-full"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="0"
-            viewBox="-326 -156 512 512"><path className="fill-gray-500" d="M0 0 C1.24455328 0.67478142 2.48918277 1.34942231 3.73388672 2.02392578 
+          {!currentlyPlaying ? (
+            <svg
+              className="w-full h-full"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="0"
+              viewBox="-326 -156 512 512"
+            >
+              <path
+                className="fill-gray-500"
+                d="M0 0 C1.24455328 0.67478142 2.48918277 1.34942231 3.73388672 2.02392578 
             C6.14190729 3.33069933 8.54745646 4.64186887 10.95117188 5.95654297 
             C13.52788792 7.36184426 16.11200527 8.75048378 18.703125 10.12890625 
             C32.52307084 17.5832136 42.81289154 27.17205946 47.43359375 42.46484375 
@@ -127,7 +145,13 @@ function SongList({
             C-71.01686249 44.70770615 -70.88528748 43.91931854 -70.74972534 43.10704041 
             C-70.25518591 40.13601045 -69.76167593 37.16494038 -69.28485107 34.19100952 
             C-64.38777303 3.65418473 -64.38777303 3.65418473 -52.5 -6.1875 
-            C-34.45823271 -19.08302521 -17.30418406 -9.43145152 0 0 Z " fill="" /></svg> : <MusicAnimation isPlaying={isPlaying} /> }
+            C-34.45823271 -19.08302521 -17.30418406 -9.43145152 0 0 Z "
+                fill=""
+              />
+            </svg>
+          ) : (
+            <MusicAnimation isPlaying={isPlaying} />
+          )}
         </div>
 
         {/* Song Details */}
