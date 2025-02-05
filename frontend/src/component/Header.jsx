@@ -4,7 +4,7 @@ import { AiOutlineLogin } from "react-icons/ai";
 import { IoMdLogOut } from "react-icons/io";
 import { LuCloudUpload } from "react-icons/lu";
 import axios from "axios"; // Import Axios
-import logo from "../assets/icon.png"
+import logo from "../../public/icon.png"
 
 
 const Header = ({ handleToggleUpload }) => {

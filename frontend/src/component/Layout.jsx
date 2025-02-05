@@ -12,6 +12,7 @@ import axios from "axios";
 import EditSong from "./EditSong";
 import Pagination from "./Pagination";
 import bg from "../assets/bg.jpg";
+import iconImage from '../../public/icon.png'
 import ArtistButtons from "./ArtistButtons";
 import {
   TbPlayerTrackNextFilled,
@@ -313,7 +314,7 @@ function Layout() {
   useEffect(()=> {
     const link = document.getElementsByTagName('link')[0];
     const title = document.getElementsByTagName('title')[0];
-    link.href = songDetail?.highQualityThumbnailUrl ? `${import.meta.env.VITE_BASEURL}/assets` + songDetail?.highQualityThumbnailUrl : "src/assets/icon.png";
+    link.href = songDetail?.highQualityThumbnailUrl ? `${import.meta.env.VITE_BASEURL}/assets` + songDetail?.highQualityThumbnailUrl : iconImage;
     title.innerText = songDetail?.songName ? songDetail?.songName + " • " + songDetail?.artistName : "PlayMusic";
     
   }, [songDetail?.highQualityThumbnailUrl])
