@@ -385,7 +385,7 @@ function Layout() {
                               ? `url(${import.meta.env.VITE_BASEURL}/assets${
                                   songDetail?.lowQualityThumbnailUrl
                                 })`
-                              : "url(/player.png)", // Fallback to player.png if songDetail is not available
+                              : `url(${import.meta.env.VITE_BASEURL}/assets/thumbnails/default-thumbnail-low.png)`, // Fallback to player.png if songDetail is not available
                             backgroundSize: "cover",
                             backgroundPosition: "center",
                           }}
@@ -401,9 +401,9 @@ function Layout() {
                                     ? `${import.meta.env.VITE_BASEURL}/assets${
                                         songDetail?.lowQualityThumbnailUrl
                                       }`
-                                    : "/player.png"
+                                    : `${import.meta.env.VITE_BASEURL}/assets/thumbnails/default-thumbnail-low.png`
                                 }
-                                alt="player.png"
+                                alt={`${import.meta.env.VITE_BASEURL}/assets/thumbnails/default-thumbnail-low.png`}
                                 className={`w-14 h-14 rounded-full cursor-pointer object-cover ${
                                   isPlaying ? "animate-spin-slow" : "" // Spin only when isPlaying is true
                                 }`}
@@ -551,7 +551,7 @@ function Layout() {
                                 image={
                                   songDetail?.highQualityThumbnailUrl
                                     ? songDetail?.highQualityThumbnailUrl
-                                    : "/thumbnails/default-thumbnail-low.jpg"
+                                    : "/thumbnails/default-thumbnail-low.png"
                                 }
                                 handlePlayer={() =>
                                   handlePlayer(
