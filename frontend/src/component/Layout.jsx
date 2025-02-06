@@ -11,8 +11,7 @@ import Upload from "./Upload";
 import axios from "axios";
 import EditSong from "./EditSong";
 import Pagination from "./Pagination";
-import bg from "../assets/bg.jpg";
-import iconImage from '../../public/icon.png'
+import bg from "../assets/Blur.png";
 import ArtistButtons from "./ArtistButtons";
 import {
   TbPlayerTrackNextFilled,
@@ -311,13 +310,17 @@ function Layout() {
     });
     setHiddenPlayer(true);
   };
-  useEffect(()=> {
-    const link = document.getElementsByTagName('link')[0];
-    const title = document.getElementsByTagName('title')[0];
-    link.href = songDetail?.highQualityThumbnailUrl ? `${import.meta.env.VITE_BASEURL}/assets` + songDetail?.highQualityThumbnailUrl : iconImage;
-    title.innerText = songDetail?.songName ? songDetail?.songName + " • " + songDetail?.artistName : "PlayMusic";
-    
-  }, [songDetail?.highQualityThumbnailUrl])
+  useEffect(() => {
+    const link = document.getElementsByTagName("link")[0];
+    const title = document.getElementsByTagName("title")[0];
+    link.href = songDetail?.highQualityThumbnailUrl
+      ? `${import.meta.env.VITE_BASEURL}/assets` +
+        songDetail?.highQualityThumbnailUrl
+      : "/icon.png";
+    title.innerText = songDetail?.songName
+      ? songDetail?.songName + " • " + songDetail?.artistName
+      : "PlayMusic";
+  }, [songDetail?.highQualityThumbnailUrl]);
 
   if (error) {
     return <div>{error}</div>;
@@ -325,326 +328,332 @@ function Layout() {
 
   return (
     <>
-      <div
-        className="h-screen bg-fixed overflow-auto bg-center bg-cover"
-        style={{ backgroundImage: `url(${bg})` }}
-      >
-        <Header handleToggleUpload={handleToggleUpload} />
-        <div className="flex flex-col md:px-10 mb-5 w-full text-white">
-          <div className="md:bg-white md:border p-4 pb-5 md:rounded-3xl">
-            {!isNoSongsFound && (
-              <>
-                <div className="flex gap-5 md:flex-row flex-col items-center w-full text-black justify-between">
-                  <div className="relative md:w-[376px] w-full">
-                    {/* Search Icon */}
-                    <span className="absolute inset-y-0 left-4 flex items-center pointer-events-none ">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"
-                        />
-                      </svg>
-                    </span>
+      <div className="md:bg-black/20">
+        <div
+          className="h-screen bg-fixed overflow-auto bg-center bg-cover"
+          style={{ backgroundImage: `url(${bg})` }}
+        >
+          <Header handleToggleUpload={handleToggleUpload} />
+          <div className="flex flex-col md:px-10 mb-5 w-full text-white">
+            <div className="md:bg-white md:border p-4 pb-5 md:rounded-3xl">
+              {!isNoSongsFound && (
+                <>
+                  <div className="flex gap-5 md:flex-row flex-col items-center w-full text-black justify-between">
+                    <div className="relative md:w-[376px] w-full">
+                      {/* Search Icon */}
+                      <span className="absolute inset-y-0 left-4 flex items-center pointer-events-none ">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"
+                          />
+                        </svg>
+                      </span>
 
-                    {/* Input Field */}
-                    <input
-                      type="text"
-                      className="w-full text-black border rounded-xl py-4 pl-12 pr-5 outline-none
+                      {/* Input Field */}
+                      <input
+                        type="text"
+                        className="w-full text-black border rounded-2xl py-4 pl-12 pr-5 outline-none
                             bg-white md:focus:ring-1 focus:ring-offset-2 focus:ring-gray-500 focus:ring-opacity-50
                             transition-all duration-300 ease-in-out placeholder:text-sm"
-                      placeholder="Search for music that matches your vibe"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                  </div>
-
-                  {songId && (
-                    <div className="relative group w-full md:w-auto">
-                      <div
-                        onClick={() => navigate("/")}
-                        className="opacity-0 group-hover:opacity-100  transition-opacity duration-300 absolute -top-2 text-xs right-[2px] cursor-pointer border rounded-full p-[2px] text-gray-500 bg-white z-10"
-                      >
-                        <LiaTimesSolid />
-                      </div>
-                      <div
-                        className="w-full group flex items-center overflow-hidden rounded-xl md:w-[330px]"
-                        style={{
-                          backgroundImage: songDetail
-                            ? `url(${import.meta.env.VITE_BASEURL}/assets${
-                                songDetail?.lowQualityThumbnailUrl
-                              })`
-                            : "url(/player.png)", // Fallback to player.png if songDetail is not available
-                          backgroundSize: "cover",
-                          backgroundPosition: "center",
-                        }}
-                      >
-                        <div className="flex bg-black/25 w-full items-center justify-between backdrop-blur-md ">
-                          <div className="flex w-full ps-2 pe-5 py-2 items-center gap-3">
-                            <img
-                              onClick={() =>
-                                setHiddenPlayer((prevState) => !prevState)
-                              } // Toggle visibility
-                              src={
-                                songDetail
-                                  ? `${import.meta.env.VITE_BASEURL}/assets${
-                                      songDetail?.lowQualityThumbnailUrl
-                                    }`
-                                  : "/player.png"
-                              }
-                              alt="player.png"
-                              className={`w-14 h-14 rounded-full cursor-pointer object-cover ${
-                                isPlaying ? "animate-spin-slow" : "" // Spin only when isPlaying is true
-                              }`}
-                            />
-                            <div className="flex flex-col w-full">
-                              <p className="font-bold text-xl text-white">
-                                {currentPlayingSong?.name
-                                  ? isLoading
-                                    ? "Buffering..."
-                                    : isPlaying
-                                    ? "Now Playing"
-                                    : "Paused"
-                                  : "Please wait"}
-                              </p>
-                              {currentPlayingSong?.name ? (
-                                <marquee
-                                  className="text-xs text-gray-200"
-                                  behavior=""
-                                  scrollamount="2"
-                                >
-                                  {isPlaying
-                                    ? `${currentPlayingSong.name} • ${currentPlayingSong.artist}`
-                                    : isLoading
-                                    ? "Your song is loading please wait..."
-                                    : "Click play to start the music!"}
-                                </marquee>
-                              ) : (
-                                <div className="text-xs text-gray-200">
-                                  Loading you next song...
-                                </div>
-                              )}
-                              <div className="relative w-full mt-3 bg-white/20 rounded-full h-1">
-                                <div
-                                  className="absolute top-0 left-0 h-full bg-white rounded-full transition-all duration-300 ease-out"
-                                  style={{ width: `${progressPercentage}%` }}
-                                ></div>
-                                <div
-                                  className="absolute transition-all duration-700 top-1/2 transform -translate-y-1/2 bg-white w-3 h-3 rounded-full shadow-md"
-                                  style={{
-                                    left: `${progressPercentage - 1}%`,
-                                    transition: "left 0.3s ease",
-                                  }}
-                                ></div>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2 justify-between me-4">
-                            <TbPlayerTrackPrevFilled
-                              onClick={() => playPrevSong()}
-                              className="text-white text-xl hover:scale-110 transition-all cursor-pointer"
-                            />
-
-                            {isPlaying ? (
-                              <svg
-                                onClick={togglePlayPause}
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="white"
-                                viewBox="0 0 24 24"
-                                className="w-8 h-8 cursor-pointer"
-                              >
-                                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />{" "}
-                                {/* Pause Icon */}
-                              </svg>
-                            ) : (
-                              <svg
-                                onClick={togglePlayPause}
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="white"
-                                viewBox="0 0 24 24"
-                                className="w-8 h-8 cursor-pointer"
-                              >
-                                <path d="M8 5v14l11-7z" /> {/* Play Icon */}
-                              </svg>
-                            )}
-                            <TbPlayerTrackNextFilled
-                              onClick={() => playNextSong()}
-                              className="text-white text-xl cursor-pointer hover:scale-110 transition-all"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-                {/* artist filter buttons */}
-                {loading ? (
-                  <div className="relative mt-5 rounded-xl bg-white flex flex-wrap items-center md:gap-5 gap-3 md:p-0 p-3 animate-pulse">
-                    {/* Skeleton for Individual Artist Buttons */}
-                    <div className="flex flex-wrap gap-3">
-                      {[...Array(5)].map((_, index) => (
-                        <div
-                          key={index}
-                          className="bg-gray-300 w-32 h-10 rounded-xl flex items-center"
-                        ></div>
-                      ))}
-                    </div>
-                  </div>
-                ) : (
-                  <ArtistButtons
-                    setSelectedArtist={setSelectedArtist}
-                    selectedArtist={selectedArtist}
-                  />
-                )}
-                {/* Song List */}
-
-                {loading ? (
-                  <SongLoadingScalaton />
-                ) : (
-                  <>
-                    {filteredSongs.length === 0 ? (
-                      // Message when no songs match the search query
-                      <div className="flex flex-col bg-white md:mt-0 mt-5 rounded-xl items-center justify-center h-32">
-                        <p className="text-gray-500 text-lg font-semibold">
-                          No songs match your search.
-                        </p>
-                        <p className="text-gray-400">
-                          Try searching with a different keyword.
-                        </p>
-                      </div>
-                    ) : (
-                      // Display song list if there are matching results
-                      <Suspense
-                        fallback={
-                          <div className="w-full px-4 py-8 mt-4 rounded-2xl flex items-center justify-center bg-white">
-                            <div className="flex items-center justify-center">
-                              <div className="flex flex-col items-center space-y-4">
-                                <div className="w-16 h-16 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
-                                <p className="text-xl text-center font-semibold text-gray-700">
-                                  Please wait, the song is loading...
-                                </p>
-                                <p className="text-sm text-gray-500 italic">
-                                  🎵 "Good things take time" 🎶
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        }
-                      >
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-5">
-                          {paginatedSongs.map((song) => (
-                            <SongList
-                              currentlyPlaying={songId === song.audioFile}
-                              isPlaying={isPlaying}
-                              key={song.songId}
-                              image={songDetail?.highQualityThumbnailUrl ? songDetail?.highQualityThumbnailUrl : "/thumbnails/default-thumbnail-low.jpg"}
-                              handlePlayer={() =>
-                                handlePlayer(
-                                  song.audioFile,
-                                  song.songName,
-                                  song.artistName
-                                )
-                              }
-                              id={song._id}
-                              songId={song.songId}
-                              title={song.songName}
-                              artist={song.artistName}
-                              favourite={song.favourite}
-                              isAdminLogin={isAuthenticated}
-                              handleToggleEdit={handleToggleEdit}
-                              fetchSongs={fetchSongs}
-                            />
-                          ))}
-                        </div>
-                      </Suspense>
-                    )}
-
-                    {/* Pagination Controls */}
-                    {filteredSongs.length > 0 && (
-                      <Pagination
-                        filteredSongs={filteredSongs}
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        handlePageClick={handlePageClick}
-                        handlePrevPage={handlePrevPage}
-                        handleNextPage={handleNextPage}
+                        placeholder="Search for music that matches your vibe"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
                       />
-                    )}
-                  </>
-                )}
-              </>
-            )}
-            {isNoSongsFound && (
-              <div className="bg-gray-100 rounded-xl text-center p-8 shadow-lg flex flex-col items-center">
-                <img
-                  src="/no-songs.svg"
-                  alt="No Songs Found"
-                  className="w-32 h-32 mb-4"
-                />
-                <h2 className="text-2xl font-bold text-gray-700 mb-2">
-                  Oops! No Songs Found
-                </h2>
-                <p className="text-gray-500 text-lg">
-                  It seems like the song database is currently empty. <br />
-                  Try searching with a different keyword or come back later!
-                </p>
-              </div>
-            )}
-          </div>
+                    </div>
 
-          {songId && (
-            <div
-              className={`transition-all ${
-                hiddenPlayer
-                  ? "opacity-0 z-[-1] duration-500"
-                  : "opacity-100 z-10 duration-500"
-              } 
+                    {songId && (
+                      <div className="relative group w-full md:w-auto">
+                        <div
+                          onClick={() => navigate("/")}
+                          className="opacity-0 group-hover:opacity-100  transition-opacity duration-300 absolute -top-2 text-xs right-[2px] cursor-pointer border rounded-full p-[2px] text-gray-500 bg-white z-10"
+                        >
+                          <LiaTimesSolid />
+                        </div>
+                        <div
+                          className="w-full group flex items-center overflow-hidden rounded-2xl md:w-[330px]"
+                          style={{
+                            backgroundImage: songDetail
+                              ? `url(${import.meta.env.VITE_BASEURL}/assets${
+                                  songDetail?.lowQualityThumbnailUrl
+                                })`
+                              : "url(/player.png)", // Fallback to player.png if songDetail is not available
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                          }}
+                        >
+                          <div className="flex bg-black/25 w-full items-center justify-between backdrop-blur-md ">
+                            <div className="flex w-full ps-2 pe-5 py-2 items-center gap-3">
+                              <img
+                                onClick={() =>
+                                  setHiddenPlayer((prevState) => !prevState)
+                                } // Toggle visibility
+                                src={
+                                  songDetail
+                                    ? `${import.meta.env.VITE_BASEURL}/assets${
+                                        songDetail?.lowQualityThumbnailUrl
+                                      }`
+                                    : "/player.png"
+                                }
+                                alt="player.png"
+                                className={`w-14 h-14 rounded-full cursor-pointer object-cover ${
+                                  isPlaying ? "animate-spin-slow" : "" // Spin only when isPlaying is true
+                                }`}
+                              />
+                              <div className="flex flex-col w-full">
+                                <p className="font-bold text-xl text-white">
+                                  {currentPlayingSong?.name
+                                    ? isLoading
+                                      ? "Buffering..."
+                                      : isPlaying
+                                      ? "Now Playing"
+                                      : "Paused"
+                                    : "Please wait"}
+                                </p>
+                                {currentPlayingSong?.name ? (
+                                  <marquee
+                                    className="text-xs text-gray-200"
+                                    behavior=""
+                                    scrollamount="2"
+                                  >
+                                    {isPlaying
+                                      ? `${currentPlayingSong.name} • ${currentPlayingSong.artist}`
+                                      : isLoading
+                                      ? "Your song is loading please wait..."
+                                      : "Click play to start the music!"}
+                                  </marquee>
+                                ) : (
+                                  <div className="text-xs text-gray-200">
+                                    Loading you next song...
+                                  </div>
+                                )}
+                                <div className="relative w-full mt-3 bg-white/20 rounded-full h-1">
+                                  <div
+                                    className="absolute top-0 left-0 h-full bg-white rounded-full transition-all duration-300 ease-out"
+                                    style={{ width: `${progressPercentage}%` }}
+                                  ></div>
+                                  <div
+                                    className="absolute transition-all duration-700 top-1/2 transform -translate-y-1/2 bg-white w-3 h-3 rounded-full shadow-md"
+                                    style={{
+                                      left: `${progressPercentage - 1}%`,
+                                      transition: "left 0.3s ease",
+                                    }}
+                                  ></div>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2 justify-between me-4">
+                              <TbPlayerTrackPrevFilled
+                                onClick={() => playPrevSong()}
+                                className="text-white text-xl hover:scale-110 transition-all cursor-pointer"
+                              />
+
+                              {isPlaying ? (
+                                <svg
+                                  onClick={togglePlayPause}
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="white"
+                                  viewBox="0 0 24 24"
+                                  className="w-8 h-8 cursor-pointer"
+                                >
+                                  <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />{" "}
+                                  {/* Pause Icon */}
+                                </svg>
+                              ) : (
+                                <svg
+                                  onClick={togglePlayPause}
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="white"
+                                  viewBox="0 0 24 24"
+                                  className="w-8 h-8 cursor-pointer"
+                                >
+                                  <path d="M8 5v14l11-7z" /> {/* Play Icon */}
+                                </svg>
+                              )}
+                              <TbPlayerTrackNextFilled
+                                onClick={() => playNextSong()}
+                                className="text-white text-xl cursor-pointer hover:scale-110 transition-all"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  {/* artist filter buttons */}
+                  {loading ? (
+                    <div className="relative mt-5 rounded-xl bg-white flex flex-wrap items-center md:gap-5 gap-3 md:p-0 p-3 animate-pulse">
+                      {/* Skeleton for Individual Artist Buttons */}
+                      <div className="flex flex-wrap gap-3">
+                        {[...Array(5)].map((_, index) => (
+                          <div
+                            key={index}
+                            className="bg-gray-300 w-32 h-10 rounded-xl flex items-center"
+                          ></div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <ArtistButtons
+                      setSelectedArtist={setSelectedArtist}
+                      selectedArtist={selectedArtist}
+                    />
+                  )}
+                  {/* Song List */}
+
+                  {loading ? (
+                    <SongLoadingScalaton />
+                  ) : (
+                    <>
+                      {filteredSongs.length === 0 ? (
+                        // Message when no songs match the search query
+                        <div className="flex flex-col bg-white md:mt-0 mt-5 rounded-xl items-center justify-center h-32">
+                          <p className="text-gray-500 text-lg font-semibold">
+                            No songs match your search.
+                          </p>
+                          <p className="text-gray-400">
+                            Try searching with a different keyword.
+                          </p>
+                        </div>
+                      ) : (
+                        // Display song list if there are matching results
+                        <Suspense
+                          fallback={
+                            <div className="w-full px-4 py-8 mt-4 rounded-2xl flex items-center justify-center bg-white">
+                              <div className="flex items-center justify-center">
+                                <div className="flex flex-col items-center space-y-4">
+                                  <div className="w-16 h-16 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
+                                  <p className="text-xl text-center font-semibold text-gray-700">
+                                    Please wait, the song is loading...
+                                  </p>
+                                  <p className="text-sm text-gray-500 italic">
+                                    🎵 "Good things take time" 🎶
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          }
+                        >
+                          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-5">
+                            {paginatedSongs.map((song) => (
+                              <SongList
+                                currentlyPlaying={songId === song.audioFile}
+                                isPlaying={isPlaying}
+                                key={song.songId}
+                                image={
+                                  songDetail?.highQualityThumbnailUrl
+                                    ? songDetail?.highQualityThumbnailUrl
+                                    : "/thumbnails/default-thumbnail-low.jpg"
+                                }
+                                handlePlayer={() =>
+                                  handlePlayer(
+                                    song.audioFile,
+                                    song.songName,
+                                    song.artistName
+                                  )
+                                }
+                                id={song._id}
+                                songId={song.songId}
+                                title={song.songName}
+                                artist={song.artistName}
+                                favourite={song.favourite}
+                                isAdminLogin={isAuthenticated}
+                                handleToggleEdit={handleToggleEdit}
+                                fetchSongs={fetchSongs}
+                              />
+                            ))}
+                          </div>
+                        </Suspense>
+                      )}
+
+                      {/* Pagination Controls */}
+                      {filteredSongs.length > 0 && (
+                        <Pagination
+                          filteredSongs={filteredSongs}
+                          currentPage={currentPage}
+                          totalPages={totalPages}
+                          handlePageClick={handlePageClick}
+                          handlePrevPage={handlePrevPage}
+                          handleNextPage={handleNextPage}
+                        />
+                      )}
+                    </>
+                  )}
+                </>
+              )}
+              {isNoSongsFound && (
+                <div className="bg-gray-100 rounded-xl text-center p-8 shadow-lg flex flex-col items-center">
+                  <img
+                    src="/no-songs.svg"
+                    alt="No Songs Found"
+                    className="w-32 h-32 mb-4"
+                  />
+                  <h2 className="text-2xl font-bold text-gray-700 mb-2">
+                    Oops! No Songs Found
+                  </h2>
+                  <p className="text-gray-500 text-lg">
+                    It seems like the song database is currently empty. <br />
+                    Try searching with a different keyword or come back later!
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {songId && (
+              <div
+                className={`transition-all ${
+                  hiddenPlayer
+                    ? "opacity-0 z-[-1] duration-500"
+                    : "opacity-100 z-10 duration-500"
+                } 
             ${hiddenPlayer ? "sm:block md:hidden" : "sm:block md:block"} 
             `}
-            >
-              <MusicPlayer
-                audioRef={audioRef}
-                songId={player}
-                handlePlayerClose={handlePlayerClose}
-                songName={songDetail?.songName}
-                artistName={songDetail?.artistName}
-                image={songDetail?.highQualityThumbnailUrl}
-                audioUrl={songDetail?.audioUrl}
-                backgroundImage={songDetail?.lowQualityThumbnailUrl}
-                favourite={songDetail?.favourite}
-                playNextSong={playNextSong}
-                playPrevSong={playPrevSong}
-                SetisPlayingOrNotForLayout={setIsPlaying}
-                setProgressPercentage={setProgressPercentage}
-                songClickLoading={songClickLoading}
-                setIsLoading={setIsLoading} // this is for song if song is buffering...
-                isLoading={isLoading}
-                songLoop={songLoop}
-                setSongLoop={setSongLoop}
-              />
-            </div>
-          )}
+              >
+                <MusicPlayer
+                  audioRef={audioRef}
+                  songId={player}
+                  handlePlayerClose={handlePlayerClose}
+                  songName={songDetail?.songName}
+                  artistName={songDetail?.artistName}
+                  image={songDetail?.highQualityThumbnailUrl}
+                  audioUrl={songDetail?.audioUrl}
+                  backgroundImage={songDetail?.lowQualityThumbnailUrl}
+                  favourite={songDetail?.favourite}
+                  playNextSong={playNextSong}
+                  playPrevSong={playPrevSong}
+                  SetisPlayingOrNotForLayout={setIsPlaying}
+                  setProgressPercentage={setProgressPercentage}
+                  songClickLoading={songClickLoading}
+                  setIsLoading={setIsLoading} // this is for song if song is buffering...
+                  isLoading={isLoading}
+                  songLoop={songLoop}
+                  setSongLoop={setSongLoop}
+                />
+              </div>
+            )}
 
-          {upload && (
-            <Upload
-              fetchSongs={fetchSongs}
-              handleToggleUpload={handleToggleUpload}
-            />
-          )}
-          {edit && (
-            <EditSong
-              fetchSongs={fetchSongs}
-              handleToggleEdit={handleToggleEdit}
-              songId={editSongId}
-            />
-          )}
+            {upload && (
+              <Upload
+                fetchSongs={fetchSongs}
+                handleToggleUpload={handleToggleUpload}
+              />
+            )}
+            {edit && (
+              <EditSong
+                fetchSongs={fetchSongs}
+                handleToggleEdit={handleToggleEdit}
+                songId={editSongId}
+              />
+            )}
+          </div>
         </div>
       </div>
     </>

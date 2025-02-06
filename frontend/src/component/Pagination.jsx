@@ -18,7 +18,7 @@ const Pagination = ({
   return (
     filteredSongs.length > 0 &&
     totalPages !== 1 && (
-      <div className="flex bg-white rounded-xl md:justify-center justify-evenly mt-4 items-center">
+      <div className="flex bg-white border md:border-none rounded-xl md:justify-center justify-evenly mt-4 items-center">
         {/* Previous Button */}
         <button
           onClick={handlePrevPage}

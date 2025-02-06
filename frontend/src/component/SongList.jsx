@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { MdOutlineDeleteSweep } from "react-icons/md";
 import { FiEdit2 } from "react-icons/fi";
 import { AiOutlineDelete } from "react-icons/ai";
 import apiService from "../services/apiService"; // Import your apiService
@@ -44,7 +43,7 @@ function SongList({
       onClick={() => {
         handlePlayer(id, title, artist);
       }}
-      className="relative group flex flex-col space-y-2 bg-white border border-gray-200 shadow-lg rounded-xl p-4 md:hover:ring-2 hover:ring-gray-500 hover:ring-opacity-50
+      className="relative group flex flex-col space-y-2 bg-white border border-gray-200 md:shadow-lg rounded-2xl p-4 md:hover:ring-2 hover:ring-gray-500 hover:ring-opacity-50
            ring-offset-2  transition-all duration-300 ease-in-out cursor-pointer hover:shadow-xl"
     >
       {/* {isPlaying && <div className="absolute top-3 right-3">
@@ -58,7 +57,7 @@ function SongList({
               e.stopPropagation();
               handleToggleEdit(songId);
             }}
-            className="absolute bottom-2 right-2 p-2 bg-white text-black border rounded-md text-sm opacity-0 group-hover:opacity-100  transition-opacity duration-300"
+            className="absolute bottom-2 right-2 p-2 bg-white text-black border rounded-lg text-sm opacity-0 group-hover:opacity-100  transition-opacity duration-300"
           >
             <FiEdit2 />
           </button>
@@ -69,18 +68,18 @@ function SongList({
               handleDeleteSong(id, songId); // Call the delete function when clicked
               console.log(id);
             }}
-            className="absolute bottom-2 right-12 p-2 bg-white text-black border rounded-md text-sm opacity-0 group-hover:opacity-100  transition-opacity duration-300"
+            className="absolute bottom-2 right-12 p-2 bg-white text-black border rounded-lg text-sm opacity-0 group-hover:opacity-100  transition-opacity duration-300"
           >
             <AiOutlineDelete />
           </button>
         </>
       )}
       {isDeleting && (
-        <div className="absolute bottom-2 text-xs right-2 p-2 bg-white text-black border rounded-md transition-opacity duration-300">
+        <div className="absolute bottom-2 text-xs right-2 p-2 bg-white text-black border rounded-lg transition-opacity duration-300">
           Deleting...
         </div>
       )}
-      {currentlyPlaying && <div className="absolute top-0 text-xs right-2 px-2 py-1 bg-white text-black border rounded-md transition-opacity duration-300">
+      {currentlyPlaying && <div className="absolute top-2 text-xs right-2 px-2 py-1 bg-white text-black border rounded-lg transition-opacity duration-300">
         Now playing
       </div>}
 

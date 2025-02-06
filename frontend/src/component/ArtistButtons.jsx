@@ -24,7 +24,7 @@ function ArtistButtons({ selectedArtist, setSelectedArtist }) {
     artist.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
   return (
-    <div className="relative  mt-5 bg-white rounded-xl flex flex-wrap items-center md:gap-5 gap-3 md:p-0 p-3">
+    <div className="relative  mt-5 bg-white border md:border-none rounded-xl flex flex-wrap items-center md:gap-5 gap-3 md:p-0 p-3">
       {/* All Artists Button */}
       <div className="flex gap-[3px]">
         <button

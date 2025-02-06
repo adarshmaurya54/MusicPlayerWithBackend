@@ -257,7 +257,7 @@ const MusicPlayer = ({
       >
         <div
           className={`${
-            songClickLoading ? "bg-white" : "bg-white/80 md:bg-black/20"
+            songClickLoading ? "bg-white" : "bg-white/40 md:bg-black/20"
           } backdrop-blur-2xl p-4 h-full overflow-auto no-scrollbar`}
         >
           <div className="flex text-black md:text-white absolute md:top-7 md:left-7 justify-between items-center">
