@@ -283,7 +283,7 @@ exports.getSongWithMetadata = async (req, res) => {
           await sharp(imageBuffer)
             .resize({ width: 600, height: 600, fit: "cover" }) // High-quality size (e.g., 600x600)
             .toFormat("jpg")
-            .jpeg({ quality: 90 }) // High compression quality
+            .jpeg({ quality: 100, chromaSubsampling: '4:4:4' }) // High compression quality
             .toFile(highQualityThumbnailPath);
           highQualityThumbnailUrl = `/thumbnails/${fileId}-high.jpg`;
 

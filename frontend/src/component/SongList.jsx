@@ -44,7 +44,8 @@ function SongList({
         handlePlayer(id, title, artist);
       }}
       className="relative group flex flex-col space-y-2 bg-white border border-gray-200 md:shadow-lg rounded-2xl p-4 md:hover:ring-2 hover:ring-gray-500 hover:ring-opacity-50
-           ring-offset-2  transition-all duration-300 ease-in-out cursor-pointer hover:shadow-xl"
+           ring-offset-2 transition-all duration-300 ease-in-out cursor-pointer hover:shadow-xl"
+           
     >
       {/* {isPlaying && <div className="absolute top-3 right-3">
         
@@ -58,6 +59,7 @@ function SongList({
               handleToggleEdit(songId);
             }}
             className="absolute bottom-2 right-2 p-2 bg-white text-black border rounded-lg text-sm opacity-0 group-hover:opacity-100  transition-opacity duration-300"
+            
           >
             <FiEdit2 />
           </button>

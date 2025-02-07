@@ -253,7 +253,7 @@ const MusicPlayer = ({
             ? "none" // No image when true
             : `url(${import.meta.env.VITE_BASEURL}/assets${backgroundImage})`, // Image when false
         }}
-        className="transition-all duration-700 md:w-[100%] relative md:h-[100%] bg-no-repeat bg-center bg-cover overflow-auto no-scrollbar h-full w-full "
+        className="transition-all  duration-700 md:w-[100%] relative md:h-[100%] bg-no-repeat  bg-cover overflow-auto no-scrollbar h-full w-full "
       >
         <div
           className={`${
@@ -280,7 +280,7 @@ const MusicPlayer = ({
                 <img
                   src={`${import.meta.env.VITE_BASEURL}/assets${image}`}
                   alt="Album Art"
-                  className="transition-all shadow-2xl md:w-[80%] w-[270px] rounded-3xl"
+                  className="transition-all shadow-2xl md:w-[80%] w-[300px] rounded-3xl"
                 />
               </div>
             )}
