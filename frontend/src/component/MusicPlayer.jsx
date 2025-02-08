@@ -257,7 +257,7 @@ const MusicPlayer = ({
       >
         <div
           className={`${
-            songClickLoading ? "bg-white" : "bg-white/40 md:bg-black/20"
+            songClickLoading ? "bg-white dark:bg-slate-900" : "bg-black/30  md:bg-black/20"
           } backdrop-blur-2xl p-4 h-full overflow-auto no-scrollbar`}
         >
           <div className="flex text-black md:text-white absolute md:top-7 md:left-7 justify-between items-center">
@@ -266,17 +266,17 @@ const MusicPlayer = ({
             ) : (
               <FaArrowLeft
                 onClick={() => handlePlayerClose(songId, songName, artistName)}
-                className="text-xl cursor-pointer"
+                className="text-white text-xl cursor-pointer"
               />
             )}
           </div>
-          <div className="flex md:flex-row h-full flex-col items-center justify-evenly">
+          <div className="flex md:flex-row h-full flex-col items-center justify-around">
             {songClickLoading ? (
-              <div className="transition-all md:mb-0 mb-5 px-3 py-5 md:w-[50%] w-full flex justify-center">
+              <div className="transition-all md:mt-0 mt-10 md:mb-0 mb-5 px-3 py-5 md:w-[50%] w-full flex justify-center">
                 <div className="md:w-[80%] w-[270px] h-[200px] md:h-[300px] bg-gray-500 animate-pulse rounded-3xl"></div>
               </div>
             ) : (
-              <div className="transition-all md:mb-0 mb-5 px-3 py-5 md:w-[50%] w-full flex justify-center">
+              <div className="transition-all md:mt-0 mt-10 md:mb-0 mb-5 px-3 py-5 md:w-[50%] w-full flex justify-center">
                 <img
                   src={`${import.meta.env.VITE_BASEURL}/assets${image}`}
                   alt="Album Art"
@@ -286,7 +286,7 @@ const MusicPlayer = ({
             )}
             {songClickLoading ? (
               <div className="transition-all flex items-center justify-center md:w-[60%] w-full">
-                <div className="md:rounded-3xl w-full md:p-2 md:py-4 md:border-2 md:border-black/20">
+                <div className="md:rounded-3xl w-full md:p-2 md:py-4 md:border-2 md:border-black/20 md:dark:border-white/20">
                   <div className="flex items-center px-3 justify-between">
                     <div className="flex flex-col gap-2">
                       <div className="w-40 h-8 bg-gray-500 animate-pulse rounded"></div>
@@ -315,7 +315,7 @@ const MusicPlayer = ({
             ) : (
               <div className="transition-all flex items-center justify-center md:w-[60%]">
                 <div className="md:rounded-3xl w-full md:p-2 md:border-2 md:border-white/20">
-                  <div className="flex items-center text-black md:text-white px-3 justify-between">
+                  <div className="flex items-center text-white px-3 justify-between">
                     <div className="flex flex-col">
                       <div
                         title={songName}
@@ -323,7 +323,7 @@ const MusicPlayer = ({
                       >
                         {songName}
                       </div>
-                      <span className="md:text-xl capitalize font-thin text-lg text-gray-700 md:text-gray-100">
+                      <span className="md:text-xl capitalize font-thin text-lg text-gray-200">
                         {artistName}
                       </span>
                     </div>
@@ -341,7 +341,7 @@ const MusicPlayer = ({
                         className={`${
                           isLiked
                             ? "stroke-[#e7125c]"
-                            : "md:stroke-white stroke-black"
+                            : "stroke-white"
                         } md:text-4xl text-3xl active:scale-90 hover:scale-110  duration-500`}
                         height="1em"
                         width="1em"
@@ -352,14 +352,14 @@ const MusicPlayer = ({
                     </div>
                   </div>
                   <div className="px-3 mt-5">
-                    <div className="flex items-center justify-between text-sm text-gray-600 md:text-gray-200">
+                    <div className="flex items-center justify-between text-sm text-gray-200">
                       <span>
                         {isLoading ? "Buffering..." : formatTime(currentTime)}
                       </span>
                       <span>{formatTime(totalDuration)}</span>
                     </div>
                     <div
-                      className="relative w-full h-2 md:bg-white/20 bg-black/10 rounded-lg mt-2 cursor-pointer"
+                      className="relative w-full h-2 bg-white/20 rounded-lg mt-2 cursor-pointer"
                       ref={progressBarRef}
                       onMouseDown={handleStart}
                       onTouchStart={handleStart}
@@ -378,19 +378,19 @@ const MusicPlayer = ({
                   <div className="flex items-center justify-center gap-5 mt-5">
                     <button  onClick={() => setSongLoop(!songLoop)} className="p-3 rounded-full">
                       {!songLoop ? (
-                        <PiShuffle className="md:text-white hover:scale-110 transition-all text-black md:text-lg text-3xl" />
+                        <PiShuffle className="text-white hover:scale-110 transition-all  md:text-lg text-3xl" />
                       ) : (
-                        <BsRepeat1 className="md:text-white hover:scale-110 transition-all text-black md:text-lg text-3xl" />
+                        <BsRepeat1 className="text-white hover:scale-110 transition-all  md:text-lg text-3xl" />
                       )}
                     </button>
                     <button
                       onClick={() => handlePrevSong(songId)}
                       className="p-3 rounded-full"
                     >
-                      <FaBackward className="md:text-white text-black text-3xl" />
+                      <FaBackward className="text-white text-3xl" />
                     </button>
                     <button
-                      className="md:p-3 p-4 flex items-center justify-center md:bg-orange-500 bg-black rounded-full"
+                      className="md:p-3 p-4 flex items-center justify-center bg-orange-500 rounded-full"
                       onClick={togglePlay}
                     >
                       {isPlaying ? (
@@ -403,13 +403,13 @@ const MusicPlayer = ({
                       onClick={() => handleNextSong(songId)}
                       className={`p-3 rounded-full ${songId}`}
                     >
-                      <FaForward className="md:text-white text-black text-3xl" />
+                      <FaForward className="text-white text-3xl" />
                     </button>
                     <button onClick={toggleMute} className="p-3 rounded-full">
                       {isMuted ? (
-                        <HiSpeakerXMark className="md:text-white  hover:scale-110 transition-all text-black md:text-lg text-3xl" />
+                        <HiSpeakerXMark className="text-white  hover:scale-110 transition-all md:text-lg text-3xl" />
                       ) : (
-                        <HiSpeakerWave className="md:text-white  hover:scale-110 transition-all text-black md:text-lg text-3xl" />
+                        <HiSpeakerWave className="text-white  hover:scale-110 transition-all md:text-lg text-3xl" />
                       )}
                     </button>
                   </div>

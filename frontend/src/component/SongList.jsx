@@ -43,7 +43,7 @@ function SongList({
       onClick={() => {
         handlePlayer(id, title, artist);
       }}
-      className="relative group flex flex-col space-y-2 bg-white border border-gray-200 md:shadow-lg rounded-2xl p-4 md:hover:ring-2 hover:ring-gray-500 hover:ring-opacity-50
+      className="relative group flex flex-col space-y-2 bg-white dark:md:bg-slate-700 dark:bg-slate-900 dark:border-none border border-gray-200 md:shadow-lg rounded-2xl p-4 md:hover:ring-2 hover:ring-gray-500 hover:ring-opacity-50
            ring-offset-2 transition-all duration-300 ease-in-out cursor-pointer hover:shadow-xl"
            
     >
@@ -164,11 +164,11 @@ function SongList({
           <div className="flex-1 w-full">
             <h3
               title={title}
-              className="text-lg line-clamp-2 font-semibold text-gray-800"
+              className="text-lg line-clamp-2 font-semibold dark:text-white text-gray-800"
             >
               {title}
             </h3>
-            <p className="text-sm text-gray-600 ">{artist}</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400 ">{artist}</p>
           </div>
 
           {/* Favourite Icon */}

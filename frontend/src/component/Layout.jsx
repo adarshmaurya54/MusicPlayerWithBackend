@@ -18,6 +18,7 @@ import {
   TbPlayerTrackPrevFilled,
 } from "react-icons/tb";
 import { LiaTimesSolid } from "react-icons/lia";
+import { ThemeProvider } from "../context/theme";
 
 function Layout() {
   const { songId } = useParams(); // Get songId from URL
@@ -30,6 +31,7 @@ function Layout() {
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [themeMode, setThemeMode] = useState(localStorage.getItem("theme"));
   const [upload, setUpload] = useState(false);
   const [edit, setEdit] = useState(false);
   const [editSongId, setEditSongId] = useState("");
@@ -322,26 +324,54 @@ function Layout() {
       : "PlayMusic";
   }, [songDetail?.highQualityThumbnailUrl]);
 
+  // Functions of enabling lightmode and darkmode
+  const lightTheme = () => {
+    setThemeMode("light");
+  };
+  const darkTheme = () => {
+    setThemeMode("dark");
+  };
+  // actual change in theme..
+  useEffect(() => {
+    document.querySelector("html").classList.remove("light", "dark");
+    document.querySelector("html").classList.add(themeMode);
+
+    // Find the meta tag with name="theme-color"
+    let metaThemeColor = document.querySelector('meta[name="theme-color"]');
+
+    // If it doesn't exist, create it
+    if (!metaThemeColor) {
+      metaThemeColor = document.createElement("meta");
+      metaThemeColor.name = "theme-color";
+      document.head.appendChild(metaThemeColor);
+    }
+
+    // Update the content attribute with the new color
+    metaThemeColor.content = themeMode === "light" ? "#ffffff" : "#0f172a";
+
+    // storing theme state in localstorage
+    localStorage.setItem("theme", themeMode);
+  }, [themeMode]);
+
   if (error) {
     return <div>{error}</div>;
   }
-
+console.log(bg)
   return (
-    <>
-      <div className="md:bg-black/20">
+    <ThemeProvider value={{ lightTheme, darkTheme, themeMode }}>
+      <div className="md:bg-black/20 transition-all duration-500">
         <div
-          className="h-screen bg-fixed overflow-auto bg-center bg-cover"
-          style={{ backgroundImage: `url(${bg})` }}
+          className={`h-screen bg-fixed overflow-auto bg-center bg-cover transition-all duration-500 bg-[url('/src/assets/Blur.png')] dark:bg-[url('/src/assets/bg_dark.jpg')]`}
         >
           <Header handleToggleUpload={handleToggleUpload} />
           <div className="flex flex-col md:px-10 mb-5 w-full text-white">
-            <div className="md:bg-white md:border p-4 pb-5 md:rounded-3xl">
+            <div className="md:bg-white dark:md:bg-transparent dark:border-0 md:border p-4 pb-5 md:rounded-3xl">
               {!isNoSongsFound && (
                 <>
                   <div className="flex gap-5 md:flex-row flex-col items-center w-full text-black justify-between">
                     <div className="relative md:w-[376px] w-full">
                       {/* Search Icon */}
-                      <span className="absolute inset-y-0 left-4 flex items-center pointer-events-none ">
+                      <span className="absolute dark:text-gray-500 inset-y-0 left-4 flex items-center pointer-events-none ">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           className="h-5 w-5"
@@ -361,8 +391,8 @@ function Layout() {
                       {/* Input Field */}
                       <input
                         type="text"
-                        className="w-full text-black border rounded-2xl py-4 pl-12 pr-5 outline-none
-                            bg-white md:focus:ring-1 focus:ring-offset-2 focus:ring-gray-500 focus:ring-opacity-50
+                        className="w-full dark:text-white text-black border dark:md:border dark:md:border-gray-500 dark:border-0 rounded-2xl py-4 pl-12 pr-5 outline-none
+                            dark:md:bg-transparent dark:bg-slate-900 bg-white md:focus:ring-1 focus:ring-offset-2 dark:ring-offset-0 focus:ring-gray-500 focus:ring-opacity-50
                             transition-all duration-300 ease-in-out placeholder:text-sm"
                         placeholder="Search for music that matches your vibe"
                         value={searchQuery}
@@ -374,18 +404,20 @@ function Layout() {
                       <div className="relative group w-full md:w-auto">
                         <div
                           onClick={() => navigate("/")}
-                          className="opacity-0 group-hover:opacity-100  transition-opacity duration-300 absolute -top-2 text-xs right-[2px] cursor-pointer border rounded-full p-[2px] text-gray-500 bg-white z-10"
+                          className="opacity-0 group-hover:opacity-100  transition-opacity duration-300 absolute -top-2 text-xs right-[2px] cursor-pointer rounded-full p-[2px] text-gray-500 bg-white z-10"
                         >
                           <LiaTimesSolid />
                         </div>
                         <div
-                          className="w-full group flex items-center overflow-hidden rounded-2xl md:w-[330px]"
+                          className="w-full  group flex items-center overflow-hidden rounded-2xl md:w-[350px]"
                           style={{
                             backgroundImage: songDetail
                               ? `url(${import.meta.env.VITE_BASEURL}/assets${
                                   songDetail?.lowQualityThumbnailUrl
                                 })`
-                              : `url(${import.meta.env.VITE_BASEURL}/assets/thumbnails/default-thumbnail-low.png)`, // Fallback to player.png if songDetail is not available
+                              : `url(${
+                                  import.meta.env.VITE_BASEURL
+                                }/assets/thumbnails/default-thumbnail-low.png)`, // Fallback to player.png if songDetail is not available
                             backgroundSize: "cover",
                             backgroundPosition: "center",
                           }}
@@ -401,9 +433,13 @@ function Layout() {
                                     ? `${import.meta.env.VITE_BASEURL}/assets${
                                         songDetail?.lowQualityThumbnailUrl
                                       }`
-                                    : `${import.meta.env.VITE_BASEURL}/assets/thumbnails/default-thumbnail-low.png`
+                                    : `${
+                                        import.meta.env.VITE_BASEURL
+                                      }/assets/thumbnails/default-thumbnail-low.png`
                                 }
-                                alt={`${import.meta.env.VITE_BASEURL}/assets/thumbnails/default-thumbnail-low.png`}
+                                alt={`${
+                                  import.meta.env.VITE_BASEURL
+                                }/assets/thumbnails/default-thumbnail-low.png`}
                                 className={`w-14 h-14 rounded-full cursor-pointer object-cover ${
                                   isPlaying ? "animate-spin-slow" : "" // Spin only when isPlaying is true
                                 }`}
@@ -490,15 +526,15 @@ function Layout() {
                   </div>
                   {/* artist filter buttons */}
                   {loading ? (
-                    <div className="relative mt-5 rounded-xl bg-white flex flex-wrap items-center md:gap-5 gap-3 md:p-0 p-3 animate-pulse">
+                    <div className="relative mt-5 rounded-xl md:bg-transparent dark:bg-slate-900 bg-white flex flex-wrap items-center md:gap-5 gap-3 md:p-0 p-3 animate-pulse">
                       {/* Skeleton for Individual Artist Buttons */}
                       <div className="flex flex-wrap gap-3">
-                        {[...Array(5)].map((_, index) => (
-                          <div
-                            key={index}
-                            className="bg-gray-300 w-32 h-10 rounded-xl flex items-center"
-                          ></div>
-                        ))}
+                        <div className="bg-gray-300 w-32 h-10 rounded-xl flex items-center"></div>
+                        <div className="bg-gray-300 w-40 h-10 rounded-xl flex items-center"></div>
+                        <div className="bg-gray-300 w-36 h-10 rounded-xl flex items-center"></div>
+                        <div className="bg-gray-300 w-32 h-10 rounded-xl flex items-center"></div>
+                        <div className="bg-gray-300 w-48 h-10 rounded-xl flex items-center"></div>
+                        <div className="bg-gray-300 w-32 h-10 rounded-xl flex items-center"></div>
                       </div>
                     </div>
                   ) : (
@@ -515,7 +551,7 @@ function Layout() {
                     <>
                       {filteredSongs.length === 0 ? (
                         // Message when no songs match the search query
-                        <div className="flex flex-col bg-white md:mt-0 mt-5 rounded-xl items-center justify-center h-32">
+                        <div className="flex flex-col dark:bg-transparent bg-white md:mt-0 mt-5 rounded-xl items-center justify-center h-32">
                           <p className="text-gray-500 text-lg font-semibold">
                             No songs match your search.
                           </p>
@@ -656,7 +692,7 @@ function Layout() {
           </div>
         </div>
       </div>
-    </>
+    </ThemeProvider>
   );
 }
 
