@@ -64,7 +64,7 @@ const Header = ({ handleToggleUpload }) => {
         <h1 className="text-3xl font-bold">
           <Link to="/" className="flex gap-3 items-center">
             <img src={logo} alt="./vite.svg" className="w-14" />
-            <span className="dark:text-white text-black">PlayMusic</span>
+            <span className="dark:text-white text-black">PlaybeatZ</span>
           </Link>
         </h1>
         {handleToggleUpload && (
@@ -74,7 +74,7 @@ const Header = ({ handleToggleUpload }) => {
                 <button
                   onClick={handleToggleUpload}
                   className="bg-black dark:bg-white hover:ring-2 hover:ring-black
-           ring-offset-2  transition-all duration-300 md:w-auto w-[50%] flex items-center gap-2 dark:text-black text-white px-4 py-2 rounded-xl"
+           ring-offset-2 dark:ring-offset-0  transition-all duration-300 md:w-auto w-[50%] flex items-center gap-2 dark:text-black text-white px-4 py-2 rounded-xl"
                 >
                   <LuCloudUpload className="mt-1" />
                   <span>Upload Song</span>
@@ -82,7 +82,7 @@ const Header = ({ handleToggleUpload }) => {
                 <button
                   onClick={handleLogout}
                   className="bg-black dark:bg-white hover:ring-2 hover:ring-black
-           ring-offset-4  transition-all duration-300 md:w-auto w-[50%] justify-center flex items-center gap-2 dark:text-black text-white px-4 py-2 rounded-xl"
+           ring-offset-2 dark:ring-offset-0  transition-all duration-300 md:w-auto w-[50%] justify-center flex items-center gap-2 dark:text-black text-white px-4 py-2 rounded-xl"
                 >
                   <IoMdLogOut className="mt-1" />
                   <span>Logout</span>

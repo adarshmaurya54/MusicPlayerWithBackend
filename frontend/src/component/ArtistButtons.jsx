@@ -24,21 +24,21 @@ function ArtistButtons({ selectedArtist, setSelectedArtist }) {
     artist.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
   return (
-    <div className="relative border dark:border-none mt-5 bg-white dark:bg-slate-900 dark:md:bg-transparent rounded-xl flex flex-wrap items-center md:gap-5 gap-3 md:p-0 p-3">
+    <div className="relative md:border-none border dark:border-none mt-5 bg-white dark:bg-slate-900 dark:md:bg-transparent rounded-xl flex flex-wrap items-center md:gap-5 gap-3 md:p-0 p-3">
       {/* All Artists Button */}
-      <div className="flex gap-[3px]">
+      <div className="flex gap-[2px]">
         <button
           onClick={() => {
             fetchArtists();
             setOpenArtistPopup(!openArtistPopup);
           }}
-          className={`text-nowrap w-fit gap-1 items-center flex text-black  `}
+          className={`text-nowrap w-fit items-center flex text-black  `}
         >
           <div
-            className={`md:text-sm p-2 dark:border-gray-500 dark:text-white border md:px-4 hover:bg-black dark:hover:bg-white dark:hover:text-black rounded-l-xl hover:text-white text-xs ${
+            className={`md:text-sm p-2 dark:border-gray-500 md:px-4 hover:bg-black dark:hover:bg-white dark:hover:text-black rounded-l-xl hover:text-white text-xs ${
               selectedArtist === "all"
                 ? "dark:bg-white bg-black rounded-r-xl dark:text-black text-white"
-                : "hover:border-black rounded-r-sm"
+                : "hover:border-black rounded-r-md dark:bg-white bg-black dark:text-black text-white"
             }`}
           >
             {selectedArtist === "all" ? "All Artists Songs" : selectedArtist}
@@ -47,7 +47,7 @@ function ArtistButtons({ selectedArtist, setSelectedArtist }) {
         {selectedArtist !== "all" && (
           <div
             onClick={() => setSelectedArtist("all")}
-            className="p-2 cursor-pointer dark:border-gray-500 border flex items-center text-black hover:bg-black hover:dark:bg-white rounded-r-xl rounded-l-sm dark:text-white hover:text-white hover:dark:text-black"
+            className="p-2 cursor-pointer dark:border-gray-500 flex items-center text-white bg-black dark:bg-white dark:text-black rounded-r-xl rounded-l-md"
           >
             <LiaTimesSolid className="" />
           </div>
@@ -152,10 +152,10 @@ function ArtistButtons({ selectedArtist, setSelectedArtist }) {
       {/* Individual Artist Buttons */}
       <button
         onClick={() => setSelectedArtist("Kishore Kumar")}
-        className={`border text-nowrap w-fit gap-2 items-center flex p-2 text-black dark:text-white dark:hover:bg-white dark:hover:text-black dark:border-gray-500 rounded-xl md:px-4 hover:bg-black hover:text-white ${
+        className={`border text-nowrap w-fit gap-2 items-center flex p-2 dark:hover:bg-white dark:hover:text-black dark:border-gray-500 rounded-xl md:px-4 hover:bg-black hover:text-white ${
           selectedArtist === "Kishore Kumar"
             ? "bg-black dark:bg-white dark:text-black text-white"
-            : "hover:border-black"
+            : "hover:border-black dark:text-white text-black"
         }`}
       >
         <span className="md:text-sm text-xs">Kishore Kumar</span>
@@ -164,10 +164,10 @@ function ArtistButtons({ selectedArtist, setSelectedArtist }) {
 
       <button
         onClick={() => setSelectedArtist("Lata Mangeshkar")}
-        className={`border text-nowrap w-fit gap-2 items-center flex p-2 text-black rounded-xl md:px-4 dark:text-white dark:hover:bg-white dark:hover:text-black dark:border-gray-500 hover:bg-black hover:text-white ${
+        className={`border text-nowrap w-fit gap-2 items-center flex p-2 rounded-xl md:px-4  dark:hover:bg-white dark:hover:text-black dark:border-gray-500 hover:bg-black hover:text-white ${
           selectedArtist === "Lata Mangeshkar"
             ? "bg-black dark:bg-white dark:text-black text-white"
-            : "hover:border-black"
+            : "hover:border-black dark:text-white text-black"
         }`}
       >
         <span className="md:text-sm text-xs">Lata Mangeshkar</span>
@@ -176,10 +176,10 @@ function ArtistButtons({ selectedArtist, setSelectedArtist }) {
 
       <button
         onClick={() => setSelectedArtist("Mohammed Rafi")}
-        className={`border text-nowrap w-fit gap-2 items-center flex p-2 text-black rounded-xl md:px-4 dark:text-white dark:hover:bg-white dark:hover:text-black dark:border-gray-500 hover:bg-black hover:text-white ${
+        className={`border text-nowrap w-fit gap-2 items-center flex p-2 rounded-xl md:px-4 dark:hover:bg-white dark:hover:text-black dark:border-gray-500 hover:bg-black hover:text-white ${
           selectedArtist === "Mohammed Rafi"
             ? "bg-black dark:bg-white dark:text-black text-white"
-            : "hover:border-black"
+            : "hover:border-black dark:text-white text-black"
         }`}
       >
         <span className="md:text-sm text-xs">Mohammed Rafi</span>
@@ -188,10 +188,10 @@ function ArtistButtons({ selectedArtist, setSelectedArtist }) {
 
       <button
         onClick={() => setSelectedArtist("Asha Bhosle")}
-        className={`border text-nowrap w-fit gap-2 items-center flex p-2 text-black rounded-xl md:px-4 dark:text-white dark:hover:bg-white dark:hover:text-black dark:border-gray-500 hover:bg-black hover:text-white ${
+        className={`border text-nowrap w-fit gap-2 items-center flex p-2 rounded-xl md:px-4 dark:hover:bg-white dark:hover:text-black dark:border-gray-500 hover:bg-black hover:text-white ${
           selectedArtist === "Asha Bhosle"
             ? "bg-black dark:bg-white dark:text-black text-white"
-            : "hover:border-black"
+            : "hover:border-black dark:text-white text-black"
         }`}
       >
         <span className="md:text-sm text-xs">Asha Bhosle</span>
@@ -200,10 +200,10 @@ function ArtistButtons({ selectedArtist, setSelectedArtist }) {
 
       <button
         onClick={() => setSelectedArtist("Mukesh")}
-        className={`border text-nowrap w-fit gap-2 items-center flex p-2 text-black rounded-xl md:px-4 dark:text-white dark:hover:bg-white dark:hover:text-black dark:border-gray-500 hover:bg-black hover:text-white ${
+        className={`border text-nowrap w-fit gap-2 items-center flex p-2 rounded-xl md:px-4 dark:hover:bg-white dark:hover:text-black dark:border-gray-500 hover:bg-black hover:text-white ${
           selectedArtist === "Mukesh"
             ? "bg-black dark:bg-white dark:text-black text-white"
-            : "hover:border-black"
+            : "hover:border-black dark:text-white text-black"
         }`}
       >
         <span className="md:text-sm text-xs">Mukesh</span>

@@ -18,7 +18,7 @@ const Pagination = ({
   return (
     filteredSongs.length > 0 &&
     totalPages !== 1 && (
-      <div className="flex md:bg-transparent bg-white dark:bg-slate-900 dark:border-none border md:border-none rounded-xl md:justify-center justify-evenly mt-4 items-center">
+      <div className="flex md:bg-transparent bg-white dark:bg-slate-900 dark:border-gray-800 border md:border-none rounded-xl md:justify-center justify-evenly mt-4 items-center">
         {/* Previous Button */}
         <button
           onClick={handlePrevPage}
@@ -45,7 +45,7 @@ const Pagination = ({
 
               {/* Ellipsis if there are skipped pages between start and current */}
               {currentPage > 3 && (
-                <span className="text-gray-500 text-xs md:text-base">•••</span>
+                <span class="text-[0.6rem] text-gray-500 md:text-base">•••</span>
               )}
 
               {/* Show pages around the current page */}
@@ -71,7 +71,7 @@ const Pagination = ({
 
               {/* Ellipsis if there are skipped pages between the current and the last page */}
               {currentPage < totalPages - 1 && (
-                <span className="text-gray-500 text-xs md:text-base">•••</span>
+                <span class="text-[0.6rem] text-gray-500 md:text-base">•••</span>
               )}
 
               {/* Show the last page number always */}

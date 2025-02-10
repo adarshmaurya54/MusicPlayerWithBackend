@@ -526,7 +526,7 @@ console.log(bg)
                   </div>
                   {/* artist filter buttons */}
                   {loading ? (
-                    <div className="relative mt-5 rounded-xl md:bg-transparent dark:bg-slate-900 bg-white flex flex-wrap items-center md:gap-5 gap-3 md:p-0 p-3 animate-pulse">
+                    <div className="relative mt-5 rounded-xl md:bg-transparent dark:bg-transparent bg-white flex flex-wrap items-center md:gap-5 gap-3 md:p-0 p-3 animate-pulse">
                       {/* Skeleton for Individual Artist Buttons */}
                       <div className="flex flex-wrap gap-3">
                         <div className="bg-gray-300 w-32 h-10 rounded-xl flex items-center"></div>
