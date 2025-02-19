@@ -18,7 +18,7 @@ const Pagination = ({
   return (
     filteredSongs.length > 0 &&
     totalPages !== 1 && (
-      <div className="flex md:bg-transparent bg-white dark:bg-slate-900 dark:border-gray-800 border md:border-none rounded-xl md:justify-center justify-evenly mt-4 items-center">
+      <div className="flex md:bg-transparent bg-white dark:bg-slate-900 dark:border-white/10 border md:border-none rounded-xl md:justify-center justify-evenly mt-4 items-center">
         {/* Previous Button */}
         <button
           onClick={handlePrevPage}
@@ -37,7 +37,7 @@ const Pagination = ({
                 <button
                   onClick={() => handlePageClick(1)}
                   className="md:px-4 px-3 md:hover:ring-2 dark:hover:ring-0 hover:ring-gray-500 hover:ring-opacity-50
-           dark:ring-offset-0 ring-offset-2  py-2 dark:border-gray-500 border rounded-lg text-black dark:text-white"
+           dark:ring-offset-0 ring-offset-2  py-2 dark:border-white/10 border rounded-lg text-black dark:text-white"
                 >
                   1
                 </button>
@@ -56,7 +56,7 @@ const Pagination = ({
                       key={page}
                       onClick={() => handlePageClick(page)}
                       className={`md:px-4 px-3 dark:ring-0 md:hover:ring-2
-           hover:ring-offset-2 dark:hover:ring-offset-0 md:transition duration-300  py-2 dark:border-gray-500  border rounded-lg ${
+           hover:ring-offset-2 dark:hover:ring-offset-0 md:transition duration-300  py-2 dark:border-white/10  border rounded-lg ${
              page === currentPage
                ? "dark:bg-white bg-black hover:ring-black dark:text-black text-white"
                : "text-black dark:text-white dark:hover:ring-0 hover:ring-gray-500 hover:ring-opacity-50"
@@ -79,7 +79,7 @@ const Pagination = ({
                 <button
                   onClick={() => handlePageClick(totalPages)}
                   className="md:px-4 px-3 py-2 md:hover:ring-2 dark:hover:ring-0 hover:ring-gray-500 hover:ring-opacity-50
-           dark:ring-offset-0 ring-offset-2  transition-all duration-300 dark:border-gray-500 border rounded-lg text-black dark:text-white"
+           dark:ring-offset-0 ring-offset-2  transition-all duration-300 dark:border-white/10 border rounded-lg text-black dark:text-white"
                 >
                   {totalPages}
                 </button>

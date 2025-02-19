@@ -22,9 +22,9 @@ export default {
         },
         // Add the new wave animation
         waveUpDown: {
-          '0%': { height: '6px' },   // Start with minimal height
-          '50%': { height: '30px' },  // Increase to maximum height
-          '100%': { height: '6px' }, // Return to minimal height
+          '0%': { height: '5px' },   // Start with minimal height
+          '50%': { height: '40px' },  // Increase to maximum height
+          '100%': { height: '5px' }, // Return to minimal height
         },
       },
       animation: {

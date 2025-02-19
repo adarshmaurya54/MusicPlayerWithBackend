@@ -321,7 +321,7 @@ function Layout() {
       : "/icon.png";
     title.innerText = songDetail?.songName
       ? songDetail?.songName + " • " + songDetail?.artistName
-      : "PlayMusic";
+      : "PlayBeatz";
   }, [songDetail?.highQualityThumbnailUrl]);
 
   // Functions of enabling lightmode and darkmode
@@ -391,7 +391,7 @@ console.log(bg)
                       {/* Input Field */}
                       <input
                         type="text"
-                        className="w-full dark:text-white text-black border dark:md:border dark:md:border-gray-500 dark:border-0 rounded-2xl py-4 pl-12 pr-5 outline-none
+                        className="w-full dark:text-white text-black border dark:md:border dark:border-white/10 rounded-2xl py-4 pl-12 pr-5 outline-none
                             dark:md:bg-transparent dark:bg-slate-900 bg-white md:focus:ring-1 focus:ring-offset-2 dark:ring-offset-0 focus:ring-gray-500 focus:ring-opacity-50
                             transition-all duration-300 ease-in-out placeholder:text-sm"
                         placeholder="Search for music that matches your vibe"
@@ -431,7 +431,7 @@ console.log(bg)
                                 src={
                                   songDetail
                                     ? `${import.meta.env.VITE_BASEURL}/assets${
-                                        songDetail?.lowQualityThumbnailUrl
+                                        songDetail?.highQualityThumbnailUrl
                                       }`
                                     : `${
                                         import.meta.env.VITE_BASEURL
