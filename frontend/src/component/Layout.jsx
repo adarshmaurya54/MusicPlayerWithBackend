@@ -11,7 +11,6 @@ import Upload from "./Upload";
 import axios from "axios";
 import EditSong from "./EditSong";
 import Pagination from "./Pagination";
-import bg from "../assets/Blur.png";
 import ArtistButtons from "./ArtistButtons";
 import {
   TbPlayerTrackNextFilled,
@@ -356,7 +355,6 @@ function Layout() {
   if (error) {
     return <div>{error}</div>;
   }
-console.log(bg)
   return (
     <ThemeProvider value={{ lightTheme, darkTheme, themeMode }}>
       <div className="md:bg-black/20 transition-all duration-500">
@@ -365,7 +363,7 @@ console.log(bg)
         >
           <Header handleToggleUpload={handleToggleUpload} />
           <div className="flex flex-col md:px-10 mb-5 w-full text-white">
-            <div className="md:bg-white dark:md:bg-transparent dark:border-0 md:border p-4 pb-5 md:rounded-3xl">
+            <div className="md:bg-white dark:md:bg-slate-900/50 dark:border-white/10 md:border p-4 pb-5 md:rounded-3xl">
               {!isNoSongsFound && (
                 <>
                   <div className="flex gap-5 md:flex-row flex-col items-center w-full text-black justify-between">
@@ -526,7 +524,7 @@ console.log(bg)
                   </div>
                   {/* artist filter buttons */}
                   {loading ? (
-                    <div className="relative mt-5 rounded-xl md:bg-transparent dark:bg-transparent bg-white flex flex-wrap items-center md:gap-5 gap-3 md:p-0 p-3 animate-pulse">
+                    <div className="relative border dark:border-white/10 md:border-none mt-5 rounded-xl bg-white dark:bg-slate-900 dark:md:bg-transparent flex flex-wrap items-center md:gap-5 gap-3 md:p-0 p-3 animate-pulse">
                       {/* Skeleton for Individual Artist Buttons */}
                       <div className="flex flex-wrap gap-3">
                         <div className="bg-gray-300 w-32 h-10 rounded-xl flex items-center"></div>

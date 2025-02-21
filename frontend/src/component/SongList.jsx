@@ -43,7 +43,7 @@ function SongList({
       onClick={() => {
         handlePlayer(id, title, artist);
       }}
-      className="relative group flex flex-col space-y-2 bg-white dark:md:bg-slate-700 dark:bg-slate-900 dark:border dark:border-white/10 border border-gray-200 md:shadow-lg rounded-2xl p-4 md:hover:ring-2 hover:ring-gray-500 hover:ring-opacity-50
+      className="relative group flex flex-col space-y-2 bg-white dark:bg-slate-900 dark:border dark:border-white/10 border border-gray-200 md:shadow-lg rounded-2xl p-4 md:hover:ring-2 hover:ring-gray-500 hover:ring-opacity-50
            ring-offset-2 transition-all duration-300 ease-in-out cursor-pointer hover:shadow-xl"
            
     >

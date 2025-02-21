@@ -45,7 +45,7 @@ const Pagination = ({
 
               {/* Ellipsis if there are skipped pages between start and current */}
               {currentPage > 3 && (
-                <span class="text-[0.6rem] text-gray-500 md:text-base">•••</span>
+                <span className="text-[0.6rem] text-gray-500 md:text-base">•••</span>
               )}
 
               {/* Show pages around the current page */}
@@ -71,7 +71,7 @@ const Pagination = ({
 
               {/* Ellipsis if there are skipped pages between the current and the last page */}
               {currentPage < totalPages - 1 && (
-                <span class="text-[0.6rem] text-gray-500 md:text-base">•••</span>
+                <span className="text-[0.6rem] text-gray-500 md:text-base">•••</span>
               )}
 
               {/* Show the last page number always */}

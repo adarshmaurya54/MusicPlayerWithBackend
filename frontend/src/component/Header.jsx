@@ -4,7 +4,7 @@ import { AiOutlineLogin } from "react-icons/ai";
 import { IoMdLogOut } from "react-icons/io";
 import { LuCloudUpload } from "react-icons/lu";
 import axios from "axios"; // Import Axios
-import logo from "../../public/icon.png";
+import logo from "../assets/icon.png";
 import useTheme from "../context/theme";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { LiaTimesSolid } from "react-icons/lia";
@@ -74,8 +74,8 @@ const Header = ({ handleToggleUpload }) => {
           {!hamb && <RxHamburgerMenu onClick={() => setHamb(true)} className="dark:text-white cursor-pointer md:hidden text-3xl" />}
           {hamb && <LiaTimesSolid onClick={() => setHamb(false)}  className="dark:text-white cursor-pointer md:hidden text-3xl"/>}
         </h1>
-        {hamb && handleToggleUpload && (
-          <nav className="flex text-xs md:text-base items-center gap-4">
+        {handleToggleUpload && (
+          <nav className={`${hamb ? "flex" : "hidden md:flex"} flex text-xs md:text-base items-center gap-4`}>
             {isAuthenticated ? (
               <>
                 <button

@@ -41,7 +41,7 @@ function ArtistButtons({ selectedArtist, setSelectedArtist }) {
                 : "hover:border-black rounded-r-md dark:bg-white bg-black dark:text-black text-white"
             }`}
           >
-            {selectedArtist === "all" ? "All Artists Songs" : selectedArtist}
+            {selectedArtist === "all" ? "All" : selectedArtist}
           </div>
         </button>
         {selectedArtist !== "all" && (
@@ -109,10 +109,10 @@ function ArtistButtons({ selectedArtist, setSelectedArtist }) {
               {filteredArtist.length !== 0 && (
                 <button
                   onClick={() => setSelectedArtist("all")}
-                  className={`dark:border-none border h-fit text-nowrap w-fit gap-2 items-center flex p-2 text-white dark:text-black rounded-lg md:px-4 hover:bg-black dark:bg-white hover:text-white ${
+                  className={`dark:border-white/10 border h-fit text-nowrap w-fit gap-2 items-center flex p-2  rounded-lg md:px-4 hover:bg-black hover:dark:bg-white hover:text-white hover:dark:text-black ${
                     selectedArtist === "all"
                       ? "bg-black dark:bg-white dark:text-black text-white"
-                      : "hover:border-black"
+                      : "hover:border-black bg-transparent"
                   }`}
                 >
                   <span className="md:text-sm text-xs">All</span>
@@ -133,7 +133,7 @@ function ArtistButtons({ selectedArtist, setSelectedArtist }) {
                   <button
                     key={artist._id}
                     onClick={() => {setOpenArtistPopup(false);setSelectedArtist(artist.name)}}
-                    className={`dark:border-white/10 border h-fit text-nowrap w-fit gap-2 items-center flex p-2 text-black dark:text-white rounded-lg md:px-4 hover:bg-black hover:dark:bg-white hover:text-white hover:dark:text-black ${
+                    className={`dark:border-white/10 border h-fit text-nowrap w-fit gap-2 items-center flex p-2  rounded-lg md:px-4 hover:bg-black hover:dark:bg-white hover:text-white hover:dark:text-black ${
                       selectedArtist === artist.name
                         ? "dark:bg-white bg-black dark:text-black text-white"
                         : "hover:border-black"
