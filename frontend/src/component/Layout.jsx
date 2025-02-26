@@ -18,6 +18,7 @@ import {
 } from "react-icons/tb";
 import { LiaTimesSolid } from "react-icons/lia";
 import { ThemeProvider } from "../context/theme";
+import {useExtractColors} from "react-extract-colors"
 
 function Layout() {
   const { songId } = useParams(); // Get songId from URL
@@ -321,7 +322,8 @@ function Layout() {
     title.innerText = songDetail?.songName
       ? songDetail?.songName + " • " + songDetail?.artistName
       : "PlayBeatz";
-  }, [songDetail?.highQualityThumbnailUrl]);
+
+}, [songDetail?.highQualityThumbnailUrl]);
 
   // Functions of enabling lightmode and darkmode
   const lightTheme = () => {

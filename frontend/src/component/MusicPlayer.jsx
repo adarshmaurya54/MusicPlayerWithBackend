@@ -7,6 +7,7 @@ import { FaBackward } from "react-icons/fa";
 import apiService from "../services/apiService";
 import { BsRepeat1 } from "react-icons/bs";
 import logo from "../assets/vite.svg"
+import { useExtractColors } from "react-extract-colors";
 
 const MusicPlayer = ({
   songName,
@@ -33,7 +34,11 @@ const MusicPlayer = ({
   const [isDragging, setIsDragging] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   // New state for loading
-  const [isLiked, setIsLiked] = useState(favourite); // State to track toggle
+  const [isLiked, setIsLiked] = useState(favourite); 
+
+  // getting the decent color from the highQualityThumbnailUrl
+  const { dominantColor} = useExtractColors(import.meta.env.VITE_BASEURL + "/assets" + image);
+
   
   const progressBarRef = useRef(null);
   
@@ -249,12 +254,15 @@ const MusicPlayer = ({
     >
       <div
         style={{
+          backgroundColor: dominantColor,
           backgroundImage: songClickLoading
-            ? "none" // No image when true
-            : `url(${import.meta.env.VITE_BASEURL}/assets${backgroundImage})`, // Image when false
+            ? "none"
+            : window.innerWidth >= 768 // Apply background image only for md and larger devices
+            ? `url(${import.meta.env.VITE_BASEURL}/assets${backgroundImage})`
+            : `linear-gradient(to bottom, ${dominantColor} 55%, #2a2a2a 100%)`, // Gradient for smaller devices
         }}
-        className="transition-all  duration-700 md:w-[100%] relative md:h-[100%] bg-no-repeat  bg-cover overflow-auto no-scrollbar h-full w-full "
-      >
+        className="transition-all duration-700 md:w-[100%] relative md:h-[100%] bg-no-repeat bg-cover overflow-auto no-scrollbar h-full w-full"      
+        >
         <div
           className={`${
             songClickLoading ? "bg-white dark:bg-slate-900" : "bg-black/30  md:bg-black/20"
