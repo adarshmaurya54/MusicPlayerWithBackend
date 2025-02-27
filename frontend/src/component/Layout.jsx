@@ -598,6 +598,7 @@ function Layout() {
                                 }
                                 id={song._id}
                                 songId={song.songId}
+                                audioFile={song.audioFile}
                                 title={song.songName}
                                 artist={song.artistName}
                                 favourite={song.favourite}

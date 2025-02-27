@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom/client'
 import Layout from './component/Layout'
 import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import Login from './component/Login'
+import AdminLogin from './component/auth/AdminLogin'
 import NoSongFound from './component/NoSongFound'
 import PageNotFount_404 from './component/PageNotFount_404'
 
@@ -12,8 +12,8 @@ const router = createBrowserRouter([
     element: <Layout />,
   },
   {
-    path: '/login',
-    element: <Login />,
+    path: '/admin-login',
+    element: <AdminLogin />,
   },
   {
     path: '/song',  // New route with songId

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import apiService from "../services/apiService";
+import apiService from "../../services/apiService";
 import { useNavigate } from "react-router-dom";
-import MessageCard from "./MessageCard";
-import bg from "../assets/bg.jpg";
+import MessageCard from "../MessageCard";
+import bg from "../../assets/bg.jpg";
 
 
-function Login() {
+function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(""); // Error message state
@@ -125,4 +125,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default AdminLogin;

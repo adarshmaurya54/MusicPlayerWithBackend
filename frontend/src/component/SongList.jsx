@@ -3,6 +3,8 @@ import { FiEdit2 } from "react-icons/fi";
 import { AiOutlineDelete } from "react-icons/ai";
 import apiService from "../services/apiService"; // Import your apiService
 import MusicAnimation from "./MusicAnimation";
+import { TbShare3 } from "react-icons/tb";
+import { LiaTimesSolid } from "react-icons/lia";
 
 function SongList({
   id,
@@ -17,8 +19,23 @@ function SongList({
   fetchSongs,
   songId,
   isPlaying,
+  audioFile
 }) {
   const [isDeleting, setIsDeleting] = useState(false); // State to track if a song is being deleted
+  const [open, setOpen] = useState(false);
+  const [linkCopy, setLinkCopy] = useState(false);
+
+const handleCopyLink = () => {
+  setLinkCopy(true);
+  console.log(linkCopy);
+  
+  navigator.clipboard.writeText(`${import.meta.env.VITE_PRODUCTION_LINK}/song/${audioFile}`);
+
+  // Reset back to "Copy Link" after 3 seconds
+  setTimeout(() => {
+    setLinkCopy(false);
+  }, 3000);
+};
 
   const handleDeleteSong = async (songId, filename) => {
     const songfile = filename + ".mp3";
@@ -38,18 +55,63 @@ function SongList({
       }
     }
   };
-  return (
+  return (<div className="relative group bg-white dark:bg-slate-900 dark:border dark:border-white/10 border border-gray-200 md:shadow-lg rounded-2xl p-4 py-6 md:hover:ring-2 hover:ring-gray-500 hover:ring-opacity-50
+           ring-offset-2 transition-all duration-300 ease-in-out cursor-pointer hover:shadow-xl">
+    <button
+      title="share"
+      className="absolute z-40 top-2 right-2 p-2 bg-white   dark:bg-transparent dark:text-white dark:border-white/20 text-black border rounded-lg text-sm opacity-0 group-hover:opacity-100  transition-opacity duration-300"
+      onClick={() => setOpen(true)}
+    >
+      <TbShare3 className="text-gray-400" />
+    </button>
+    {/* Custom Popup */}
+    {open && (
+      <div className="fixed flex p-2 justify-center cursor-auto items-center z-50 top-0 left-0 bg-black/40 backdrop-blur-sm w-full h-full">
+        <div className="bg-white p-5 rounded-3xl w-[600px]">
+          {/* Header */}
+          <div className="flex justify-between border-b pb-5 items-center text-black">
+            <h2 className="text-lg font-semibold ">Share public link to song</h2>
+            <button onClick={() => setOpen(false)} className="p-1 rounded-full hover:bg-gray-200">
+              <LiaTimesSolid />
+            </button>
+          </div>
+
+          {/* Description */}
+          <p className="text-sm text-gray-500 mt-2">
+            Your song link is ready to share. Copy the link and send it to your friends!
+          </p>
+
+          {/* Link Input */}
+          <div className="flex md:flex-row md:gap-0 gap-2 flex-col md:items-center justify-between mt-3 md:p-2 md:border rounded-full md:bg-gray-100">
+            <input
+              type="text"
+              value={`${import.meta.env.VITE_PRODUCTION_LINK}/song/${audioFile}`}
+              readOnly
+              className="md:w-[70%] md:border-none border md:p-0 p-2 rounded-xl bg-transparent outline-none text-gray-600"
+            />
+            <button
+              onClick={() => handleCopyLink()}
+              className="bg-black font-bold md:w-[130px] w-full text-white p-2 md:rounded-full rounded-xl"
+            >
+              {linkCopy ? "Link Copied" : "Copy Link"}
+            </button>
+          </div>
+
+          {/* Create Link Button */}
+        </div>
+      </div>
+    )}
     <div
       onClick={() => {
         handlePlayer(id, title, artist);
       }}
-      className="relative group flex flex-col space-y-2 bg-white dark:bg-slate-900 dark:border dark:border-white/10 border border-gray-200 md:shadow-lg rounded-2xl p-4 md:hover:ring-2 hover:ring-gray-500 hover:ring-opacity-50
-           ring-offset-2 transition-all duration-300 ease-in-out cursor-pointer hover:shadow-xl"
-           
+      className="relative group flex flex-col space-y-2 "
+
     >
       {/* {isPlaying && <div className="absolute top-3 right-3">
         
       </div>} */}
+
       {!isDeleting && isAdminLogin && (
         <>
           <button
@@ -58,8 +120,8 @@ function SongList({
               e.stopPropagation();
               handleToggleEdit(songId);
             }}
-            className="absolute bottom-2 right-2 p-2 bg-white text-black border rounded-lg text-sm opacity-0 group-hover:opacity-100  transition-opacity duration-300"
-            
+            className="absolute bottom-2 right-2 p-2 bg-white   dark:bg-transparent dark:text-white dark:border-white/20 text-black border rounded-lg text-sm opacity-0 group-hover:opacity-100  transition-opacity duration-300"
+
           >
             <FiEdit2 />
           </button>
@@ -70,34 +132,32 @@ function SongList({
               handleDeleteSong(id, songId); // Call the delete function when clicked
               console.log(id);
             }}
-            className="absolute bottom-2 right-12 p-2 bg-white text-black border rounded-lg text-sm opacity-0 group-hover:opacity-100  transition-opacity duration-300"
+            className="absolute bottom-2 right-12 p-2 bg-white  dark:bg-transparent dark:text-white dark:border-white/20 text-black border rounded-lg text-sm opacity-0 group-hover:opacity-100  transition-opacity duration-300"
           >
             <AiOutlineDelete />
           </button>
         </>
       )}
       {isDeleting && (
-        <div className="absolute bottom-2 text-xs right-2 p-2 bg-white text-black border rounded-lg transition-opacity duration-300">
+        <div className="absolute bottom-2 text-xs right-2 p-2 bg-white   dark:bg-transparent dark:text-white dark:border-white/20 text-black border rounded-lg transition-opacity duration-300">
           Deleting...
         </div>
       )}
-      {currentlyPlaying && <div className="absolute top-2 text-xs right-2 px-2 py-1 bg-white text-black border rounded-lg transition-opacity duration-300">
+      {currentlyPlaying && <div className="absolute -top-4 group-hover:right-8 -right-2  dark:bg-transparent dark:text-white dark:border-white/20 transition-all text-xs px-2 py-2 bg-white text-black border rounded-lg  duration-300">
         Now playing
       </div>}
 
       <div className="flex w-full h-full space-x-4 items-center">
         {/* Album Artwork Placeholder */}
         <div
-          className={`flex-shrink-0 ${
-            isAdminLogin ? "w-[100px] h-[100px]" : "w-16 h-16"
-          } bg-cover overflow-hidden rounded-md bg-gray-300 flex items-center justify-center`}
+          className={`flex-shrink-0 ${isAdminLogin ? "w-[100px] h-[100px]" : "w-20 h-20"
+            } bg-cover overflow-hidden rounded-lg bg-gray-300 flex items-center justify-center`}
           style={
             currentlyPlaying && image
               ? {
-                  backgroundImage: `url(${
-                    import.meta.env.VITE_BASEURL
+                backgroundImage: `url(${import.meta.env.VITE_BASEURL
                   }/assets${image})`,
-                }
+              }
               : {}
           }
         >
@@ -157,9 +217,8 @@ function SongList({
 
         {/* Song Details */}
         <div
-          className={`${
-            isAdminLogin ? "flex-col items-start gap-2" : "items-center"
-          } flex justify-end w-full`}
+          className={`${isAdminLogin ? "flex-col items-start gap-2" : "items-center"
+            } flex justify-end w-full`}
         >
           <div className="flex-1 w-full">
             <h3
@@ -171,12 +230,11 @@ function SongList({
             <p className="text-sm text-gray-600 dark:text-gray-400 ">{artist}</p>
           </div>
 
-          {/* Favourite Icon */}
           <div className="flex items-center space-x-4">
+            {/* Favourite Icon */}
             <svg
-              className={`h-6 w-6 ${
-                favourite ? "text-red-500" : "text-gray-400"
-              }`}
+              className={`h-6 w-6 ${favourite ? "text-red-500" : "text-gray-400"
+                }`}
               fill={favourite ? "#ef4444" : "none"}
               stroke="currentColor"
               strokeLinecap="round"
@@ -190,6 +248,7 @@ function SongList({
         </div>
       </div>
     </div>
+  </div>
   );
 }
 
