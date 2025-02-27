@@ -34,14 +34,32 @@ const MusicPlayer = ({
   const [isDragging, setIsDragging] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   // New state for loading
-  const [isLiked, setIsLiked] = useState(favourite); 
+  const [isLiked, setIsLiked] = useState(favourite);
 
   // getting the decent color from the highQualityThumbnailUrl
-  const { dominantColor} = useExtractColors(import.meta.env.VITE_BASEURL + "/assets" + image);
+  const { colors } = useExtractColors(import.meta.env.VITE_BASEURL + "/assets" + image,{
+    maxColors: 3,
+    format: "hex",
+    maxSize: 200,
+    orderBy: "vibrance",
+  });
+  // Select or create the meta theme-color tag
+  let metaThemeColor = document.querySelector("meta[name='theme-color']");
+  if (!metaThemeColor) {
+    metaThemeColor = document.createElement("meta");
+    metaThemeColor.name = "theme-color";
+    document.head.appendChild(metaThemeColor);
+  }
+  
+
+  // Update theme color
+  metaThemeColor.setAttribute("content", colors[1] || "#ffffff");
+
+  const progressBarRef = useRef(null);
 
   
-  const progressBarRef = useRef(null);
   
+
   useEffect(() => {
     setIsLiked(favourite);
   }, [favourite]);
@@ -168,10 +186,10 @@ const MusicPlayer = ({
   };
 
   const handleNextSong = (songId) => {
-    if(songLoop){
+    if (songLoop) {
       audioRef.current.currentTime = 0;
       audioRef.current.play();
-    }else if (playNextSong) {
+    } else if (playNextSong) {
       setIsLoading(true);
       playNextSong(songId);
       if (audioRef.current) {
@@ -186,10 +204,10 @@ const MusicPlayer = ({
   };
 
   const handlePrevSong = (songId) => {
-    if(songLoop){
+    if (songLoop) {
       audioRef.current.currentTime = 0;
       audioRef.current.play();
-    }else if (playPrevSong) {
+    } else if (playPrevSong) {
       setIsLoading(true);
       playPrevSong(songId);
       if (audioRef.current) {
@@ -254,19 +272,17 @@ const MusicPlayer = ({
     >
       <div
         style={{
-          backgroundColor: dominantColor,
           backgroundImage: songClickLoading
             ? "none"
             : window.innerWidth >= 768 // Apply background image only for md and larger devices
-            ? `url(${import.meta.env.VITE_BASEURL}/assets${backgroundImage})`
-            : `linear-gradient(to bottom, ${dominantColor} 55%, #2a2a2a )`, // Gradient for smaller devices
+              ? `url(${import.meta.env.VITE_BASEURL}/assets${backgroundImage})`
+              : `linear-gradient(to bottom, ${colors[1]} 55%, #2a2a2a )`, // Gradient for smaller devices
         }}
-        className="transition-all duration-700 md:w-[100%] relative md:h-[100%] bg-no-repeat bg-cover overflow-auto no-scrollbar h-full w-full"      
-        >
+        className="transition-all duration-700 md:w-[100%] relative md:h-[100%] bg-no-repeat bg-cover overflow-auto no-scrollbar h-full w-full"
+      >
         <div
-          className={`${
-            songClickLoading ? "bg-white dark:bg-slate-900" : "bg-black/30  md:bg-black/20"
-          } backdrop-blur-2xl p-4 h-full overflow-auto no-scrollbar`}
+          className={`${songClickLoading ? "bg-white dark:bg-slate-900" : "bg-black/30  md:bg-black/20"
+            } backdrop-blur-2xl p-4 h-full overflow-auto no-scrollbar`}
         >
           <div className="flex text-black md:text-white absolute md:top-7 md:left-7 justify-between items-center">
             {songClickLoading ? (
@@ -345,12 +361,11 @@ const MusicPlayer = ({
                         viewBox="0 0 24 24"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        style={{ transition: "all 0.5s ease, stroke 0.1s"}}
-                        className={`${
-                          isLiked
-                            ? "stroke-[#e7125c]"
-                            : "stroke-white"
-                        } md:text-4xl text-3xl active:scale-90 hover:scale-110  duration-500`}
+                        style={{ transition: "all 0.5s ease, stroke 0.1s" }}
+                        className={`${isLiked
+                          ? "stroke-[#e7125c]"
+                          : "stroke-white"
+                          } md:text-4xl text-3xl active:scale-90 hover:scale-110  duration-500`}
                         height="1em"
                         width="1em"
                         xmlns="http://www.w3.org/2000/svg"
@@ -384,7 +399,7 @@ const MusicPlayer = ({
                     </div>
                   </div>
                   <div className="flex items-center justify-center gap-5 mt-5">
-                    <button  onClick={() => setSongLoop(!songLoop)} className="p-3 rounded-full">
+                    <button onClick={() => setSongLoop(!songLoop)} className="p-3 rounded-full">
                       {!songLoop ? (
                         <PiShuffle className="text-white hover:scale-110 transition-all  md:text-lg text-3xl" />
                       ) : (
