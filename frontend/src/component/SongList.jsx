@@ -66,7 +66,7 @@ const handleCopyLink = () => {
     </button>
     {/* Custom Popup */}
     {open && (
-      <div className="fixed flex p-2 justify-center cursor-auto items-center z-50 top-0 left-0 bg-black/40 backdrop-blur-sm w-full h-full">
+      <div className="fixed flex p-4 justify-center cursor-auto items-center z-50 top-0 left-0 bg-black/40 backdrop-blur-sm w-full h-full">
         <div className="bg-white p-5 rounded-3xl w-[600px]">
           {/* Header */}
           <div className="flex justify-between border-b pb-5 items-center text-black">
