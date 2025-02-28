@@ -3,6 +3,7 @@ import apiService from "../../services/apiService";
 import { useNavigate } from "react-router-dom";
 import MessageCard from "../MessageCard";
 import bg from "../../assets/bg.jpg";
+import toast, { Toaster } from "react-hot-toast";
 
 
 function AdminLogin() {
@@ -10,6 +11,7 @@ function AdminLogin() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(""); // Error message state
   const [loginLoading, setLoginLoading] = useState(false);
+  const [loginType, setLoginType] = useState("user")
 
   const navigate = useNavigate(); // To navigate to another page on success
 
@@ -23,19 +25,22 @@ function AdminLogin() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setLoginLoading(true);
+    const toastId = toast.loading("Please wait...");
     try {
       // Call the backend API for login
       const response = await apiService.login({ email, password });
 
       // Store the JWT token in localStorage
       localStorage.setItem("token", response.token);
-      setLoginLoading(false)
       navigate("/"); // Redirect to the dashboard or another page
+      toast.success("Login Successfully...", { id: toastId });
     } catch (error) {
       setLoginLoading(false)
-      setError("Please check your credentials and try again.");
+      toast.error("Invalid credentials!", { id: toastId });
     }
+  };
+  const toggleLoginType = () => {
+    setLoginType((prevType) => (prevType === "admin" ? "user" : "admin"));
   };
 
   return (
@@ -43,9 +48,21 @@ function AdminLogin() {
       className="h-screen relative flex overflow-x-hidden items-center justify-center bg-center bg-cover"
       style={{ backgroundImage: `url(${bg})` }}
     >
+      <Toaster />
       <div className="max-w-xs bg-gradient-to-t from-white to-blue-50 rounded-3xl p-6 border-4 border-white shadow-lg mx-auto my-5">
         <div className="text-center font-extrabold text-2xl text-black">
-          Admin Login
+          Login
+        </div>
+        <div className="rounded-2xl p-3 bg-white mt-3">
+          <div className="relative w-full flex items-center ">
+            <div className={`absolute z-10 top-0 ${loginType === "user" ? "left-[50%]": "left-[0%]"}  transition-all duration-500 bg-black rounded-xl h-full w-1/2`}></div>
+            <div onClick={() => toggleLoginType()} className={`w-1/2 z-20 text-center cursor-pointer transition-colors duration-500 rounded-xl p-2 ${loginType === "admin" ? "text-white": "text-black"}`}>
+              Admin
+            </div>
+            <div onClick={() => toggleLoginType()} className={`w-1/2 z-20 text-center cursor-pointer transition-colors duration-500 rounded-xl p-2 ${loginType === "user" ? "text-white": "text-black"}`}>
+              User
+            </div>
+          </div>
         </div>
         {error && (
           <MessageCard
@@ -65,7 +82,7 @@ function AdminLogin() {
             crossbtn={false}
           />
         )}
-        <form className="mt-5" onSubmit={handleLogin}>
+        <form onSubmit={handleLogin}>
           <input
             required
             className="w-full bg-white border-none px-5 py-3 rounded-2xl mt-4 shadow-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -101,7 +118,7 @@ function AdminLogin() {
           onClick={() => navigate('/')}
         >
           <div className="bg-black text-white rounded-xl h-12 w-1/4 flex items-center justify-center absolute left-1 top-[4px] group-hover:w-[calc(100%-8px)] z-10 duration-500">
-          
+
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 1024 1024"
