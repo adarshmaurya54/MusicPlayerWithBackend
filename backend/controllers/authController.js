@@ -5,11 +5,11 @@ require("dotenv").config();
 
 // Login Controller
 exports.login = async (req, res) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
 
   try {
     // Find user by username
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
@@ -53,3 +53,47 @@ exports.validateToken = (req, res) => {
   }
 };
 
+exports.signup = async (req, res) => {
+  try {
+      const { name, email, password, profile } = req.body;
+
+      // ✅ Check if all fields are provided
+      if (!name || !email || !password) {
+          return res.status(400).json({ error: "All fields are required!" });
+      }
+
+      // ✅ Check if user already exists
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+          return res.status(400).json({ error: "Email already registered!" });
+      }
+
+      // ✅ Hash the password
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      // ✅ Create new user
+      const newUser = new User({
+          name,
+          email,
+          password: hashedPassword,
+          profile: profile || "", // Default empty if no profile is provided
+      });
+
+      // ✅ Save user to database
+      await newUser.save();
+
+      // ✅ Send response
+      res.status(201).json({
+          message: "User registered successfully!",
+          user: {
+              id: newUser._id,
+              name: newUser.name,
+              email: newUser.email,
+              profile: newUser.profile,
+          },
+      });
+  } catch (error) {
+      console.error("Signup Error:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+  }
+};

@@ -41,6 +41,7 @@ async function initializeApp() {
     // Set up routes
     app.get("/", (req, res) => res.send("Server is running!"));
     app.post("/login", authController.login);
+    app.post("/signup", authController.signup);
     app.get("/songs", songController.getAllSongs);
     app.get("/artists", artistController.getAllArtists);
     app.get("/song/:fileId", songController.getSongWithMetadata);

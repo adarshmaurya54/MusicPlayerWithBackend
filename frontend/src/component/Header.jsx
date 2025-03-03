@@ -72,7 +72,7 @@ const Header = ({ handleToggleUpload }) => {
             <span className="dark:text-white text-black">PlayBeatz</span>
           </Link>
           {!hamb && <RxHamburgerMenu onClick={() => setHamb(true)} className="dark:text-white cursor-pointer md:hidden text-3xl" />}
-          {hamb && <LiaTimesSolid onClick={() => setHamb(false)}  className="dark:text-white cursor-pointer md:hidden text-3xl"/>}
+          {hamb && <LiaTimesSolid onClick={() => setHamb(false)} className="dark:text-white cursor-pointer md:hidden text-3xl" />}
         </h1>
         {handleToggleUpload && (
           <nav className={`${hamb ? "flex" : "hidden md:flex"} flex text-xs md:text-base items-center gap-4`}>
@@ -96,14 +96,32 @@ const Header = ({ handleToggleUpload }) => {
                 </button>
               </>
             ) : (
-              <button
-                onClick={() => navigate("/admin-login")}
-                className="bg-black dark:bg-white hover:ring-2 hover:ring-black
+              <>
+                <button
+                  onClick={() => navigate("/admin-login")}
+                  className="bg-black dark:bg-white hover:ring-2 hover:ring-black
            dark:ring-offset-0 ring-offset-2 transition-all duration-300 md:w-auto w-[50%] justify-center flex items-center gap-2 dark:text-black text-white px-4 py-2 rounded-xl"
-              >
-                <AiOutlineLogin className="mt-1" />
-                <span>Admin Login</span>
-              </button>
+                >
+                  <AiOutlineLogin className="mt-1" />
+                  <span>Admin Login</span>
+                </button>
+                <button
+                  onClick={() => navigate("/login")}
+                  className="bg-black dark:bg-white hover:ring-2 hover:ring-black
+           dark:ring-offset-0 ring-offset-2 transition-all duration-300 md:w-auto w-[50%] justify-center flex items-center gap-2 dark:text-black text-white px-4 py-2 rounded-xl"
+                >
+                  <AiOutlineLogin className="mt-1" />
+                  <span>Login</span>
+                </button>
+                <button
+                  onClick={() => navigate("/sign-up")}
+                  className="bg-black dark:bg-white hover:ring-2 hover:ring-black
+           dark:ring-offset-0 ring-offset-2 transition-all duration-300 md:w-auto w-[50%] justify-center flex items-center gap-2 dark:text-black text-white px-4 py-2 rounded-xl"
+                >
+                  <AiOutlineLogin className="mt-1" />
+                  <span>Sign Up</span>
+                </button>
+              </>
             )}
             <svg
               onClick={() => darkTheme()}
