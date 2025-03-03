@@ -7,6 +7,7 @@ import NoSongFound from './component/NoSongFound'
 import PageNotFount_404 from './component/PageNotFount_404'
 import Register from './component/auth/Registration'
 import Login from './component/auth/Login'
+import { Toaster } from 'react-hot-toast'
 
 const router = createBrowserRouter([
   {
@@ -44,5 +45,8 @@ const router = createBrowserRouter([
 ])
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <RouterProvider router={router} />
+  <>
+    <RouterProvider router={router} />
+    <Toaster />
+  </>
 )

@@ -3,6 +3,7 @@ import { FaArrowLeft, FaRegTimesCircle } from "react-icons/fa";
 import apiService from "../services/apiService"; // Import the apiService
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { FaTimes } from "react-icons/fa";
+import toast, { Toaster } from "react-hot-toast";
 
 function Upload({ handleToggleUpload, fetchSongs }) {
   const [file, setFile] = useState(null);
@@ -26,7 +27,7 @@ function Upload({ handleToggleUpload, fetchSongs }) {
 
   const uploadFile = async () => {
     if (!file) {
-      alert("Please select a file to upload.");
+      toast.error("Please select a file to upload.");
       return;
     }
 
@@ -66,6 +67,7 @@ function Upload({ handleToggleUpload, fetchSongs }) {
   };
 
   const submitForm = async () => {
+    const toastId = toast.loading("Please wait...");
     if (!fileUploaded || !songName || !songLyrics) {
       alert("Please upload the file and fill in all fields.");
       return;
@@ -90,10 +92,10 @@ function Upload({ handleToggleUpload, fetchSongs }) {
       const response = await apiService.createSong(formData);
 
       if (response.flag === "SONG_EXISTS") {
-        setErrorMessage(response.message);
+        toast.error(response.message, { id: toastId });
         setUploadStatus(response.message); // Handle existing song case
       } else {
-        setErrorMessage("");
+        toast.success("Song Uploaded Successfully!", { id: toastId });
         setUploadStatus(response.message || "Song Uploaded Successfully");
         handleToggleUpload();
         fetchSongs();
@@ -101,7 +103,7 @@ function Upload({ handleToggleUpload, fetchSongs }) {
 
       setLoading(false);
     } catch (error) {
-      setErrorMessage(error.message);
+      toast.error(error.message, { id: toastId });
       const errorMessage = error.message || "Upload Failed. Please try again.";
       setUploadStatus(errorMessage);
       setLoading(false);
@@ -128,19 +130,8 @@ function Upload({ handleToggleUpload, fetchSongs }) {
 
   return (
     <div className="fixed z-50 top-0 left-0 bg-black/10 flex justify-center items-center w-full h-full backdrop-blur-lg">
+      
       <div className="relative flex items-center justify-center w-full h-full md:w-[90%] md:h-[95%] bg-white md:rounded-3xl md:p-6 shadow-lg transition-all">
-        {errorMessage !== "" && (
-          <div className="absolute top-12 md:top-4 md:right-4 right-auto md:w-fit w-[350px] p-4 bg-red-500 text-white rounded-lg shadow-lg flex items-center justify-between transition-all duration-300 ease-in-out">
-            <span>{errorMessage}</span>
-            <button
-              onClick={() => setErrorMessage("")}
-              className="ml-2 text-white font-semibold hover:text-gray-200"
-            >
-              <FaTimes />
-            </button>
-          </div>
-        )}
-
         <div className="flex text-black absolute md:top-7 md:left-7 top-5 left-4 justify-between items-center">
           <FaArrowLeft
             onClick={handleToggleUpload}

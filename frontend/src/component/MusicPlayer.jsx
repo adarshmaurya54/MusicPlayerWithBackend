@@ -6,8 +6,9 @@ import { FaForward } from "react-icons/fa";
 import { FaBackward } from "react-icons/fa";
 import apiService from "../services/apiService";
 import { BsRepeat1 } from "react-icons/bs";
-import logo from "../assets/vite.svg"
 import { useExtractColors } from "react-extract-colors";
+import { TbShare3 } from "react-icons/tb";
+import Share from "./Share";
 
 const MusicPlayer = ({
   songName,
@@ -33,11 +34,12 @@ const MusicPlayer = ({
   const [isPlaying, setIsPlaying] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [open, setOpen] = useState(false);
   // New state for loading
   const [isLiked, setIsLiked] = useState(favourite);
 
   // getting the decent color from the highQualityThumbnailUrl
-  const { colors } = useExtractColors(import.meta.env.VITE_BASEURL + "/assets" + image,{
+  const { colors } = useExtractColors(import.meta.env.VITE_BASEURL + "/assets" + image, {
     maxColors: 3,
     format: "hex",
     maxSize: 200,
@@ -50,16 +52,12 @@ const MusicPlayer = ({
     metaThemeColor.name = "theme-color";
     document.head.appendChild(metaThemeColor);
   }
-  
+
 
   // Update theme color
   metaThemeColor.setAttribute("content", colors[1] || "#ffffff");
 
   const progressBarRef = useRef(null);
-
-  
-  
-
   useEffect(() => {
     setIsLiked(favourite);
   }, [favourite]);
@@ -398,7 +396,7 @@ const MusicPlayer = ({
                       ></div>
                     </div>
                   </div>
-                  <div className="flex items-center justify-center gap-5 mt-5">
+                  <div className="flex relative items-center justify-center gap-5 mt-5">
                     <button onClick={() => setSongLoop(!songLoop)} className="p-3 rounded-full">
                       {!songLoop ? (
                         <PiShuffle className="text-white hover:scale-110 transition-all  md:text-lg text-3xl" />
@@ -435,6 +433,10 @@ const MusicPlayer = ({
                         <HiSpeakerWave className="text-white  hover:scale-110 transition-all md:text-lg text-3xl" />
                       )}
                     </button>
+                    <button onClick={() => setOpen(true)} className="md:block hidden absolute top-1/2 right-0 -translate-x-1/2 -translate-y-1/2">
+                      <TbShare3 className="text-white text-3xl" />
+                    </button>
+                    {open && <Share setOpen={setOpen} audioFile={songId}/>}
                   </div>
                 </div>
               </div>

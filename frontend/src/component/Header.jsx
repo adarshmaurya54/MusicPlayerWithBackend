@@ -8,6 +8,7 @@ import logo from "../assets/icon.png";
 import useTheme from "../context/theme";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { LiaTimesSolid } from "react-icons/lia";
+import toast from "react-hot-toast";
 
 
 
@@ -60,7 +61,7 @@ const Header = ({ handleToggleUpload }) => {
   const handleLogout = () => {
     localStorage.removeItem("token"); // Clear the token
     setIsAuthenticated(false); // Set authentication state to false
-    navigate("/"); // Redirect to login page
+    toast.success("Logout successful")
   };
 
   return (
@@ -124,7 +125,7 @@ const Header = ({ handleToggleUpload }) => {
               </>
             )}
             <svg
-              onClick={() => darkTheme()}
+              onClick={() => {darkTheme(); toast.success("Dark Mode")}}
               className="w-7 h-7 dark:hidden cursor-pointer"
               viewBox="0 0 24 24"
               fill="none"
@@ -142,7 +143,7 @@ const Header = ({ handleToggleUpload }) => {
               ></path>
             </svg>
             <svg
-              onClick={() => lightTheme()}
+              onClick={() => {lightTheme(); toast.success("Light Mode")}}
               className="w-7 h-7 hidden dark:block cursor-pointer"
               viewBox="0 0 24 24"
               fill="none"

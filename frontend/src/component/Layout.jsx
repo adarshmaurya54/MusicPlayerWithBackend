@@ -19,6 +19,7 @@ import {
 import { LiaTimesSolid } from "react-icons/lia";
 import { ThemeProvider } from "../context/theme";
 import {useExtractColors} from "react-extract-colors"
+import { Toaster } from "react-hot-toast";
 
 function Layout() {
   const { songId } = useParams(); // Get songId from URL
@@ -440,9 +441,8 @@ function Layout() {
                                 alt={`${
                                   import.meta.env.VITE_BASEURL
                                 }/assets/thumbnails/default-thumbnail-low.png`}
-                                className={`w-14 h-14 rounded-full cursor-pointer object-cover ${
-                                  isPlaying ? "animate-spin-slow" : "" // Spin only when isPlaying is true
-                                }`}
+                                className={`w-14 h-14 rounded-full cursor-pointer object-cover animate-spin-slow`}
+                                style={{animationPlayState: `${isPlaying ? "running" : "paused" }`}}
                               />
                               <div className="flex flex-col w-full">
                                 <p className="font-bold text-xl text-white">
@@ -471,18 +471,20 @@ function Layout() {
                                     Loading you next song...
                                   </div>
                                 )}
-                                <div className="relative w-full mt-3 bg-white/20 rounded-full h-1">
+                                <div className="relative w-full mt-3 bg-white/20 rounded-full h-[3px]">
                                   <div
-                                    className="absolute top-0 left-0 h-full bg-white rounded-full transition-all duration-300 ease-out"
+                                    className="absolute group top-0 left-0 h-full bg-white rounded-full transition-all duration-300 ease-out"
                                     style={{ width: `${progressPercentage}%` }}
-                                  ></div>
+                                  >
                                   <div
                                     className="absolute transition-all duration-700 top-1/2 transform -translate-y-1/2 bg-white w-3 h-3 rounded-full shadow-md"
                                     style={{
-                                      left: `${progressPercentage - 1}%`,
+                                      left: `95%`,
                                       transition: "left 0.3s ease",
                                     }}
                                   ></div>
+
+                                  </div>
                                 </div>
                               </div>
                             </div>

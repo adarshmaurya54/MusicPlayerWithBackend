@@ -33,7 +33,7 @@ function AdminLogin() {
       // Store the JWT token in localStorage
       localStorage.setItem("token", response.token);
       navigate("/"); // Redirect to the dashboard or another page
-      toast.success("Login Successfully...", { id: toastId });
+      toast.success("Login Successfully", { id: toastId });
     } catch (error) {
       setLoginLoading(false)
       toast.error("Invalid credentials!", { id: toastId });
@@ -48,7 +48,6 @@ function AdminLogin() {
       className="h-screen relative flex overflow-x-hidden items-center justify-center bg-center bg-cover"
       style={{ backgroundImage: `url(${bg})` }}
     >
-      <Toaster />
       <div className="max-w-xs bg-gradient-to-t from-white to-blue-50 rounded-3xl p-6 border-4 border-white shadow-lg mx-auto my-5">
         <div className="text-center font-extrabold text-2xl text-black">
           Login
@@ -85,7 +84,7 @@ function AdminLogin() {
         <form onSubmit={handleLogin}>
           <input
             required
-            className="w-full bg-white border-none px-5 py-3 rounded-2xl mt-4 shadow-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full bg-white border-none px-5 py-3 rounded-2xl mt-4 shadow-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
             type="email"
             name="email"
             id="email"
@@ -95,7 +94,7 @@ function AdminLogin() {
           />
           <input
             required
-            className="w-full bg-white border-none px-5 py-3 rounded-2xl mt-4 shadow-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full bg-white border-none px-5 py-3 rounded-2xl mt-4 shadow-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
             type="password"
             name="password"
             id="password"
