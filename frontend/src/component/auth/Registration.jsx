@@ -87,7 +87,7 @@ function Registration() {
         {/* Already have an account? Section */}
         <div className="text-center mt-4">
           <p className="text-gray-700 dark:text-white">
-            Already have an account? <Link to="/login" className="text-blue-500 hover:underline">Log in</Link>
+            Already have an account? <Link to="/admin-login" className="text-blue-500 hover:underline">Log in</Link>
           </p>
         </div>
 

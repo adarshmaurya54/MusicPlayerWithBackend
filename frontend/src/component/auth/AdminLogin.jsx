@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import apiService from "../../services/apiService";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import MessageCard from "../MessageCard";
 import bg from "../../assets/bg.jpg";
 import toast, { Toaster } from "react-hot-toast";
@@ -84,7 +84,7 @@ function AdminLogin() {
         <form onSubmit={handleLogin}>
           <input
             required
-            className="w-full bg-white border-none px-5 py-3 rounded-2xl mt-4 shadow-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
+            className="w-full bg-white border-none px-5 py-3 rounded-2xl mt-4 shadow-lg placeholder-gray-400 focus:outline focus:outline-2 outline-offset-2"
             type="email"
             name="email"
             id="email"
@@ -94,7 +94,7 @@ function AdminLogin() {
           />
           <input
             required
-            className="w-full bg-white border-none px-5 py-3 rounded-2xl mt-4 shadow-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
+            className="w-full bg-white border-none px-5 py-3 rounded-2xl mt-4 shadow-lg placeholder-gray-400 focus:outline focus:outline-2 outline-offset-2"
             type="password"
             name="password"
             id="password"
@@ -102,7 +102,10 @@ function AdminLogin() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <span className="block mt-3 ml-3 text-xs text-gray-400">
+          <span className="block mt-3 mb-1 ml-3 text-xs text-gray-400">
+            <p>Don't have an account? <Link className="text-blue-500 hover:underline" to='/sign-up'>Sign Up</Link></p>
+          </span>
+          <span className="block ml-3 text-xs text-gray-400">
             <a href="#">Forgot Password ?</a>
           </span>
           <input

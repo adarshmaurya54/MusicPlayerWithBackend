@@ -26,8 +26,8 @@ function InputType({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className={` text-gray-900 text-sm rounded-xl focus:ring-2 focus:outline-none block w-full p-2.5 dark:bg-gray-800 dark:placeholder-gray-500 dark:text-gray-100 ${
-          error ? "border-red-500 focus:ring-red-500 bg-red-50" : "focus:ring-blue-500 bg-slate-100"
+        className={` text-gray-900 text-sm rounded-xl focus:outline focus:outline-2 outline-offset-2 block w-full p-2.5 dark:bg-gray-800 dark:placeholder-gray-500 dark:text-gray-100 ${
+          error ? "border-red-500 focus:outline-red-500 bg-red-50" : "focus:outline-black bg-slate-100"
         }`}
       />
       {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
