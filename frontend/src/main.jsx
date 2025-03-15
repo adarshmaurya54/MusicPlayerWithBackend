@@ -2,7 +2,6 @@ import ReactDOM from 'react-dom/client'
 import Layout from './component/Layout'
 import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import AdminLogin from './component/auth/AdminLogin'
 import NoSongFound from './component/NoSongFound'
 import PageNotFount_404 from './component/PageNotFount_404'
 import Register from './component/auth/Registration'
@@ -13,10 +12,6 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <Layout />,
-  },
-  {
-    path: '/admin-login',
-    element: <AdminLogin />,
   },
   {
     path: '/login',

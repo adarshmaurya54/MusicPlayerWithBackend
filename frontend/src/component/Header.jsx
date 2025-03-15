@@ -99,7 +99,7 @@ const Header = ({ handleToggleUpload }) => {
             ) : (
               <>
                 <button
-                  onClick={() => navigate("/admin-login")}
+                  onClick={() => navigate("/login")}
                   className="bg-black dark:bg-white hover:ring-2 hover:ring-black
            dark:ring-offset-0 ring-offset-2 transition-all duration-300 md:w-auto w-[50%] justify-center flex items-center gap-2 dark:text-black text-white px-4 py-2 rounded-xl"
                 >

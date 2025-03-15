@@ -5,7 +5,7 @@ require("dotenv").config();
 
 // Login Controller
 exports.login = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, loginType } = req.body;
 
   try {
     // Find user by username
@@ -13,6 +13,10 @@ exports.login = async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
+
+    if (user.role !== loginType) {
+      return res.status(403).json({ error: "Access denied. Admin only!" });
+  }
 
     // Check password
     const isPasswordValid = await bcrypt.compare(password, user.password);

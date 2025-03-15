@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import InputType from "./InputType";
 import bg from "../../assets/bg.jpg";
 import { API } from "../../services/apiService";
-import toast, { Toaster } from "react-hot-toast";  // 🔥 Import Hot Toast
+import toast from "react-hot-toast";  // 🔥 Import Hot Toast
 
 function Registration() {
   const [name, setName] = useState("");
@@ -57,37 +57,37 @@ function Registration() {
          style={{ backgroundImage: `url(${bg})` }}
     >
       
-      <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-700 shadow-lg rounded-3xl p-6">
-        <h2 className="text-2xl font-bold mb-6 text-center dark:text-white">Sign Up</h2>
+      <form onSubmit={handleSubmit} className="bg-gradient-to-t from-white to-blue-50 shadow-lg rounded-3xl p-6">
+        <h2 className="text-2xl font-extrabold mb-6 text-center dark:text-white">Sign Up</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <InputType labelText="Full Name" labelFor="name" inputType="text" name="name"
                      placeholder="Enter your name" value={name}
-                     onChange={(e) => setName(e.target.value)} error={errors.name} />
+                     onChange={(e) => setName(e)} error={errors.name} />
           <InputType labelText="Email" labelFor="email" inputType="email" name="email"
                      placeholder="Enter your email" value={email}
-                     onChange={(e) => setEmail(e.target.value)} error={errors.email} />
+                     onChange={(e) => setEmail(e)} error={errors.email} />
           <InputType labelText="Password" labelFor="password" inputType="password" name="password"
                      placeholder="Enter your password" value={password}
-                     onChange={(e) => setPassword(e.target.value)} error={errors.password} />
+                     onChange={(e) => setPassword(e)} error={errors.password} />
           <InputType labelText="Confirm Password" labelFor="confirmPassword" inputType="password"
                      name="confirmPassword" placeholder="Re-enter your password"
-                     value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
+                     value={confirmPassword} onChange={(e) => setConfirmPassword(e)}
                      error={errors.confirmPassword} />
 
           {/* Profile Picture Upload */}
           <div className="flex flex-col">
-            <label className="text-gray-700 dark:text-white mb-1" htmlFor="profilePic">
+            <label className="text-gray-700 font-bold dark:text-white mb-1" htmlFor="profilePic">
               Profile Picture (Optional)
             </label>
             <input type="file" accept="image/*" id="profilePic"
-                   onChange={handleFileChange} className="border border-gray-300 dark:border-gray-600 rounded-lg p-2"/>
+                   onChange={handleFileChange} className="shadow-lg bg-white file:bg-slate-100 file:text-sm file:p-1 file:px-2 file:rounded-lg file:border-none rounded-xl p-2"/>
           </div>
         </div>
 
         {/* Already have an account? Section */}
         <div className="text-center mt-4">
           <p className="text-gray-700 dark:text-white">
-            Already have an account? <Link to="/admin-login" className="text-blue-500 hover:underline">Log in</Link>
+            Already have an account? <Link to="/login" className="text-blue-500 hover:underline">Log in</Link>
           </p>
         </div>
 

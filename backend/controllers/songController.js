@@ -3,7 +3,7 @@ const Artist = require("../models/artistModel");
 const path = require("path");
 const fs = require("fs");
 const musicMetadata = require("music-metadata");
-const sharp = require("sharp"); 
+const sharp = require("sharp");
 const {
   uploadFileToDrive,
   authorize,
@@ -43,7 +43,7 @@ exports.deleteSongById = async (req, res) => {
       return res.status(404).json({ message: "Song not found" });
     }
 
-    const fileId = song.audioFile;  // The fileId of the song stored in Google Drive
+    const fileId = song.audioFile; // The fileId of the song stored in Google Drive
 
     // Authorize with Google Drive
     const authClient = await authorize();
@@ -51,15 +51,22 @@ exports.deleteSongById = async (req, res) => {
 
     // Delete the file from Google Drive
     try {
-      await drive.files.delete({ fileId });  // Google Drive API delete call
+      await drive.files.delete({ fileId }); // Google Drive API delete call
       console.log("File deleted from Google Drive");
 
       // Now delete the song record from the database
       await Song.findByIdAndDelete(songId);
-      res.status(200).json({ message: "Song deleted successfully from both database and Google Drive" });
+      res
+        .status(200)
+        .json({
+          message:
+            "Song deleted successfully from both database and Google Drive",
+        });
     } catch (driveError) {
       console.error("Error deleting file from Google Drive:", driveError);
-      return res.status(500).json({ message: "Error deleting file from Google Drive" });
+      return res
+        .status(500)
+        .json({ message: "Error deleting file from Google Drive" });
     }
   } catch (error) {
     console.error("Error deleting song:", error);
@@ -113,7 +120,8 @@ exports.createSong = async (req, res) => {
     // Extract metadata fields
     const extractedSongName = metadata.common.title || songName; // Use metadata title if available, fallback to songName
     const extractedArtistName = metadata.common.artist || "Unknown Artist"; // Use metadata artist, fallback to 'Unknown Artist'
-    const extractedLyrics = metadata.common.lyrics?.[0]?.text || "Lyrics not available"; // Extract lyrics from metadata, fallback to default
+    const extractedLyrics =
+      metadata.common.lyrics?.[0]?.text || "Lyrics not available"; // Extract lyrics from metadata, fallback to default
 
     // Generate the songId
     const songId = extractedSongName.replace(/\s+/g, ""); // Remove spaces for songId
@@ -150,7 +158,9 @@ exports.createSong = async (req, res) => {
     await newSong.save();
 
     // Handle artist(s)
-    const artistNames = extractedArtistName.split(",").map((name) => name.trim()); // Handle multiple artists
+    const artistNames = extractedArtistName
+      .split(",")
+      .map((name) => name.trim()); // Handle multiple artists
     for (const name of artistNames) {
       const existingArtist = await Artist.findOne({ name });
 
@@ -174,26 +184,29 @@ exports.createSong = async (req, res) => {
   }
 };
 
-
 exports.getAllSongs = async (req, res) => {
   try {
     const { favourite, artist } = req.query; // Get 'favourite' and 'artist' flags from the query parameters
-    
+
     let filter = {}; // Default filter to get all songs
 
     // If 'favourite' flag is provided and is true, filter songs with favourite set to true
-    if (favourite === 'true') {
+    if (favourite === "true") {
       filter.favourite = true;
     }
 
     // If 'artist' is provided, check if the artist name contains 'Udit Narayan'
-    if (artist !== 'all') {
+    if (artist !== "all") {
       // Use regex to match 'Udit Narayan' in the artistName field
-      filter.artistName = { $regex: artist, $options: 'i' }; // 'i' for case-insensitive match
+      filter.artistName = { $regex: artist, $options: "i" }; // 'i' for case-insensitive match
     }
 
-    // Get the songs based on the filter, sorted by songName
-    const songs = await Song.find(filter).sort({ songName: 1 });
+    const totalSongs = await Song.countDocuments(filter); // Get total count of filtered songs
+
+    const songs = await Song.aggregate([
+      { $match: filter },
+      { $sample: { size: totalSongs } }, // Shuffle all songs
+    ]);
 
     if (songs.length === 0) {
       return res.status(200).json([]); // Return an empty array if no songs found
@@ -205,11 +218,6 @@ exports.getAllSongs = async (req, res) => {
     res.status(500).json({ error: "Failed to retrieve songs" });
   }
 };
-
-
-
-
-
 
 exports.getSongWithMetadata = async (req, res) => {
   const fileId = req.params.fileId; // Google Drive file ID
@@ -283,7 +291,7 @@ exports.getSongWithMetadata = async (req, res) => {
           await sharp(imageBuffer)
             .resize({ width: 600, height: 600, fit: "cover" }) // High-quality size (e.g., 600x600)
             .toFormat("jpg")
-            .jpeg({ quality: 100, chromaSubsampling: '4:4:4' }) // High compression quality
+            .jpeg({ quality: 100, chromaSubsampling: "4:4:4" }) // High compression quality
             .toFile(highQualityThumbnailPath);
           highQualityThumbnailUrl = `/thumbnails/${fileId}-high.jpg`;
 
@@ -373,7 +381,7 @@ exports.streamAudio = async (req, res) => {
 
 exports.deleteThumbnails = async (req, res) => {
   const songId = req.params.songId; // Get songId from the route parameter
-  console.log("songid",  songId);
+  console.log("songid", songId);
   const thumbnailFolder = path.join(__dirname, "..", "assets", "thumbnails"); // Path to the thumbnails folder
 
   // Define file paths for high and low-quality thumbnails

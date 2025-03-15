@@ -5,7 +5,7 @@ const API = axios.create({
   baseURL: import.meta.env.VITE_BASEURL, // Replace with your backend URL
   headers: {
     "Content-Type": "application/json", // Default header for JSON data
-  },
+  }
 });
 
 // Interceptor to add the JWT token to the request header
@@ -24,15 +24,7 @@ API.interceptors.request.use(
 
 // Handle API calls
 const apiService = {
-  // Login API call
-  login: async (credentials) => {
-    try {
-      const response = await API.post("/login", credentials); // Adjust the endpoint accordingly
-      return response.data; // Return the response data (token)
-    } catch (error) {
-      throw new Error("Error logging in: " + error.message);
-    }
-  },
+  
   // Get all songs
   getSongs: async (favourite = "false", artist = 'all') => {
     try {
