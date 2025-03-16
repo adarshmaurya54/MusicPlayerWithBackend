@@ -11,7 +11,7 @@ import { FaUser, FaSignOutAlt } from "react-icons/fa";
 import { logout } from "../redux/features/auth/authSlice"
 import { RiUploadCloud2Line } from "react-icons/ri";
 import { PiPlaylistFill } from "react-icons/pi";
-import defaultUser from "../assets/default-user.svg"
+import defaultUser from "../assets/default-user.jpg"
 
 
 
@@ -55,9 +55,9 @@ const Header = ({ handleToggleUpload }) => {
                     <img
                       src={defaultUser} // Replace with actual image URL
                       alt="Profile"
-                      className="w-10 h-10 rounded-full"
+                      className="md:w-10 md:h-10 w-7 h-7 object-cover rounded-full"
                     />
-                    <span className="text-lg font-semibold text-gray-900 dark:text-white">{user.name}</span>
+                    <span className="md:text-lg  font-semibold text-gray-900 dark:text-white">{user.name}</span>
                   </div>
 
                   {/* Dropdown Menu */}
