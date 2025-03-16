@@ -32,7 +32,7 @@ const Header = ({ handleToggleUpload }) => {
   };
 
   return (
-    <header className="z-10 relative md:px-10 px-4  py-5">
+    <header className="z-[1] relative md:px-10 px-4  py-5">
       <div className={`dark:border-white/10 border transition-all md:h-auto p-5 rounded-3xl bg-white dark:bg-slate-900 backdrop-blur-lg flex md:flex-row flex-col justify-between md:items-center gap-4`}>
         <h1 className="md:text-3xl flex items-center justify-between text-xl font-bold">
           <Link to="/" className="flex gap-3 items-center">

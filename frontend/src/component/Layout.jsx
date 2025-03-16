@@ -359,7 +359,7 @@ console.log(songDetail?.likes);
               {!isNoSongsFound && (
                 <>
                   <div className="flex gap-5 md:flex-row flex-col items-center w-full text-black justify-between">
-                    <div className="relative z-9 md:w-[376px] w-full">
+                    <div className="relative z-5 md:w-[376px] w-full">
                       {/* Search Icon */}
                       <span className="absolute dark:text-gray-500 inset-y-0 left-4 flex items-center pointer-events-none ">
                         <svg

@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { API } from "../../services/apiService";
 import { Link, useNavigate } from "react-router-dom";
 import MessageCard from "../MessageCard";
 import bg from "../../assets/bg.jpg";
-import toast from "react-hot-toast";
 import InputType from "./InputType";
 import { userLogin } from "../../redux/features/auth/authAction"
 import store from "../../redux/store"
 import { useSelector } from "react-redux";
+import { IoIosMail } from "react-icons/io";
+import { IoLockClosedOutline } from "react-icons/io5";
 
 
 function Login() {
@@ -18,7 +18,8 @@ function Login() {
   const [loginType, setLoginType] = useState("user")
 
   const navigate = useNavigate(); // To navigate to another page on success
-  const { user } = useSelector((state) => state.auth)
+  const { user, token } = useSelector((state) => state.auth)
+console.log(token);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -31,7 +32,7 @@ function Login() {
 
   // Redirect to home page after successful login
   useEffect(() => {
-    if (user) {
+    if (user || token) {
       navigate("/"); 
     }
   }, [user, navigate]);
@@ -80,10 +81,10 @@ function Login() {
         )}
         <form onSubmit={handleLogin}>
 
-          <InputType extraClass="mt-5" inputType="email" required={true} name="email"
+          <InputType icon={<IoIosMail/>} extraClass="mt-5" inputType="email" required={true} name="email"
             placeholder="E-mail" value={email}
             onChange={(e) => setEmail(e)} />
-          <InputType extraClass='mt-5' inputType="password" name="password"
+          <InputType icon={<IoLockClosedOutline/>} extraClass='mt-5' inputType="password" name="password"
             placeholder="Password" value={password}
             onChange={(e) => setPassword(e)} />
           <span className="block mt-3 mb-1 ml-3 text-xs text-gray-400">

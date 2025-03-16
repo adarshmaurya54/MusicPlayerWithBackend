@@ -16,8 +16,8 @@ function Share({audioFile,setOpen}) {
       }, 3000);
     };
     return (
-        <div className="fixed flex p-4 justify-center cursor-auto items-center z-50 top-0 left-0 bg-black/40 backdrop-blur-sm w-full h-full">
-            <div className="bg-white p-5 rounded-3xl w-[600px]">
+        <div className="fixed flex p-5 justify-center cursor-auto items-center z-50 top-0 left-0 bg-black/40 backdrop-blur-sm w-full h-full">
+            <div className="bg-white p-5 rounded-3xl md:w-[600px] w-[360px] duration-500 transition-[width]">
                 {/* Header */}
                 <div className="flex justify-between border-b pb-5 items-center text-black">
                     <h2 className="text-lg font-semibold ">Share public link to song</h2>
