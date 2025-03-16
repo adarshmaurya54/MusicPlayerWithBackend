@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
-import {API} from "../../services/apiService";
+import { API } from "../../services/apiService";
 import { Link, useNavigate } from "react-router-dom";
 import MessageCard from "../MessageCard";
 import bg from "../../assets/bg.jpg";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import InputType from "./InputType";
+import { userLogin } from "../../redux/features/auth/authAction"
+import store from "../../redux/store"
+import { useSelector } from "react-redux";
 
 
 function Login() {
@@ -15,29 +18,23 @@ function Login() {
   const [loginType, setLoginType] = useState("user")
 
   const navigate = useNavigate(); // To navigate to another page on success
-
-  // Check for existing JWT token
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      navigate("/"); // Redirect to dashboard if token is found
-    }
-  }, [navigate]);
+  const { user } = useSelector((state) => state.auth)
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const toastId = toast.loading("Please wait...");    
     try {
-      const response = await API.post("/login", { email, password, loginType });      
-      localStorage.setItem("token", response.data.token);
-      navigate("/");
-      toast.success("Login Successfully", { id: toastId });
-
+      store.dispatch(userLogin({ email, password, loginType }))
     } catch (error) {
       console.log(error);
-      toast.error(error.response.data.error,{id: toastId});
     }
   };
+
+  // Redirect to home page after successful login
+  useEffect(() => {
+    if (user) {
+      navigate("/"); 
+    }
+  }, [user, navigate]);
 
   const toggleLoginType = () => {
     setLoginType((prevType) => (prevType === "admin" ? "user" : "admin"));

@@ -1,6 +1,6 @@
 import React, { Suspense, useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom"; // useParams for URL parameters and useNavigate for navigation
-import apiService from "../services/apiService";
+import apiService, { API } from "../services/apiService";
 
 // Lazy load the SongList component
 const SongList = React.lazy(() => import("./SongList"));
@@ -20,6 +20,8 @@ import { LiaTimesSolid } from "react-icons/lia";
 import { ThemeProvider } from "../context/theme";
 import {useExtractColors} from "react-extract-colors"
 import { Toaster } from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { getCurrentUser } from "../redux/features/auth/authAction";
 
 function Layout() {
   const { songId } = useParams(); // Get songId from URL
@@ -44,7 +46,6 @@ function Layout() {
     name: "",
     artist: "",
   });
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Track if user is authenticated
   const [currentPage, setCurrentPage] = useState(1);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(true); // if song is loading in music player
@@ -117,43 +118,6 @@ function Layout() {
   // Get the base URL from the environment variables
   const baseUrl = import.meta.env.VITE_BASEURL; // This will use the VITE_BASE_URL variable from .env
 
-  // Check if the token is valid
-  const checkTokenValidity = async (token) => {
-    try {
-      // Make a request using Axios
-      const response = await axios.post(
-        `${baseUrl}/validate-token`, // Use the base URL with the validate-token endpoint
-        {},
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        setIsAuthenticated(true);
-      } else {
-        setIsAuthenticated(false);
-        localStorage.removeItem("token"); // Remove invalid token
-      }
-    } catch (error) {
-      console.error("Error validating token:", error);
-      setIsAuthenticated(false);
-      localStorage.removeItem("token"); // Handle error and remove token
-    }
-  };
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      checkTokenValidity(token); // Check token validity on component mount
-    } else {
-      setIsAuthenticated(false); // No token means user is not authenticated
-    }
-  }, []); // Empty dependency array to run once on mount
-  // authentication code to check whether admin is login or not
 
   const handleToggleUpload = () => {
     setUpload(!upload);
@@ -263,6 +227,8 @@ function Layout() {
       }
     }, 10000);
   }, [songDetail]);
+  console.log(songDetail);
+  
 
   // Play the next song
   const playNextSong = () => {
@@ -325,6 +291,8 @@ function Layout() {
       : "PlayBeatz";
 
 }, [songDetail?.highQualityThumbnailUrl]);
+console.log(songDetail?.likes);
+
 
   // Functions of enabling lightmode and darkmode
   const lightTheme = () => {
@@ -355,9 +323,30 @@ function Layout() {
     localStorage.setItem("theme", themeMode);
   }, [themeMode]);
 
+  //getting the currently loggedin user
+  const dispatch = useDispatch();
+  const getUser = async () => {
+    console.log("hii");
+    
+    try {
+      const { data } = await API.get("/current-user");
+      if (data?.success) {
+        dispatch(getCurrentUser(data));
+      }
+    } catch (error) {
+      localStorage.clear();
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getUser();
+  },[]);
+
   if (error) {
     return <div>{error}</div>;
   }
+
   return (
     <ThemeProvider value={{ lightTheme, darkTheme, themeMode }}>
       <div className="md:bg-black/20 transition-all duration-500">
@@ -370,7 +359,7 @@ function Layout() {
               {!isNoSongsFound && (
                 <>
                   <div className="flex gap-5 md:flex-row flex-col items-center w-full text-black justify-between">
-                    <div className="relative md:w-[376px] w-full">
+                    <div className="relative z-9 md:w-[376px] w-full">
                       {/* Search Icon */}
                       <span className="absolute dark:text-gray-500 inset-y-0 left-4 flex items-center pointer-events-none ">
                         <svg
@@ -599,12 +588,12 @@ function Layout() {
                                   )
                                 }
                                 id={song._id}
+                                likes={song.likes}
                                 songId={song.songId}
                                 audioFile={song.audioFile}
                                 title={song.songName}
                                 artist={song.artistName}
                                 favourite={song.favourite}
-                                isAdminLogin={isAuthenticated}
                                 handleToggleEdit={handleToggleEdit}
                                 fetchSongs={fetchSongs}
                               />
@@ -659,6 +648,8 @@ function Layout() {
                 <MusicPlayer
                   audioRef={audioRef}
                   songId={player}
+                  id={songDetail?._id}
+                  likes = {songDetail?.likes}
                   handlePlayerClose={handlePlayerClose}
                   songName={songDetail?.songName}
                   artistName={songDetail?.artistName}

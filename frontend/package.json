@@ -12,6 +12,7 @@
     "dependencies": {
         "@ffmpeg/core": "^0.12.8",
         "@ffmpeg/ffmpeg": "^0.12.13",
+        "@reduxjs/toolkit": "^2.6.1",
         "axios": "^1.7.9",
         "jsmediatags": "^3.9.7",
         "music-metadata-browser": "^2.5.11",
@@ -21,6 +22,7 @@
         "react-hot-toast": "^2.5.2",
         "react-icons": "^5.4.0",
         "react-loading-skeleton": "^3.5.0",
+        "react-redux": "^9.2.0",
         "react-router-dom": "^7.1.1"
     },
     "devDependencies": {

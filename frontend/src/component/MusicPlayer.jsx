@@ -4,14 +4,17 @@ import { HiSpeakerWave, HiSpeakerXMark } from "react-icons/hi2";
 import { PiShuffle } from "react-icons/pi";
 import { FaForward } from "react-icons/fa";
 import { FaBackward } from "react-icons/fa";
-import apiService from "../services/apiService";
+import apiService, { API } from "../services/apiService";
 import { BsRepeat1 } from "react-icons/bs";
 import { useExtractColors } from "react-extract-colors";
 import { TbShare3 } from "react-icons/tb";
 import Share from "./Share";
+import { useSelector } from "react-redux";
 
 const MusicPlayer = ({
   songName,
+  id,
+  likes,
   playNextSong,
   playPrevSong,
   artistName,
@@ -36,7 +39,9 @@ const MusicPlayer = ({
   const [isMuted, setIsMuted] = useState(false);
   const [open, setOpen] = useState(false);
   // New state for loading
-  const [isLiked, setIsLiked] = useState(favourite);
+  const {user} = useSelector((state) => state.auth)
+  const [isLiked, setIsLiked] = useState(likes?.includes(user._id));
+  
 
   // getting the decent color from the highQualityThumbnailUrl
   const { colors } = useExtractColors(import.meta.env.VITE_BASEURL + "/assets" + image, {
@@ -59,15 +64,17 @@ const MusicPlayer = ({
 
   const progressBarRef = useRef(null);
   useEffect(() => {
-    setIsLiked(favourite);
-  }, [favourite]);
+    setIsLiked(likes?.includes(user._id));
+  }, [likes]);
   useEffect(() => {
     setIsLoading(true);
   }, [songId]);
   const handleToggle = async () => {
     setIsLiked((prev) => !prev); // Toggle state
     try {
-      await apiService.toggleFavourite(songId); // Call the API to toggle the favorite status
+      const res = await API.post(`/songs/like/${id}`); // Call the API to toggle the favorite status
+      console.log(res);
+      
     } catch (error) {
       console.error("Error toggling favourite status:", error);
       setIsLiked((prev) => !prev); // Revert the state if the API call fails
@@ -262,7 +269,7 @@ const MusicPlayer = ({
 
   return (
     <div
-      className="fixed z-50 top-0 left-0 w-full h-full bg-black/30 flex justify-center text-white items-center"
+      className="fixed z-[60] top-0 left-0 w-full h-full bg-black/30 flex justify-center text-white items-center"
       onMouseMove={handleMove}
       onMouseUp={handleEnd}
       onTouchMove={handleMove}

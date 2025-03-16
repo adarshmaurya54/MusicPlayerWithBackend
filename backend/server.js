@@ -59,6 +59,8 @@ async function initializeApp() {
     app.get("/songById/:songId", songController.getSongById);
     app.put("/song/:songId", songController.updateSongById);
     app.delete("/song/:songId", songController.deleteSongById);
+    app.get("/current-user", authController.currentUserController)
+    app.post("/songs/like/:songId", songController.songLike)
 
     // Error handler
     app.use((err, req, res, next) => {

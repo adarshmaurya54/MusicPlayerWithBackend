@@ -3,6 +3,7 @@ const Artist = require("../models/artistModel");
 const path = require("path");
 const fs = require("fs");
 const musicMetadata = require("music-metadata");
+const mongoose = require("mongoose");
 const sharp = require("sharp");
 const {
   uploadFileToDrive,
@@ -319,12 +320,14 @@ exports.getSongWithMetadata = async (req, res) => {
 
         // Respond with song details and thumbnail URLs
         res.json({
+          _id: song._id,
           songName: song.songName || songName,
           audioUrl: `/stream/${fileId}`, // Stream URL for Google Drive file ID
           artistName: song.artistName || artistName,
           favourite: song.favourite || false, // Include favourite status
           highQualityThumbnailUrl,
           lowQualityThumbnailUrl,
+          likes: song.likes
         });
       } catch (error) {
         console.error("Error extracting metadata:", error);
@@ -452,5 +455,51 @@ exports.toggleFavourite = async (req, res) => {
   } catch (error) {
     console.error("Error toggling favourite status:", error);
     res.status(500).json({ error: "Failed to toggle favourite status" });
+  }
+};
+
+exports.songLike = async (req, res) => {
+  try {
+    let { songId } = req.params;
+    let { userId } = req.body; // Assuming user is authenticated
+
+    // Check if songId and userId exist
+    if (!songId || !userId) {
+      return res.status(400).json({ message: "songId and userId are required" });
+    }
+
+    // Validate ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(songId)) {
+      return res.status(400).json({ message: "Invalid songId format" });
+    }
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid userId format" });
+    }
+
+    songId = new mongoose.Types.ObjectId(songId);
+    userId = new mongoose.Types.ObjectId(userId);
+
+    // Find the song by ID
+    const song = await Song.findById(songId);
+    if (!song) {
+      return res.status(404).json({ message: "Song not found" });
+    }
+
+    const index = song.likes.findIndex((id) => id.equals(userId));
+
+    if (index === -1) {
+      // User has not liked the song, so like it
+      song.likes.push(userId);
+      await song.save();
+      return res.json({ message: "Liked the song", likes: song.likes.length });
+    } else {
+      // User already liked, so unlike it
+      song.likes.splice(index, 1);
+      await song.save();
+      return res.json({ message: "Unliked the song", likes: song.likes.length });
+    }
+  } catch (error) {
+    console.error("Error in songLike:", error.message);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };

@@ -1,4 +1,4 @@
-const jwt = require("jsonwebtoken");
+const JWT = require("jsonwebtoken");
 
 const verifyToken = (req, res, next) => {
   const token = req.header("Authorization")?.replace("Bearer ", "");
@@ -8,9 +8,17 @@ const verifyToken = (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // Store the decoded user info in the request object
-    next(); // Proceed to the next middleware or route handler
+    JWT.verify(token, process.env.JWT_SECRET, (err, decode) => {
+      if(err){
+          return res.status(401).send({
+              success: false,
+              message: "auth failed auth"
+          })
+      }else{
+          req.body.userId = decode.id;
+          next();
+      }
+  })
   } catch (error) {
     return res.status(400).json({ error: "Invalid token" });
   }

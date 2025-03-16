@@ -5,12 +5,13 @@ import apiService from "../services/apiService"; // Import your apiService
 import MusicAnimation from "./MusicAnimation";
 import { TbShare3 } from "react-icons/tb";
 import Share from "./Share";
+import { useSelector } from "react-redux";
 
 function SongList({
   id,
   title,
   image,
-  isAdminLogin,
+  likes,
   currentlyPlaying,
   artist,
   favourite,
@@ -21,6 +22,7 @@ function SongList({
   isPlaying,
   audioFile
 }) {
+  const {user} = useSelector((state) => state.auth)
   const [isDeleting, setIsDeleting] = useState(false); // State to track if a song is being deleted
   const [open, setOpen] = useState(false);
   const handleDeleteSong = async (songId, filename) => {
@@ -52,7 +54,7 @@ function SongList({
     </button>
     {/* Custom Popup */}
     {open && <Share setOpen={setOpen} audioFile={audioFile}/>}
-    {!isDeleting && isAdminLogin && (
+    {!isDeleting && user?.role === 'admin' && (
       <>
         <button
           title="Edit"
@@ -60,7 +62,7 @@ function SongList({
             e.stopPropagation();
             handleToggleEdit(songId);
           }}
-          className="absolute z-10 bottom-2 right-2 p-2 bg-white dark:bg-transparent dark:border-white/20 text-gray-400 border rounded-lg text-sm opacity-0 group-hover:opacity-100  transition-opacity duration-300"
+          className="absolute z-10 bottom-2 right-2 p-2 bg-white dark:bg-slate-900 dark:border-white/20 text-gray-400 border rounded-lg text-sm opacity-0 group-hover:opacity-100  transition-opacity duration-300"
 
         >
           <FiEdit2 />
@@ -79,11 +81,11 @@ function SongList({
       </>
     )}
     {isDeleting && (
-      <div className="absolute bottom-2 text-xs right-2 p-2 bg-white   dark:bg-transparent dark:text-white dark:border-white/20 text-black border rounded-lg transition-opacity duration-300">
+      <div className="absolute bottom-2 text-xs right-2 p-2 bg-white   dark:bg-gray-900 dark:text-white dark:border-white/20 text-black border rounded-lg transition-opacity duration-300">
         Deleting...
       </div>
     )}
-    {currentlyPlaying && <div className="absolute top-2 right-2 group-hover:right-12  dark:bg-transparent dark:text-white dark:border-white/20 transition-all text-xs px-2 py-2 bg-white text-black border rounded-lg  duration-300">
+    {currentlyPlaying && <div className="absolute z-10 top-2 right-2 group-hover:right-12  dark:bg-gray-900 dark:text-white dark:border-white/20 transition-all text-xs px-2 py-2 bg-white text-black border rounded-lg  duration-300">
       Now playing
     </div>}
     <div
@@ -96,7 +98,7 @@ function SongList({
       <div className="flex h-full space-x-4 items-center">
         {/* Album Artwork Placeholder */}
         <div
-          className={`flex-shrink-0 ${isAdminLogin ? "w-[100px] h-[100px]" : "w-20 h-20"
+          className={`flex-shrink-0 ${user?.role === 'admin' ? "w-[100px] h-[100px]" : "w-20 h-20"
             } bg-cover overflow-hidden rounded-lg bg-gray-300 flex items-center justify-center`}
           style={
             currentlyPlaying && image
@@ -163,7 +165,7 @@ function SongList({
 
         {/* Song Details */}
         <div
-          className={`${isAdminLogin ? "flex-col items-start gap-2" : "items-center"
+          className={`${user?.role === 'admin' ? "flex-col items-start gap-2" : "items-center"
             } flex justify-end w-full`}
         >
           <div className="flex-1 w-full">
@@ -176,12 +178,12 @@ function SongList({
             <p className="text-sm text-gray-600 dark:text-gray-400 ">{artist}</p>
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
             {/* Favourite Icon */}
             <svg
-              className={`h-6 w-6 ${favourite ? "text-red-500" : "text-gray-400"
+              className={`h-6 w-6 ${likes.length !== 0 ? "text-red-500" : "text-gray-400"
                 }`}
-              fill={favourite ? "#ef4444" : "none"}
+              fill={likes.length !== 0 ? "#ef4444" : "none"}
               stroke="currentColor"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -190,6 +192,7 @@ function SongList({
             >
               <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
             </svg>
+            <span className="text-gray-400">{likes.length === 0 ? "" : likes.length}</span>
           </div>
         </div>
       </div>

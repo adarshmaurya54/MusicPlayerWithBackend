@@ -7,6 +7,8 @@ import PageNotFount_404 from './component/PageNotFount_404'
 import Register from './component/auth/Registration'
 import Login from './component/auth/Login'
 import { Toaster } from 'react-hot-toast'
+import {Provider} from "react-redux"
+import store from './redux/store'
 
 const router = createBrowserRouter([
   {
@@ -40,8 +42,8 @@ const router = createBrowserRouter([
 ])
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <>
+  <Provider store={store}>
     <RouterProvider router={router} />
     <Toaster />
-  </>
+  </Provider>
 )
