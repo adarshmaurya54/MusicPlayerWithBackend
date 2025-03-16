@@ -98,7 +98,7 @@ const Header = ({ handleToggleUpload }) => {
                               className="stroke-gray-400"
                             ></path>
                           </svg>
-                          <p className="-mt-1">Light</p>
+                          <p className="">Light</p>
                         </li>
                         <li onClick={() => { lightTheme(); toast.success("Light Mode") }} className="hidden dark:flex items-center px-4 py-2 rounded-lg dark:text-white dark:hover:bg-gray-700 hover:bg-gray-100 cursor-pointer">
                           <svg
@@ -123,7 +123,7 @@ const Header = ({ handleToggleUpload }) => {
                               className="fill-black dark:fill-gray-400"
                             ></path>
                           </svg>
-                          <p className="-mt-1">Dark</p>
+                          <p className="">Dark</p>
                         </li>
                         <li className="border dark:border-white/20 my-1"></li>
                         <li onClick={() => handleLogout()} className="flex rounded-lg dark:text-white dark:hover:bg-gray-700 items-center px-4 py-2 text-red-600 hover:bg-gray-100 cursor-pointer">
