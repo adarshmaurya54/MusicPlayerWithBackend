@@ -10,6 +10,7 @@ import { useExtractColors } from "react-extract-colors";
 import { TbShare3 } from "react-icons/tb";
 import Share from "./Share";
 import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
 
 const MusicPlayer = ({
   songName,
@@ -22,7 +23,6 @@ const MusicPlayer = ({
   backgroundImage,
   handlePlayerClose,
   songId,
-  favourite,
   audioRef,
   SetisPlayingOrNotForLayout,
   setProgressPercentage,
@@ -39,9 +39,9 @@ const MusicPlayer = ({
   const [isMuted, setIsMuted] = useState(false);
   const [open, setOpen] = useState(false);
   // New state for loading
-  const {user} = useSelector((state) => state.auth)
-  const [isLiked, setIsLiked] = useState(likes?.includes(user._id));
-  
+  const { user } = useSelector((state) => state.auth)
+  const [isLiked, setIsLiked] = useState(likes?.includes(user?._id));
+
 
   // getting the decent color from the highQualityThumbnailUrl
   const { colors } = useExtractColors(import.meta.env.VITE_BASEURL + "/assets" + image, {
@@ -64,20 +64,24 @@ const MusicPlayer = ({
 
   const progressBarRef = useRef(null);
   useEffect(() => {
-    setIsLiked(likes?.includes(user._id));
+    setIsLiked(likes?.includes(user?._id));
   }, [likes]);
   useEffect(() => {
     setIsLoading(true);
   }, [songId]);
   const handleToggle = async () => {
-    setIsLiked((prev) => !prev); // Toggle state
-    try {
-      const res = await API.post(`/songs/like/${id}`); // Call the API to toggle the favorite status
-      console.log(res);
-      
-    } catch (error) {
-      console.error("Error toggling favourite status:", error);
-      setIsLiked((prev) => !prev); // Revert the state if the API call fails
+    if (user) {
+      setIsLiked((prev) => !prev); // Toggle state
+      try {
+        const res = await API.post(`/songs/like/${id}`); // Call the API to toggle the favorite status
+        console.log(res);
+
+      } catch (error) {
+        console.error("Error toggling favourite status:", error);
+        setIsLiked((prev) => !prev); // Revert the state if the API call fails
+      }
+    }else{
+      toast.error("Please log in to like this song!");
     }
   };
 
@@ -443,7 +447,7 @@ const MusicPlayer = ({
                     <button onClick={() => setOpen(true)} className="md:block hidden absolute top-1/2 right-0 -translate-x-1/2 -translate-y-1/2">
                       <TbShare3 className="text-white text-3xl" />
                     </button>
-                    {open && <Share setOpen={setOpen} audioFile={songId}/>}
+                    {open && <Share setOpen={setOpen} audioFile={songId} />}
                   </div>
                 </div>
               </div>
