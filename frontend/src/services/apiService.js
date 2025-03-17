@@ -48,7 +48,7 @@ const apiService = {
   // apiService.js
   createSong: async (formData) => {
     try {
-      const response = await API.post("/song", formData, {
+      const response = await API.post("/songs", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -71,7 +71,7 @@ const apiService = {
   // Create an artist
   createArtist: async (artistData) => {
     try {
-      const response = await API.post("/artist", artistData);
+      const response = await API.post("/artists", artistData);
       return response.data; // Return the created artist
     } catch (error) {
       throw new Error("Error creating artist: " + error.message);
@@ -81,7 +81,7 @@ const apiService = {
   // Get song details by filename
   getSongInfo: async (filename) => {
     try {
-      const response = await API.get(`/song/${filename}`);
+      const response = await API.get(`/songs/${filename}`);
       return response.data; // Return the song info (artist name, thumbnail, etc.)
     } catch (error) {
       throw new Error("Error fetching song info: " + error.message);
@@ -90,7 +90,7 @@ const apiService = {
   // get song by songId
   getSongById: async (songId) => {
     try {
-      const response = await API.get(`/songById/${songId}`); // Endpoint to fetch the specific song
+      const response = await API.get(`/songs/songById/${songId}`); // Endpoint to fetch the specific song
       return response.data; // Return the song details
     } catch (error) {
       console.error(
@@ -103,7 +103,7 @@ const apiService = {
   // Update song by songId
   updateSong: async (songId, updatedData) => {
     try {
-      const response = await API.put(`/song/${songId}`, updatedData);
+      const response = await API.put(`/songs/${songId}`, updatedData);
       return response.data; // Return the updated song details
     } catch (error) {
       console.error("Error updating song:", error.response || error.message);
@@ -112,7 +112,7 @@ const apiService = {
   },
   deleteSong: async (songId, filename) => {
     try {
-      const response = await API.delete(`/song/${songId}`, {
+      const response = await API.delete(`/songs/${songId}`, {
         data: { filename },
       }); // Pass filename in the body
       return response.data; // Return the success message
@@ -125,7 +125,7 @@ const apiService = {
   // Delete thumbnails by songId
   deleteThumbnails: async (songId) => {
     try {
-      const response = await API.delete(`/thumbnail/${songId}`); // Adjust the endpoint accordingly
+      const response = await API.delete(`/songs/thumbnail/${songId}`); // Adjust the endpoint accordingly
       return response.data; // Return the confirmation message
     } catch (error) {
       console.error(

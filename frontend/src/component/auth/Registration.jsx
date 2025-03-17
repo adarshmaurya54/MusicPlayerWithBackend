@@ -57,7 +57,7 @@ function Registration() {
       const toastId = toast.loading("Registering...");
 
       try {
-        await API.post("/signup", { name, email, password, profilePic });
+        await API.post("/auth/signup", { name, email, password, profilePic });
 
         toast.success("Registration Successful!", { id: toastId });
         navigate("/login");
@@ -71,7 +71,7 @@ function Registration() {
     <div className="bg-center h-screen md:px-0 px-6 flex items-center justify-center bg-cover"
       style={{ backgroundImage: `url(${bg})` }}
     >
-      <form onSubmit={handleSubmit} className="bg-gradient-to-t max-w-[685px] from-white to-blue-50 border-4 border-white shadow-lg rounded-3xl p-6">
+      <form onSubmit={handleSubmit} className=" max-w-[685px] bg-gradient-to-t from-white to-blue-50 border-4 border-white shadow-lg rounded-3xl p-6">
         <h2 className="text-2xl font-extrabold mb-6 text-center dark:text-white">Sign Up</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <InputType icon={<IoPerson />} labelText="Full Name" labelFor="name" inputType="text" name="name"

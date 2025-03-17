@@ -10,7 +10,7 @@ export const userLogin = createAsyncThunk(
   async ({ email, password, loginType }, { rejectWithValue }) => {
     const toastId = toast.loading("Please wait..."); 
     try {
-      const { data } = await API.post("/login", { email, password, loginType });
+      const { data } = await API.post("/auth/login", { email, password, loginType });
 
       // storing the token that generated when we request to login api
       if (data.success) {
@@ -88,7 +88,7 @@ export const getCurrentUser = createAsyncThunk(
   "auth/getCurrentUser",
   async ({ rejectWithValue }) => {
     try {
-      const res = await API.get("/current-user");
+      const res = await API.get("/auth/current-user");
 
       if (res?.data) {
         // if response contain data field then we have to return the data value

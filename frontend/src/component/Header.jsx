@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { FaUser, FaSignOutAlt } from "react-icons/fa";
 import { logout } from "../redux/features/auth/authSlice"
 import { RiUploadCloud2Line } from "react-icons/ri";
-import { PiPlaylistFill } from "react-icons/pi";
+import { MdLibraryMusic } from "react-icons/md";
 import defaultUser from "../assets/default-user.jpg"
 
 
@@ -32,7 +32,7 @@ const Header = ({ handleToggleUpload }) => {
   };
 
   return (
-    <header className="z-[1] relative md:px-10 px-4  py-5">
+    <header className="z-[1] relative md:px-0 px-5 py-5">
       <div className={`dark:border-white/10 border transition-all md:h-auto p-5 rounded-3xl bg-white dark:bg-slate-900 backdrop-blur-lg flex md:flex-row flex-col justify-between md:items-center gap-4`}>
         <h1 className="md:text-3xl flex items-center justify-between text-xl font-bold">
           <Link to="/" className="flex gap-3 items-center">
@@ -49,7 +49,7 @@ const Header = ({ handleToggleUpload }) => {
                 <div className="relative inline-block">
                   {/* Profile Section */}
                   <div
-                    className="flex items-center space-x-3 cursor-pointer p-2 border dark:border-white/20 rounded-xl bg-white dark:bg-slate-900"
+                    className="flex items-center space-x-3 cursor-pointer p-2 border dark:border-white/20 rounded-2xl bg-white dark:bg-slate-900"
                     onClick={() => setIsOpen(!isOpen)}
                   >
                     <img
@@ -75,9 +75,11 @@ const Header = ({ handleToggleUpload }) => {
                           </li>
                         }
                         {user.role === 'user' &&
-                          <li className="flex items-center rounded-lg px-4 py-2 dark:text-white hover:dark:bg-gray-700 hover:bg-gray-100 cursor-pointer">
-                            <PiPlaylistFill className="mr-3 text-gray-400" />
-                            Playlists
+                          <li>
+                            <Link to='/library' className="flex items-center rounded-lg px-4 py-2 dark:text-white hover:dark:bg-gray-700 hover:bg-gray-100 cursor-pointer">
+                              <MdLibraryMusic className="mr-3 text-gray-400" />
+                              Your Library
+                            </Link>
                           </li>
                         }
                         <li onClick={() => { darkTheme(); toast.success("Dark Mode") }} className="flex dark:hidden items-center px-4 py-2 rounded-lg dark:text-white dark:hover:bg-gray-700 hover:bg-gray-100 cursor-pointer">

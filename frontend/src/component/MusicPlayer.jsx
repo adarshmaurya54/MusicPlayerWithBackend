@@ -457,7 +457,7 @@ const MusicPlayer = ({
       </div>
       <audio
         ref={audioRef}
-        src={`${import.meta.env.VITE_BASEURL}/stream/${songId}`}
+        src={`${import.meta.env.VITE_BASEURL}/songs/stream/${songId}`}
         preload="auto"
         onLoadedMetadata={handleLoadedMetadata}
       />

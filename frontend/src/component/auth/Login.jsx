@@ -19,7 +19,6 @@ function Login() {
 
   const navigate = useNavigate(); // To navigate to another page on success
   const { user, token } = useSelector((state) => state.auth)
-console.log(token);
 
   const handleLogin = async (e) => {
     e.preventDefault();
