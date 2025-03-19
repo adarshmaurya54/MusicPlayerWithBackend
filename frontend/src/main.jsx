@@ -11,22 +11,31 @@ import store from './redux/store'
 import HomePage from './component/HomePage'
 import Layout from './component/Layout'
 import Library from './component/UserComponents/Library'
+import Playlists from './component/UserComponents/Playlists'
+import PlaylistDetails from './component/UserComponents/PlaylistDetails'
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Layout />,  // Layout wraps all child routes
+    element: <Layout />, // Layout wraps all child routes
     children: [
-      { path: '', element: <HomePage /> },  // Default route inside Layout
+      { path: '', element: <HomePage /> }, // Default route inside Layout
       { path: 'song', element: <HomePage /> },
-      { path: 'library', element: <Library /> },
+      {
+        path: 'library',
+        element: <Library />,
+        children: [
+          { path: 'playlists', element: <Playlists /> }, // Corrected path
+          { path: 'playlists/:id', element: <PlaylistDetails /> }, // Corrected path
+        ],
+      },
       { path: 'song/:songId', element: <HomePage /> },
     ],
   },
   { path: 'login', element: <Login /> },
   { path: 'sign-up', element: <Register /> },
-  { path: '/no-song-found', element: <NoSongFound /> },  // Outside Layout
-  { path: '/*', element: <PageNotFount_404 /> },  // Outside Layout
+  { path: '/no-song-found', element: <NoSongFound /> }, // Outside Layout
+  { path: '/*', element: <PageNotFount_404 /> }, // Catch-all route
 ])
 
 ReactDOM.createRoot(document.getElementById('root')).render(

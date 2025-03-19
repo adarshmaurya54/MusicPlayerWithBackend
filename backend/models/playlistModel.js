@@ -10,13 +10,13 @@ const playlistSchema = new mongoose.Schema({
     },
     user_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "users",  // Refers to userModel
+        ref: "User",  // Refers to userModel
         required: true
     },
     songs: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "songs"  // Refers to songModel
+            ref: "Song"  // Refers to songModel
         }
     ],
     created_at: {

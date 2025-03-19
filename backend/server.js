@@ -20,7 +20,7 @@ app.use("/assets/thumbnails", express.static(path.join(__dirname, "assets", "thu
 app.use("/auth", require("./routes/authRoutes"));
 app.use("/artists", require("./routes/artistRoutes"));
 app.use("/songs", require("./routes/songRoutes"));
-app.use("/playlist", require("./routes/playlistRoutes"));
+app.use("/playlists", require("./routes/playlistRoutes"));
 
 // Error Handler Middleware
 app.use((err, req, res, next) => {
