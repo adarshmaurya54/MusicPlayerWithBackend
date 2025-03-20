@@ -83,28 +83,23 @@ export const userRegister = createAsyncThunk(
   } 
 );
 
-// getting current user...
 export const getCurrentUser = createAsyncThunk(
   "auth/getCurrentUser",
-  async ({ rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
       const res = await API.get("/auth/current-user");
-
       if (res?.data) {
-        // if response contain data field then we have to return the data value
-        return res.data;
+        return res.data; // Return only user data
+      } else {
+        return rejectWithValue("Failed to fetch user data");
       }
     } catch (error) {
-      // Handle server error (like 500 status)
       if (error.response) {
-        if (error.response.status === 500) {
-          toast.error(error.response.data.message); // 500 error toast
-        }
-        return rejectWithValue(error.response.data.message);
+        return rejectWithValue(error.response.data.error || "Server error");
       } else {
-        toast.error("Something went wrong. Please try again later.");
-        return rejectWithValue(error.message);
+        return rejectWithValue("Something went wrong. Please try again.");
       }
     }
   }
 );
+

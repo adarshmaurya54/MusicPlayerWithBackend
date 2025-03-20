@@ -289,23 +289,11 @@ function HomePage() {
 
   }, [songDetail?.highQualityThumbnailUrl]);
 
-  //getting the currently loggedin user
   const dispatch = useDispatch();
-  const getUser = async () => {
-    try {
-      const { data } = await API.get("/auth/current-user");
-      if (data?.success) {
-        dispatch(getCurrentUser(data));
-      }
-    } catch (error) {
-      localStorage.clear();
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
-    getUser();
-  }, []);
+    dispatch(getCurrentUser()); // Dispatch action directly
+  }, [dispatch]);
+  
 
   if (error) {
     return <div>{error}</div>;

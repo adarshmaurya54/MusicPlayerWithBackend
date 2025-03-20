@@ -1,32 +1,29 @@
 import React, { useEffect, useState } from 'react'
 import defaultUser from "../../assets/default-user.jpg"
 import { API } from '../../services/apiService';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getCurrentUser } from '../../redux/features/auth/authAction';
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 
 
 function Library() {
     const [selectedBtn, setSelectedBtn] = useState('liked-songs')
+    const {user, error} = useSelector((state) => state.auth)
+    const navigate = useNavigate()
     //getting the currently loggedin user
     const dispatch = useDispatch();
-    const getUser = async () => {
-        try {
-            const { data } = await API.get("/auth/current-user");
-            if (data?.success) {
-                dispatch(getCurrentUser(data));
-            }
-        } catch (error) {
-            localStorage.clear();
-            console.log(error);
-        }
-    };
-
     useEffect(() => {
-        getUser();
-    }, []);
+        dispatch(getCurrentUser()); // Dispatch action directly
+    }, [dispatch]);
+
+    if(error){
+        toast.error("Please login...")
+        navigate("/")
+    }
     
+
 
     return (
         <div className="md:bg-white my-5 py-12 px-8 dark:md:bg-slate-900/50 dark:border-white/10 md:border md:rounded-3xl">

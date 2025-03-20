@@ -8,6 +8,7 @@ import store from "../../redux/store"
 import { useSelector } from "react-redux";
 import { IoIosMail } from "react-icons/io";
 import { IoLockClosedOutline } from "react-icons/io5";
+import toast from "react-hot-toast";
 
 
 function Login() {
@@ -31,10 +32,11 @@ function Login() {
 
   // Redirect to home page after successful login
   useEffect(() => {
-    if (user || token) {
+    if (token) {
+      toast.success("Already logged in!")
       navigate("/"); 
     }
-  }, [user, navigate]);
+  }, [token, navigate]);
 
   const toggleLoginType = () => {
     setLoginType((prevType) => (prevType === "admin" ? "user" : "admin"));

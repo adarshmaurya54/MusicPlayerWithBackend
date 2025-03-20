@@ -23,6 +23,7 @@ function Registration() {
 
   useEffect(() => {
     if (token) {
+      toast.success("Already logged in!")
       navigate("/")
     }
   }, [token])

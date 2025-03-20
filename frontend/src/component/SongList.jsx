@@ -14,7 +14,6 @@ function SongList({
   likes,
   currentlyPlaying,
   artist,
-  favourite,
   handlePlayer,
   handleToggleEdit,
   fetchSongs,

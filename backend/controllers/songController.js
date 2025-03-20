@@ -86,7 +86,7 @@ exports.updateSongById = async (req, res) => {
       {
         $set: {
           songName, // Update song name
-          artistName, // Update artist name
+          artistName, // Updatgge artist name
           lyrics, // Update lyrics
         },
       },
