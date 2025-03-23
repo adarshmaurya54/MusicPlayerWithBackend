@@ -23,7 +23,7 @@ function PlaylistDetails() {
     const [playlistName, setPlaylistName] = useState('')
     const [playlistDescription, setPlaylistDescription] = useState('')
     const [btnDisabled, setBtnDisabled] = useState(false)
-    const { player, setPlayer, isPlaying } = useOutletContext()
+    const { player, setPlayer, setSongList, isPlaying } = useOutletContext()
 
 
 
@@ -138,7 +138,7 @@ function PlaylistDetails() {
                     <div className="mt-2">
                         {playlist.songs?.map((song, index) => (
                             <div
-                                onClick={() => setPlayer(song.audioFile)}
+                                onClick={() => {setPlayer(song.audioFile); setSongList(playlist.songs)}}
                                 key={index}
                                 className="flex items-center justify-between p-3 hover:bg-gray-200 rounded-lg transition cursor-pointer"
                             >

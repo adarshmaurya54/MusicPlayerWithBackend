@@ -46,7 +46,7 @@ function SongList({
            ring-offset-2 transition-all duration-300 ease-in-out cursor-pointer hover:shadow-xl">
     <button
       title="share"
-      className="absolute z-2 top-2 right-2 p-[9px] bg-white   dark:bg-transparent dark:text-white dark:border-white/20 text-black border rounded-lg text-sm opacity-0 group-hover:opacity-100  transition-opacity duration-300"
+      className="absolute z-[2] top-2 right-2 p-[9px] bg-white   dark:bg-transparent dark:text-white dark:border-white/20 text-black border rounded-lg text-sm opacity-0 group-hover:opacity-100  transition-opacity duration-300"
       onClick={() => setOpen(true)}
     >
       <TbShare3 className="text-gray-400" />

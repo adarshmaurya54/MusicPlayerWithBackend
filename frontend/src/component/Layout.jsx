@@ -53,12 +53,12 @@ function Layout() {
     }, [themeMode])
 
     // Load and play audio only when player is valid and changes
-    useEffect(() => {
-        if (player && player !== 0 && audioRef.current) {
-            setIsLoading(true) // Start loading when player changes
-            audioRef.current.load() // Load the new audio
-        }
-    }, [player])
+    // useEffect(() => {
+    //     if (player && player !== 0 && audioRef.current) {
+    //         setIsLoading(true) // Start loading when player changes
+    //         audioRef.current.load() // Load the new audio
+    //     }
+    // }, [player])
     const togglePlayPause = () => {
         if (audioRef.current.paused) {
             audioRef.current.play();
@@ -213,7 +213,7 @@ function Layout() {
                         onError={handleError}
                     />
 
-                    <div className="fixed bottom-3 md:right-5 md:p-0 ps-4 pe-8 group w-full md:w-auto">
+                    <div className="fixed z-[3] bottom-3 md:right-5 md:p-0 px-4 group w-full md:w-auto">
 
                         {/* Player Container with Hover Effect */}
                         <div

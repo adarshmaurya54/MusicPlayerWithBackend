@@ -10,12 +10,18 @@ import toast from 'react-hot-toast';
 
 function Library() {
     const location = useLocation()
-    console.log(location.pathname)
-    const [selectedBtn, setSelectedBtn] = useState('liked-songs')
     const { user, error } = useSelector((state) => state.auth)
     const navigate = useNavigate()
-    const {player,setPlayer, isPlaying} = useOutletContext()
-    
+    const { player, setPlayer, audioRef,setSongList, setIsPlaying, isPlaying } = useOutletContext()
+    useEffect(() => {
+        if (audioRef?.current?.paused) {
+            audioRef?.current?.play();
+            setIsPlaying(true);
+        } else {
+            audioRef?.current?.pause();
+            setIsPlaying(false);
+        }
+    }, [player])
     //getting the currently loggedin user
     const dispatch = useDispatch();
     useEffect(() => {
@@ -69,7 +75,7 @@ function Library() {
                     Liked Songs
                 </NavLink>
             </div>
-            <Outlet context={{player,setPlayer,isPlaying}} />
+            <Outlet context={{ player, setPlayer, setSongList, isPlaying }} />
         </div>
     )
 }

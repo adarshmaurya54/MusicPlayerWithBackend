@@ -54,7 +54,6 @@ function HomePage() {
     isPlaying,
     setIsPlaying,
     songDetail,
-    setSongDetail,
     hiddenPlayer,
     setHiddenPlayer,
     setProgressPercentage,
@@ -72,7 +71,7 @@ function HomePage() {
       audioRef?.current?.pause();
       setIsPlaying(false);
     }
-  }, [songId])
+  }, [player])
 
   const itemsPerPage = 9; // Number of songs per page
   //pagination logic
