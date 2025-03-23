@@ -3,26 +3,29 @@ import defaultUser from "../../assets/default-user.jpg"
 import { API } from '../../services/apiService';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCurrentUser } from '../../redux/features/auth/authAction';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { Link, NavLink, Outlet, useLocation, useNavigate, useOutletContext } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 
 
 function Library() {
+    const location = useLocation()
+    console.log(location.pathname)
     const [selectedBtn, setSelectedBtn] = useState('liked-songs')
-    const {user, error} = useSelector((state) => state.auth)
+    const { user, error } = useSelector((state) => state.auth)
     const navigate = useNavigate()
+    
     //getting the currently loggedin user
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(getCurrentUser()); // Dispatch action directly
     }, [dispatch]);
 
-    if(error){
+    if (error) {
         toast.error("Please login...")
         navigate("/")
     }
-    
+
 
 
     return (
@@ -38,26 +41,32 @@ function Library() {
                 </div>
             </div>
             <div className='flex items-center space-x-2 mt-5'>
-                <Link
+                {/* Playlists Link */}
+                <NavLink
                     to="/library/playlists"
-                    className={`${selectedBtn !== "playlists"
-                        ? "text-black dark:text-gray-50 hover:text-white hover:bg-black hover:dark:bg-white hover:dark:text-black"
-                        : "dark:bg-white bg-black text-white dark:text-black"
-                        } border dark:border-white/20 text-xs py-2 px-3 rounded-full`}
-                    onClick={() => setSelectedBtn("playlists")}
+                    className={({ isActive }) =>
+                        `border dark:border-white/20 text-xs py-2 px-3 rounded-full ${isActive
+                            ? "dark:bg-white bg-black text-white dark:text-black" // Active style
+                            : "text-black dark:text-gray-50 hover:text-white hover:bg-black hover:dark:bg-white hover:dark:text-black" // Inactive style
+                        }`
+                    }
                 >
                     Playlists
-                </Link>
-                <Link
-                    to='/library'
-                    onClick={() => setSelectedBtn("liked-songs")}
-                    className={`${selectedBtn !== "liked-songs"
-                        ? "text-black dark:text-gray-50 hover:text-white hover:bg-black hover:dark:bg-white hover:dark:text-black"
-                        : "dark:bg-white bg-black text-white dark:text-black"
-                        } border dark:border-white/20 text-xs py-2 px-3 rounded-full`}
+                </NavLink>
+
+                {/* Liked Songs Link (Add end to avoid child route match) */}
+                <NavLink
+                    to="/library"
+                    end // Ensures exact match with /library only
+                    className={({ isActive }) =>
+                        `border dark:border-white/20 text-xs py-2 px-3 rounded-full ${isActive
+                            ? "dark:bg-white bg-black text-white dark:text-black" // Active style
+                            : "text-black dark:text-gray-50 hover:text-white hover:bg-black hover:dark:bg-white hover:dark:text-black" // Inactive style
+                        }`
+                    }
                 >
                     Liked Songs
-                </Link>
+                </NavLink>
             </div>
             <Outlet />
         </div>

@@ -31,9 +31,9 @@ const MusicPlayer = ({
   setIsLoading,
   songLoop,
   setSongLoop,
+  totalDuration
 }) => {
   const [currentTime, setCurrentTime] = useState(0);
-  const [totalDuration, setTotalDuration] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -80,7 +80,7 @@ const MusicPlayer = ({
         console.error("Error toggling favourite status:", error);
         setIsLiked((prev) => !prev); // Revert the state if the API call fails
       }
-    }else{
+    } else {
       toast.error("Please log in to like this song!");
     }
   };
@@ -100,6 +100,8 @@ const MusicPlayer = ({
   };
 
   const updateProgress = (clientX) => {
+    console.log(clientX);
+
     if (!progressBarRef.current) return;
 
     const rect = progressBarRef.current.getBoundingClientRect();
@@ -146,13 +148,24 @@ const MusicPlayer = ({
       setIsPlaying(false);
       SetisPlayingOrNotForLayout(false);
     } else {
-      setIsLoading(true); // Set loading state
+      setIsPlaying(true);
+      setIsLoading(false); // Set loading state
       audioRef.current.play().catch((error) => {
         console.error("Error while trying to play the audio:", error);
         setIsLoading(false); // Reset loading state on error
       });
     }
   };
+  useEffect(() => {
+    if (audioRef.current && !audioRef.current.paused) {
+      setIsPlaying(true);
+      console.log('pause');
+    } else {
+      setIsPlaying(false);
+      console.log('playing');
+    }
+  },[])
+  
 
   useEffect(() => {
     setIsLoading(true);
@@ -180,12 +193,7 @@ const MusicPlayer = ({
     };
   }, []);
 
-  const handleLoadedMetadata = () => {
-    if (audioRef.current) {
-      setTotalDuration(audioRef.current.duration);
-      audioRef.current.play(); // Start playing once metadata is loaded
-    }
-  };
+
 
   const toggleMute = () => {
     setIsMuted(!isMuted);
@@ -388,7 +396,7 @@ const MusicPlayer = ({
                       <span>
                         {isLoading ? "Buffering..." : formatTime(currentTime)}
                       </span>
-                      <span>{formatTime(totalDuration)}</span>
+                      <span>{formatTime(audioRef?.current?.duration)}</span>
                     </div>
                     <div
                       className="relative w-full h-2 bg-white/20 rounded-lg mt-2 cursor-pointer"
@@ -455,12 +463,6 @@ const MusicPlayer = ({
           </div>
         </div>
       </div>
-      <audio
-        ref={audioRef}
-        src={`${import.meta.env.VITE_BASEURL}/songs/stream/${songId}`}
-        preload="auto"
-        onLoadedMetadata={handleLoadedMetadata}
-      />
     </div>
   );
 };

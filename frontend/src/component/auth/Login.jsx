@@ -3,9 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import MessageCard from "../MessageCard";
 import bg from "../../assets/bg.jpg";
 import InputType from "./InputType";
-import { userLogin } from "../../redux/features/auth/authAction"
+import { getCurrentUser, userLogin } from "../../redux/features/auth/authAction"
 import store from "../../redux/store"
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { IoIosMail } from "react-icons/io";
 import { IoLockClosedOutline } from "react-icons/io5";
 import toast from "react-hot-toast";
@@ -20,6 +20,10 @@ function Login() {
 
   const navigate = useNavigate(); // To navigate to another page on success
   const { user, token } = useSelector((state) => state.auth)
+  const dispatch = useDispatch();
+    useEffect(() => {
+      dispatch(getCurrentUser()); // Dispatch action directly
+    }, [dispatch]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -32,11 +36,11 @@ function Login() {
 
   // Redirect to home page after successful login
   useEffect(() => {
-    if (token) {
+    if (token && user) {
       toast.success("Already logged in!")
       navigate("/"); 
     }
-  }, [token, navigate]);
+  }, [token,user, navigate]);
 
   const toggleLoginType = () => {
     setLoginType((prevType) => (prevType === "admin" ? "user" : "admin"));

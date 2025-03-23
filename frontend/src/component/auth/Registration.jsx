@@ -19,10 +19,10 @@ function Registration() {
   const [profilePic, setProfilePic] = useState(null);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
-  const { token } = useSelector((state) => state.auth)
+  const { token, user } = useSelector((state) => state.auth)
 
   useEffect(() => {
-    if (token) {
+    if (token && user) {
       toast.success("Already logged in!")
       navigate("/")
     }

@@ -1,5 +1,5 @@
 import React, { Suspense, useState, useEffect, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom"; // useParams for URL parameters and useNavigate for navigation
+import { useParams, useNavigate, useOutletContext } from "react-router-dom"; // useParams for URL parameters and useNavigate for navigation
 import apiService, { API } from "../services/apiService";
 
 // Lazy load the SongList component
@@ -19,48 +19,60 @@ import {
 import { LiaTimesSolid } from "react-icons/lia";
 import { ThemeProvider } from "../context/theme";
 import { useExtractColors } from "react-extract-colors"
-import { Toaster } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { getCurrentUser } from "../redux/features/auth/authAction";
 
 function HomePage() {
   const { songId } = useParams(); // Get songId from URL
-  const [songDetail, setSongDetail] = useState(null);
+
   const [selectedArtist, setSelectedArtist] = useState("all");
   const [songLoop, setSongLoop] = useState(false);
-  const [songList, setSongList] = useState([]);
+
   const [songListCopy, setSongListCopy] = useState([]);
-  const [hiddenPlayer, setHiddenPlayer] = useState(true); // Manage visibility
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [upload, setUpload] = useState(false);
   const [edit, setEdit] = useState(false);
   const [editSongId, setEditSongId] = useState("");
-  const [player, setPlayer] = useState(songId ? songId : 0); // To handle current song
   const [songClickLoading, setSongClickLoading] = useState(false);
   const [isNoSongsFound, setIsNoSongsFound] = useState(false);
-  const [currentPlayingSong, setCurrentPlayingSong] = useState({
-    id: 0,
-    name: "",
-    artist: "",
-  });
-  const [currentPage, setCurrentPage] = useState(1);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isLoading, setIsLoading] = useState(true); // if song is loading in music player
-  const audioRef = useRef(null);
-  const [progressPercentage, setProgressPercentage] = useState(0);
-  const [isFavourite, setIsFavourite] = useState(false);
 
-  const togglePlayPause = () => {
-    if (audioRef.current.paused) {
-      audioRef.current.play();
+  const [currentPage, setCurrentPage] = useState(1);
+
+
+  const [isFavourite, setIsFavourite] = useState(false);
+  const {
+    player,
+    setPlayer,
+    songList,
+    setSongList,
+    totalDuration,
+    isLoading,
+    setIsLoading,
+    audioRef,
+    setCurrentPlayingSong,
+    isPlaying,
+    setIsPlaying,
+    songDetail,
+    setSongDetail,
+    hiddenPlayer,
+    setHiddenPlayer,
+    setProgressPercentage,
+    playPrevSong,
+    playNextSong
+  } = useOutletContext()
+  useEffect(() => {
+    if (player !== songId)
+      setPlayer(songId)
+    if (audioRef?.current?.paused) {
+      audioRef?.current?.play();
       setIsPlaying(true);
     } else {
-      audioRef.current.pause();
+      audioRef?.current?.pause();
       setIsPlaying(false);
     }
-  };
+  }, [songId])
 
   const itemsPerPage = 9; // Number of songs per page
   //pagination logic
@@ -227,46 +239,6 @@ function HomePage() {
     }, 10000);
   }, [songDetail]);
 
-  // Play the next song
-  const playNextSong = () => {
-    const nextSongId = getNextSongId(player);
-    if (nextSongId) {
-      setPlayer(nextSongId);
-      navigate(`/song/${nextSongId}`);
-    }
-  };
-
-  // Play the previous song
-  const playPrevSong = async () => {
-    const prevSongId = getPrevSongId(player);
-    if (prevSongId) {
-      setPlayer(prevSongId);
-      navigate(`/song/${prevSongId}`);
-    }
-  };
-
-  // Get the next song ID
-  const getNextSongId = (currentSongId) => {
-    const currentIndex = songList.findIndex(
-      (song) => song.audioFile === currentSongId
-    );
-    if (currentIndex === -1) return null;
-
-    const nextIndex = (currentIndex + 1) % songList.length;
-    return songList[nextIndex].audioFile;
-  };
-
-  // Get the previous song ID
-  const getPrevSongId = (currentSongId) => {
-    const currentIndex = songList.findIndex(
-      (song) => song.audioFile === currentSongId
-    );
-    if (currentIndex === -1) return null;
-
-    const prevIndex = (currentIndex - 1 + songList.length) % songList.length;
-    return songList[prevIndex].audioFile;
-  };
-
   // Function to close the player
   const handlePlayerClose = async (id, name, artist) => {
     setCurrentPlayingSong({
@@ -293,7 +265,13 @@ function HomePage() {
   useEffect(() => {
     dispatch(getCurrentUser()); // Dispatch action directly
   }, [dispatch]);
-  
+
+  const handleLoadedMetadata = () => {
+    if (audioRef.current) {
+      // setTotalDuration(audioRef.current.duration);
+      audioRef.current.play(); // Start playing once metadata is loaded
+    }
+  };
 
   if (error) {
     return <div>{error}</div>;
@@ -337,126 +315,6 @@ function HomePage() {
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </div>
-
-                {songId && (
-                  <div className="relative group w-full md:w-auto">
-                    <div
-                      onClick={() => navigate("/")}
-                      className="opacity-0 group-hover:opacity-100  transition-opacity duration-300 absolute -top-2 text-xs right-[2px] cursor-pointer rounded-full p-[2px] text-gray-500 bg-white z-10"
-                    >
-                      <LiaTimesSolid />
-                    </div>
-                    <div
-                      className="w-full  group flex items-center overflow-hidden rounded-2xl md:w-[350px]"
-                      style={{
-                        backgroundImage: songDetail
-                          ? `url(${import.meta.env.VITE_BASEURL}/assets${songDetail?.lowQualityThumbnailUrl
-                          })`
-                          : `url(${import.meta.env.VITE_BASEURL
-                          }/assets/thumbnails/default-thumbnail-low.png)`, // Fallback to player.png if songDetail is not available
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                      }}
-                    >
-                      <div className="flex bg-black/25 w-full items-center justify-between backdrop-blur-md ">
-                        <div className="flex w-full ps-2 pe-5 py-2 items-center gap-3">
-                          <img
-                            onClick={() =>
-                              setHiddenPlayer((prevState) => !prevState)
-                            } // Toggle visibility
-                            src={
-                              songDetail
-                                ? `${import.meta.env.VITE_BASEURL}/assets${songDetail?.highQualityThumbnailUrl
-                                }`
-                                : `${import.meta.env.VITE_BASEURL
-                                }/assets/thumbnails/default-thumbnail-low.png`
-                            }
-                            alt={`${import.meta.env.VITE_BASEURL
-                              }/assets/thumbnails/default-thumbnail-low.png`}
-                            className={`w-14 h-14 rounded-full cursor-pointer object-cover animate-spin-slow`}
-                            style={{ animationPlayState: `${isPlaying ? "running" : "paused"}` }}
-                          />
-                          <div className="flex flex-col w-full">
-                            <p className="font-bold text-xl text-white">
-                              {currentPlayingSong?.name
-                                ? isLoading
-                                  ? "Buffering..."
-                                  : isPlaying
-                                    ? "Now Playing"
-                                    : "Paused"
-                                : "Please wait"}
-                            </p>
-                            {currentPlayingSong?.name ? (
-                              <marquee
-                                className="text-xs text-gray-200"
-                                behavior=""
-                                scrollamount="2"
-                              >
-                                {isPlaying
-                                  ? `${currentPlayingSong.name} • ${currentPlayingSong.artist}`
-                                  : isLoading
-                                    ? "Your song is loading please wait..."
-                                    : "Click play to start the music!"}
-                              </marquee>
-                            ) : (
-                              <div className="text-xs text-gray-200">
-                                Loading you next song...
-                              </div>
-                            )}
-                            <div className="relative w-full mt-3 bg-white/20 rounded-full h-[3px]">
-                              <div
-                                className="absolute group top-0 left-0 h-full bg-white rounded-full transition-all duration-300 ease-out"
-                                style={{ width: `${progressPercentage}%` }}
-                              >
-                                <div
-                                  className="absolute transition-all duration-700 top-1/2 transform -translate-y-1/2 bg-white w-3 h-3 rounded-full shadow-md"
-                                  style={{
-                                    left: `95%`,
-                                    transition: "left 0.3s ease",
-                                  }}
-                                ></div>
-
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2 justify-between me-4">
-                          <TbPlayerTrackPrevFilled
-                            onClick={() => playPrevSong()}
-                            className="text-white text-xl hover:scale-110 transition-all cursor-pointer"
-                          />
-
-                          {isPlaying ? (
-                            <svg
-                              onClick={togglePlayPause}
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="white"
-                              viewBox="0 0 24 24"
-                              className="w-8 h-8 cursor-pointer"
-                            >
-                              <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />{" "}
-                              {/* Pause Icon */}
-                            </svg>
-                          ) : (
-                            <svg
-                              onClick={togglePlayPause}
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="white"
-                              viewBox="0 0 24 24"
-                              className="w-8 h-8 cursor-pointer"
-                            >
-                              <path d="M8 5v14l11-7z" /> {/* Play Icon */}
-                            </svg>
-                          )}
-                          <TbPlayerTrackNextFilled
-                            onClick={() => playNextSong()}
-                            className="text-white text-xl cursor-pointer hover:scale-110 transition-all"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
               </div>
               {/* artist filter buttons */}
               {loading ? (
@@ -581,8 +439,8 @@ function HomePage() {
         {songId && (
           <div
             className={`transition-all ${hiddenPlayer
-                ? "opacity-0 z-[-1] duration-500"
-                : "opacity-100 z-10 duration-500"
+              ? "opacity-0 z-[-1] duration-500"
+              : "opacity-100 z-10 duration-500"
               } 
             ${hiddenPlayer ? "sm:block md:hidden" : "sm:block md:block"} 
             `}
@@ -603,6 +461,7 @@ function HomePage() {
               playPrevSong={playPrevSong}
               SetisPlayingOrNotForLayout={setIsPlaying}
               setProgressPercentage={setProgressPercentage}
+              totalDuration={totalDuration}
               songClickLoading={songClickLoading}
               setIsLoading={setIsLoading} // this is for song if song is buffering...
               isLoading={isLoading}
