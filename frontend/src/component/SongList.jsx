@@ -21,7 +21,7 @@ function SongList({
   isPlaying,
   audioFile
 }) {
-  const {user} = useSelector((state) => state.auth)
+  const { user } = useSelector((state) => state.auth)
   const [isDeleting, setIsDeleting] = useState(false); // State to track if a song is being deleted
   const [open, setOpen] = useState(false);
   const handleDeleteSong = async (songId, filename) => {
@@ -46,13 +46,13 @@ function SongList({
            ring-offset-2 transition-all duration-300 ease-in-out cursor-pointer hover:shadow-xl">
     <button
       title="share"
-      className="absolute z-10 top-2 right-2 p-[9px] bg-white   dark:bg-transparent dark:text-white dark:border-white/20 text-black border rounded-lg text-sm opacity-0 group-hover:opacity-100  transition-opacity duration-300"
+      className="absolute z-2 top-2 right-2 p-[9px] bg-white   dark:bg-transparent dark:text-white dark:border-white/20 text-black border rounded-lg text-sm opacity-0 group-hover:opacity-100  transition-opacity duration-300"
       onClick={() => setOpen(true)}
     >
       <TbShare3 className="text-gray-400" />
     </button>
     {/* Custom Popup */}
-    {open && <Share setOpen={setOpen} audioFile={audioFile}/>}
+    {open && <Share setOpen={setOpen} audioFile={audioFile} />}
     {!isDeleting && user?.role === 'admin' && (
       <>
         <button
@@ -158,7 +158,9 @@ function SongList({
               />
             </svg>
           ) : (
-            <MusicAnimation isPlaying={isPlaying} />
+            <div className="flex bg-black/30 backdrop-blur-[5px]  w-full h-full justify-center items-center">
+              <MusicAnimation isPlaying={isPlaying} />
+            </div>
           )}
         </div>
 

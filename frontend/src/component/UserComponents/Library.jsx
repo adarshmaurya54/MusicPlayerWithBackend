@@ -14,6 +14,7 @@ function Library() {
     const [selectedBtn, setSelectedBtn] = useState('liked-songs')
     const { user, error } = useSelector((state) => state.auth)
     const navigate = useNavigate()
+    const {player,setPlayer, isPlaying} = useOutletContext()
     
     //getting the currently loggedin user
     const dispatch = useDispatch();
@@ -68,7 +69,7 @@ function Library() {
                     Liked Songs
                 </NavLink>
             </div>
-            <Outlet />
+            <Outlet context={{player,setPlayer,isPlaying}} />
         </div>
     )
 }

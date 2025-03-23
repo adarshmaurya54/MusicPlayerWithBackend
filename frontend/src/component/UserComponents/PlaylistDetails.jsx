@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useOutletContext, useParams } from "react-router-dom";
 import defaultUser from "../../assets/default-user.jpg";
 import { useSelector } from "react-redux";
 import AddSongs from "./AddSongs";
@@ -11,6 +11,7 @@ import { MdDelete } from "react-icons/md";
 import { LiaTimesSolid } from "react-icons/lia";
 import InputType from "../auth/InputType";
 import toast from "react-hot-toast";
+import MusicAnimation from "../MusicAnimation";
 
 function PlaylistDetails() {
     const [openAddSong, setOpenAddSong] = useState(false);
@@ -22,6 +23,7 @@ function PlaylistDetails() {
     const [playlistName, setPlaylistName] = useState('')
     const [playlistDescription, setPlaylistDescription] = useState('')
     const [btnDisabled, setBtnDisabled] = useState(false)
+    const { player, setPlayer, isPlaying } = useOutletContext()
 
 
 
@@ -73,16 +75,16 @@ function PlaylistDetails() {
     const handleDeletePlaylist = async () => {
         const toastId = toast.loading("Deleting your playlist....")
         try {
-            const res = await API.delete(`/playlists/delete/${ id }` )
-            if (res.status === 200){
-                toast.success(res.data.message || 'Playlist deleted successfully!', {id: toastId})
+            const res = await API.delete(`/playlists/delete/${id}`)
+            if (res.status === 200) {
+                toast.success(res.data.message || 'Playlist deleted successfully!', { id: toastId })
                 navigate('/library/playlists')
             }
         } catch (error) {
             console.error('Error deleting playlist:', error)
             const errorMessage =
                 error.response?.data?.error || 'Error deleting playlist!'
-            toast.error(errorMessage, {id: toastId})
+            toast.error(errorMessage, { id: toastId })
         }
     }
 
@@ -136,6 +138,7 @@ function PlaylistDetails() {
                     <div className="mt-2">
                         {playlist.songs?.map((song, index) => (
                             <div
+                                onClick={() => setPlayer(song.audioFile)}
                                 key={index}
                                 className="flex items-center justify-between p-3 hover:bg-gray-200 rounded-lg transition cursor-pointer"
                             >
@@ -143,10 +146,13 @@ function PlaylistDetails() {
                                     <p className="text-sm font-medium">{song.songName}</p>
                                     <p className="text-xs text-gray-500">{song.artistName}</p>
                                 </div>
-                                {/* Three-dot menu for song actions */}
-                                <button className="text-gray-500 hover:text-gray-700">
-                                    <IoEllipsisHorizontalSharp />
-                                </button>
+                                <div className="flex gap-4 items-center">
+                                    {song.audioFile === player && <MusicAnimation isPlaying={isPlaying} extraClass='bg-black/30' />}
+                                    {/* Three-dot menu for song actions */}
+                                    <button className="text-gray-500 hover:text-gray-700">
+                                        <IoEllipsisHorizontalSharp />
+                                    </button>
+                                </div>
                             </div>
                         ))}
                     </div>

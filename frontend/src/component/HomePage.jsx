@@ -35,7 +35,6 @@ function HomePage() {
   const [upload, setUpload] = useState(false);
   const [edit, setEdit] = useState(false);
   const [editSongId, setEditSongId] = useState("");
-  const [songClickLoading, setSongClickLoading] = useState(false);
   const [isNoSongsFound, setIsNoSongsFound] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -60,11 +59,12 @@ function HomePage() {
     setHiddenPlayer,
     setProgressPercentage,
     playPrevSong,
-    playNextSong
+    playNextSong,
+    songClickLoading
   } = useOutletContext()
   useEffect(() => {
-    if (player !== songId)
-      setPlayer(songId)
+    if (player !== 0)
+      setPlayer(player)
     if (audioRef?.current?.paused) {
       audioRef?.current?.play();
       setIsPlaying(true);
@@ -173,44 +173,6 @@ function HomePage() {
     }
   }, [isFavourite]);
 
-  // Fetch song details based on songId from URL
-  useEffect(() => {
-    const resetPlayerState = () => {
-      setSongDetail(null);
-      setCurrentPlayingSong({
-        id: 0,
-        name: "",
-        artist: "",
-      });
-    };
-    const fetchSongDetails = async () => {
-      setSongClickLoading(true); // Start loading
-      try {
-        const response = await apiService.getSongInfo(songId);
-        setSongDetail(response);
-        // setHiddenPlayer(false); // Make the player visible
-      } catch (err) {
-        console.error("Failed to fetch song details:", err);
-        navigate("/no-song-found"); // Redirect on error
-      } finally {
-        setSongClickLoading(false); // Stop loading
-      }
-    };
-
-    // Reset state and delete thumbnails
-    resetPlayerState();
-
-    // Fetch song details if `songId` exists
-    if (songId) {
-      fetchSongDetails();
-    }
-  }, [songId]);
-  useEffect(() => {
-    // If no songId is provided, redirect to the main URL
-    if (!songId) {
-      navigate("/"); // Redirect to the main page
-    }
-  }, [songId, navigate]);
 
   // Handle song click to navigate and set player state
   const handlePlayer = async (id, title, artist) => {
@@ -223,21 +185,10 @@ function HomePage() {
       artist,
     });
     setPlayer(id);
-    navigate(`/song/${id}`);
+    // navigate(`/song/${id}`);
   };
 
-  useEffect(() => {
-    setCurrentPlayingSong({
-      id: songDetail?.audioUrl,
-      name: songDetail?.songName,
-      artist: songDetail?.artistName,
-    });
-    setTimeout(async () => {
-      if (player !== 0) {
-        await apiService.deleteThumbnails(player);
-      }
-    }, 10000);
-  }, [songDetail]);
+
 
   // Function to close the player
   const handlePlayerClose = async (id, name, artist) => {
@@ -248,30 +199,12 @@ function HomePage() {
     });
     setHiddenPlayer(true);
   };
-  useEffect(() => {
-    const link = document.getElementsByTagName("link")[0];
-    const title = document.getElementsByTagName("title")[0];
-    link.href = songDetail?.highQualityThumbnailUrl
-      ? `${import.meta.env.VITE_BASEURL}/assets` +
-      songDetail?.highQualityThumbnailUrl
-      : "/icon.png";
-    title.innerText = songDetail?.songName
-      ? songDetail?.songName + " • " + songDetail?.artistName
-      : "PlayBeatz";
-
-  }, [songDetail?.highQualityThumbnailUrl]);
 
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getCurrentUser()); // Dispatch action directly
   }, [dispatch]);
 
-  const handleLoadedMetadata = () => {
-    if (audioRef.current) {
-      // setTotalDuration(audioRef.current.duration);
-      audioRef.current.play(); // Start playing once metadata is loaded
-    }
-  };
 
   if (error) {
     return <div>{error}</div>;
@@ -373,7 +306,7 @@ function HomePage() {
                       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-5">
                         {paginatedSongs.map((song) => (
                           <SongList
-                            currentlyPlaying={songId === song.audioFile}
+                            currentlyPlaying={player === song.audioFile}
                             isPlaying={isPlaying}
                             key={song.songId}
                             image={
@@ -436,7 +369,7 @@ function HomePage() {
           )}
         </div>
 
-        {songId && (
+        {player !== undefined && player !== 0  && (
           <div
             className={`transition-all ${hiddenPlayer
               ? "opacity-0 z-[-1] duration-500"

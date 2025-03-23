@@ -74,7 +74,6 @@ const MusicPlayer = ({
       setIsLiked((prev) => !prev); // Toggle state
       try {
         const res = await API.post(`/songs/like/${id}`); // Call the API to toggle the favorite status
-        console.log(res);
 
       } catch (error) {
         console.error("Error toggling favourite status:", error);
@@ -100,7 +99,6 @@ const MusicPlayer = ({
   };
 
   const updateProgress = (clientX) => {
-    console.log(clientX);
 
     if (!progressBarRef.current) return;
 
@@ -159,10 +157,8 @@ const MusicPlayer = ({
   useEffect(() => {
     if (audioRef.current && !audioRef.current.paused) {
       setIsPlaying(true);
-      console.log('pause');
     } else {
       setIsPlaying(false);
-      console.log('playing');
     }
   },[])
   
