@@ -274,7 +274,7 @@ const MusicPlayer = ({
             ? "none"
             : window.innerWidth >= 768 // Apply background image only for md and larger devices
               ? `url(${import.meta.env.VITE_BASEURL}/assets${image})`
-              : `linear-gradient(to bottom, ${colors[2]} 55%, #2a2a2a )`, // Gradient for smaller devices
+              : `linear-gradient(to bottom, ${colors[3]} 55%, #00000081 )`, // Gradient for smaller devices
         }}
         className="transition-all duration-700 md:w-[100%] relative md:h-[100%] bg-no-repeat bg-cover overflow-auto no-scrollbar h-full w-full"
       >

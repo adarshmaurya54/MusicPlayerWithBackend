@@ -8,8 +8,8 @@ import MusicPlayer from './MusicPlayer'
 import { useExtractColors } from 'react-extract-colors'
 
 function Layout() {
-    const {songId}= useParams()
-    
+    const { songId } = useParams()
+
     const [songClickLoading, setSongClickLoading] = useState(false);
     const [player, setPlayer] = useState(0) // Default to 0 or undefined initially
     const [totalDuration, setTotalDuration] = useState(0)
@@ -31,9 +31,9 @@ function Layout() {
     const { colors } = useExtractColors(
         `${import.meta.env.VITE_BASEURL}/assets${image}`,
         {
-            maxColors: 3,
+            maxColors: 4,
             format: "hex",
-            maxSize: 200,
+            maxSize: 400,
             orderBy: "vibrance",
         }
     );
@@ -243,8 +243,7 @@ function Layout() {
                         onError={handleError}
                     />
 
-                    <div className="fixed z-[3] bottom-3 md:right-5 md:p-0 px-4 group w-full md:w-auto">
-
+                    <div className={`fixed z-[3] bottom-0 left-0 right-0 py-4 pt-5 bg-gradient-to-t from-black/80 via-black/40 to-transparent md:right-5 md:p-0 px-4 group w-full md:w-auto`}>
                         {/* Player Container with Hover Effect */}
                         <div
                             className={`flex relative items-center overflow md:group-hover:rounded-2xl md:rounded-full rounded-2xl transition-all duration-500 md:w-[76px] w-full md:group-hover:w-[350px]
@@ -255,14 +254,14 @@ function Layout() {
                                     window.innerWidth >= 768
                                         ? `url(${import.meta.env.VITE_BASEURL}/assets${image})`
                                         : "none",
-                                backgroundColor: window.innerWidth < 768 ? colors[2] : "transparent",
+                                backgroundColor: window.innerWidth < 768 ? colors[3] : "transparent",
                             }}
                         >
                             {/* Close Button */}
                             <div
                                 onClick={() => {
                                     setPlayer(0)
-                                    if(songId) navigate('/')
+                                    if (songId) navigate('/')
                                 }}
                                 className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute -top-2 text-xs right-[2px] cursor-pointer rounded-full p-[2px] text-gray-500 bg-white z-10"
                             >
