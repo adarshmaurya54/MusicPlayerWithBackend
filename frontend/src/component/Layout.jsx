@@ -243,7 +243,7 @@ function Layout() {
                         onError={handleError}
                     />
 
-                    <div className={`fixed z-[3] bottom-0 left-0 right-0 py-4 pt-5 bg-gradient-to-t from-black/80 via-black/40 to-transparent md:right-5 md:p-0 px-4 group w-full md:w-auto`}>
+                    <div className={`fixed z-[3] md:bottom-2 bottom-0 md:right-6 py-4 pt-5 md:bg-none bg-gradient-to-t from-black/80 via-black/40 to-transparent md:p-0 px-4 group w-full md:w-auto`}>
                         {/* Player Container with Hover Effect */}
                         <div
                             className={`flex relative items-center overflow md:group-hover:rounded-2xl md:rounded-full rounded-2xl transition-all duration-500 md:w-[76px] w-full md:group-hover:w-[350px]
