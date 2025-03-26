@@ -15,12 +15,10 @@ function Library() {
     const { player, setPlayer, audioRef,setSongList, setIsPlaying, isPlaying } = useOutletContext()
     useEffect(() => {
         if (audioRef?.current?.paused) {
-            audioRef?.current?.play();
-            setIsPlaying(true);
-        } else {
-            audioRef?.current?.pause();
             setIsPlaying(false);
-        }
+          } else {
+            setIsPlaying(true);
+          }
     }, [player])
     //getting the currently loggedin user
     const dispatch = useDispatch();

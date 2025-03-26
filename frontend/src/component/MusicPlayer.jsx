@@ -31,7 +31,8 @@ const MusicPlayer = ({
   setIsLoading,
   songLoop,
   setSongLoop,
-  totalDuration
+  totalDuration,
+  colors
 }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -41,26 +42,6 @@ const MusicPlayer = ({
   // New state for loading
   const { user } = useSelector((state) => state.auth)
   const [isLiked, setIsLiked] = useState(likes?.includes(user?._id));
-
-
-  // getting the decent color from the highQualityThumbnailUrl
-  const { colors } = useExtractColors(import.meta.env.VITE_BASEURL + "/assets" + image, {
-    maxColors: 3,
-    format: "hex",
-    maxSize: 200,
-    orderBy: "vibrance",
-  });
-  // Select or create the meta theme-color tag
-  let metaThemeColor = document.querySelector("meta[name='theme-color']");
-  if (!metaThemeColor) {
-    metaThemeColor = document.createElement("meta");
-    metaThemeColor.name = "theme-color";
-    document.head.appendChild(metaThemeColor);
-  }
-
-
-  // Update theme color
-  metaThemeColor.setAttribute("content", colors[1] || "#ffffff");
 
   const progressBarRef = useRef(null);
   useEffect(() => {
@@ -84,7 +65,11 @@ const MusicPlayer = ({
     }
   };
 
+  
   const progressPercentage = (currentTime / totalDuration) * 100;
+  useEffect(() => {
+    if(progressPercentage > 0) setIsLoading(false)
+  },[progressPercentage])
 
   useEffect(() => {
     if (totalDuration > 0) {
@@ -277,7 +262,7 @@ const MusicPlayer = ({
 
   return (
     <div
-      className="fixed z-[60] top-0 left-0 w-full h-full bg-black/30 flex justify-center text-white items-center"
+      className="w-full h-full bg-black/30 flex justify-center text-white items-center"
       onMouseMove={handleMove}
       onMouseUp={handleEnd}
       onTouchMove={handleMove}
@@ -288,8 +273,8 @@ const MusicPlayer = ({
           backgroundImage: songClickLoading
             ? "none"
             : window.innerWidth >= 768 // Apply background image only for md and larger devices
-              ? `url(${import.meta.env.VITE_BASEURL}/assets${backgroundImage})`
-              : `linear-gradient(to bottom, ${colors[1]} 55%, #2a2a2a )`, // Gradient for smaller devices
+              ? `url(${import.meta.env.VITE_BASEURL}/assets${image})`
+              : `linear-gradient(to bottom, ${colors[2]} 55%, #2a2a2a )`, // Gradient for smaller devices
         }}
         className="transition-all duration-700 md:w-[100%] relative md:h-[100%] bg-no-repeat bg-cover overflow-auto no-scrollbar h-full w-full"
       >

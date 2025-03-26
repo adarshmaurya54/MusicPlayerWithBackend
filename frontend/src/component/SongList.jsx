@@ -6,6 +6,7 @@ import MusicAnimation from "./MusicAnimation";
 import { TbShare3 } from "react-icons/tb";
 import Share from "./Share";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 function SongList({
   id,
@@ -24,6 +25,7 @@ function SongList({
   const { user } = useSelector((state) => state.auth)
   const [isDeleting, setIsDeleting] = useState(false); // State to track if a song is being deleted
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate()
   const handleDeleteSong = async (songId, filename) => {
     const songfile = filename + ".mp3";
 
@@ -84,12 +86,13 @@ function SongList({
         Deleting...
       </div>
     )}
-    {currentlyPlaying && <div className="absolute z-10 top-2 right-2 group-hover:right-12  dark:bg-gray-900 dark:text-white dark:border-white/20 transition-all text-xs px-2 py-2 bg-white text-black border rounded-lg  duration-300">
+    {currentlyPlaying && <div className="absolute z-[2] top-2 right-2 group-hover:right-12  dark:bg-gray-900 dark:text-white dark:border-white/20 transition-all text-xs px-2 py-2 bg-white text-black border rounded-lg  duration-300">
       Now playing
     </div>}
     <div
       onClick={() => {
         handlePlayer(id, title, artist);
+        navigate(`/song/${audioFile}`)
       }}
       className="relative w-full group flex flex-col space-y-2 "
 

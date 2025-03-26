@@ -8,7 +8,7 @@ function Share({audioFile,setOpen}) {
       setLinkCopy(true);
       console.log(linkCopy);
   
-      navigator.clipboard.writeText(`${import.meta.env.VITE_PRODUCTION_LINK}/song/${audioFile}`);
+      navigator.clipboard.writeText(`${import.meta.env.VITE_BASEURL}/songs/share/${audioFile}`);
   
       // Reset back to "Copy Link" after 3 seconds
       setTimeout(() => {
@@ -35,7 +35,7 @@ function Share({audioFile,setOpen}) {
                 <div className="flex md:flex-row md:gap-0 gap-2 flex-col md:items-center justify-between mt-3 md:p-2 md:border rounded-full md:bg-gray-100">
                     <input
                         type="text"
-                        value={`${import.meta.env.VITE_PRODUCTION_LINK}/song/${audioFile}`}
+                        value={`${import.meta.env.VITE_BASEURL}/songs/share/${audioFile}`}
                         readOnly
                         className="md:w-[70%] md:border-none border md:p-0 p-2 rounded-xl bg-transparent outline-none text-gray-600"
                     />

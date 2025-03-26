@@ -10,6 +10,7 @@ router.get("/", songController.getAllSongs);
 router.get("/:fileId", songController.getSongWithMetadata);
 router.get("/stream/:fileId", songController.streamAudio);
 router.delete("/thumbnail/:songId", songController.deleteThumbnails);
+router.get("/share/:fileId", songController.shareSong);
 
 // Protected routes (Require Token) 
 router.post("/", verifyToken, upload.single("audioFile"), songController.createSong);

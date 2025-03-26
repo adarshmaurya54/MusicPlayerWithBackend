@@ -4,6 +4,8 @@ import { ThemeProvider } from '../context/theme'
 import { LiaTimesSolid } from 'react-icons/lia'
 import { TbPlayerTrackNextFilled, TbPlayerTrackPrevFilled } from 'react-icons/tb'
 import apiService from '../services/apiService'
+import MusicPlayer from './MusicPlayer'
+import { useExtractColors } from 'react-extract-colors'
 
 function Layout() {
     const [songClickLoading, setSongClickLoading] = useState(false);
@@ -21,7 +23,29 @@ function Layout() {
     const [hiddenPlayer, setHiddenPlayer] = useState(true); // Manage visibility
     const [progressPercentage, setProgressPercentage] = useState(0);
     const [songList, setSongList] = useState([]);
+    const [songLoop, setSongLoop] = useState(false);
+    const [image, setImage] = useState('/thumbnails/default-thumbnail-low.png')
     const navigate = useNavigate();
+    const { colors } = useExtractColors(
+        `${import.meta.env.VITE_BASEURL}/assets${image}`,
+        {
+            maxColors: 3,
+            format: "hex",
+            maxSize: 200,
+            orderBy: "vibrance",
+        }
+    );
+    // Select or create the meta theme-color tag
+    let metaThemeColor = document.querySelector("meta[name='theme-color']");
+    if (!metaThemeColor) {
+        metaThemeColor = document.createElement("meta");
+        metaThemeColor.name = "theme-color";
+        document.head.appendChild(metaThemeColor);
+    }
+
+
+    // Update theme color
+    metaThemeColor.setAttribute("content", colors[2] || "#ffffff");
 
     // Handle metadata and play audio
     const handleLoadedMetadata = () => {
@@ -52,13 +76,6 @@ function Layout() {
         localStorage.setItem('theme', themeMode)
     }, [themeMode])
 
-    // Load and play audio only when player is valid and changes
-    // useEffect(() => {
-    //     if (player && player !== 0 && audioRef.current) {
-    //         setIsLoading(true) // Start loading when player changes
-    //         audioRef.current.load() // Load the new audio
-    //     }
-    // }, [player])
     const togglePlayPause = () => {
         if (audioRef.current.paused) {
             audioRef.current.play();
@@ -123,6 +140,7 @@ function Layout() {
             try {
                 const response = await apiService.getSongInfo(player);
                 setSongDetail(response);
+                setImage(response.highQualityThumbnailUrl)
                 // setHiddenPlayer(false); // Make the player visible
             } catch (err) {
                 console.error("Failed to fetch song details:", err);
@@ -164,6 +182,16 @@ function Layout() {
             : "PlayBeatz";
 
     }, [songDetail?.highQualityThumbnailUrl]);
+
+    // Function to close the player
+    const handlePlayerClose = async (id, name, artist) => {
+        setCurrentPlayingSong({
+            id,
+            name,
+            artist,
+        });
+        setHiddenPlayer(true);
+    };
 
     return (
         <ThemeProvider value={{ lightTheme, darkTheme, themeMode }}>
@@ -217,43 +245,54 @@ function Layout() {
 
                         {/* Player Container with Hover Effect */}
                         <div
-                            className="flex relative items-center overflow md:group-hover:rounded-2xl md:rounded-full rounded-2xl transition-all duration-500 md:w-[76px] w-full md:group-hover:w-[350px]"
+                            className={`flex relative items-center overflow md:group-hover:rounded-2xl md:rounded-full rounded-2xl transition-all duration-500 md:w-[76px] w-full md:group-hover:w-[350px]
+                                            ${image ? "bg-center bg-cover" : ""}
+                                        `}
                             style={{
-                                backgroundImage: songDetail
-                                    ? `url(${import.meta.env.VITE_BASEURL}/assets${songDetail?.lowQualityThumbnailUrl})`
-                                    : `url(${import.meta.env.VITE_BASEURL}/assets/thumbnails/default-thumbnail-low.png)`, // Fallback image
-                                    backgroundSize: "cover",
-                                    backgroundPosition: "center",
-                                }}
+                                backgroundImage:
+                                    window.innerWidth >= 768
+                                        ? `url(${import.meta.env.VITE_BASEURL}/assets${image})`
+                                        : "none",
+                                backgroundColor: window.innerWidth < 768 ? colors[2] : "transparent",
+                            }}
                         >
-                                {/* Close Button */}
+                            {/* Close Button */}
+                            <div
+                                onClick={() => handlePlayerClose()}
+                                className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute -top-2 text-xs right-[2px] cursor-pointer rounded-full p-[2px] text-gray-500 bg-white z-10"
+                            >
+                                <LiaTimesSolid />
+                            </div>
+                            {/* Progress Bar */}
+                            <div className="md:group-hover:block md:hidden absolute left-0 bottom-0 px-4 w-full z-10 h-[3px]">
                                 <div
-                                    onClick={() => navigate("/")}
-                                    className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute -top-2 text-xs right-[2px] cursor-pointer rounded-full p-[2px] text-gray-500 bg-white z-10"
+                                    className="bg-white h-full"
+                                    style={{ width: `${progressPercentage}%` }}
                                 >
-                                    <LiaTimesSolid />
                                 </div>
-                            <div className="flex px-3 bg-black/25 md:group-hover:rounded-2xl md:rounded-full rounded-2xl w-full items-center justify-between backdrop-blur-md">
+                            </div>
+                            <div className="flex px-3 md:py-2 bg-black/25 md:group-hover:rounded-2xl md:rounded-full rounded-xl w-full items-center justify-between backdrop-blur-md">
                                 {/* Song Thumbnail */}
                                 <img
                                     onClick={() =>
                                         setHiddenPlayer((prevState) => !prevState)
                                     } // Toggle visibility
                                     src={
-                                        songDetail
-                                            ? `${import.meta.env.VITE_BASEURL}/assets${songDetail?.highQualityThumbnailUrl}`
-                                            : `${import.meta.env.VITE_BASEURL}/assets/thumbnails/default-thumbnail-low.png`
+                                        `${import.meta.env.VITE_BASEURL}/assets${image}`
                                     }
                                     alt="Song Thumbnail"
-                                    className={`w-14 h-14 rounded-full cursor-pointer object-cover animate-spin-slow transition-transform duration-500`}
+                                    className={`md:w-14 md:h-14 md:rounded-full w-10 h-10 rounded-lg  cursor-pointer object-cover md:animate-spin-slow transition-transform duration-500`}
                                     style={{ animationPlayState: `${isPlaying ? "running" : "paused"}` }}
                                 />
 
                                 {/* Song Info - Only Visible on Hover */}
                                 <div
-                                    className={`flex flex-col w-full md:opacity-0 md:group-hover:opacity-100 ps-2 pe-5 py-2 transition-all duration-500`}
+                                    onClick={() =>
+                                        setHiddenPlayer((prevState) => !prevState)
+                                    }
+                                    className={`flex cursor-pointer flex-col w-full md:opacity-0 md:group-hover:opacity-100 ps-2 pe-5 py-2 transition-all duration-500`}
                                 >
-                                    <p className="font-bold text-xl text-nowrap text-white">
+                                    <p className="font-bold md:text-xl text-nowrap text-white">
                                         {currentPlayingSong?.name
                                             ? isLoading
                                                 ? "Buffering..."
@@ -273,21 +312,6 @@ function Layout() {
                                     ) : (
                                         <div className="text-xs text-nowrap text-gray-200">Loading your next song...</div>
                                     )}
-                                    {/* Progress Bar */}
-                                    <div className="relative w-full mt-3 bg-white/20 rounded-full h-[3px]">
-                                        <div
-                                            className="absolute top-0 left-0 h-full bg-white rounded-full transition-all duration-300"
-                                            style={{ width: `${progressPercentage}%` }}
-                                        >
-                                            <div
-                                                className="absolute transition-all duration-700 top-1/2 transform -translate-y-1/2 bg-white w-3 h-3 rounded-full shadow-md"
-                                                style={{
-                                                    left: `95%`,
-                                                    transition: "left 0.3s ease",
-                                                }}
-                                            ></div>
-                                        </div>
-                                    </div>
                                 </div>
 
                                 {/* Controls - Play, Pause, Next, and Prev */}
@@ -296,7 +320,7 @@ function Layout() {
                                 >
                                     <TbPlayerTrackPrevFilled
                                         onClick={() => playPrevSong()}
-                                        className="text-white text-xl hover:scale-110 transition-all cursor-pointer"
+                                        className="text-white md:text-xl hover:scale-110 transition-all cursor-pointer"
                                     />
                                     {isPlaying ? (
                                         <svg
@@ -321,7 +345,7 @@ function Layout() {
                                     )}
                                     <TbPlayerTrackNextFilled
                                         onClick={() => playNextSong()}
-                                        className="text-white text-xl cursor-pointer hover:scale-110 transition-all"
+                                        className="text-white md:text-xl cursor-pointer hover:scale-110 transition-all"
                                     />
                                 </div>
                             </div>
@@ -329,6 +353,40 @@ function Layout() {
                     </div>
 
                 </>}
+
+                {player !== undefined && player !== 0 && (
+                    <div
+                        className={`fixed w-screen h-screen top-0 left-0 z-[60] transition-top duration-500 ease-in-out
+                            ${hiddenPlayer ? "top-full" : "top-0"}
+                        sm:block
+                    `}
+                    >
+                        <MusicPlayer
+                            audioRef={audioRef}
+                            songId={player}
+                            id={songDetail?._id}
+                            likes={songDetail?.likes}
+                            handlePlayerClose={handlePlayerClose}
+                            songName={songDetail?.songName}
+                            artistName={songDetail?.artistName}
+                            image={songDetail?.highQualityThumbnailUrl}
+                            audioUrl={songDetail?.audioUrl}
+                            backgroundImage={songDetail?.lowQualityThumbnailUrl}
+                            favourite={songDetail?.favourite}
+                            playNextSong={playNextSong}
+                            playPrevSong={playPrevSong}
+                            SetisPlayingOrNotForLayout={setIsPlaying}
+                            setProgressPercentage={setProgressPercentage}
+                            totalDuration={totalDuration}
+                            songClickLoading={songClickLoading}
+                            setIsLoading={setIsLoading} // this is for song if song is buffering...
+                            isLoading={isLoading}
+                            songLoop={songLoop}
+                            setSongLoop={setSongLoop}
+                            colors={colors}
+                        />
+                    </div>
+                )}
             </div>
         </ThemeProvider>
     )

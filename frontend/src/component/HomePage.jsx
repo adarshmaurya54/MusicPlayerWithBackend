@@ -4,21 +4,12 @@ import apiService, { API } from "../services/apiService";
 
 // Lazy load the SongList component
 const SongList = React.lazy(() => import("./SongList"));
-import MusicPlayer from "./MusicPlayer";
 import Header from "./Header";
 import SongLoadingScalaton from "./SongLoadingScalaton";
 import Upload from "./Upload";
-import axios from "axios";
 import EditSong from "./EditSong";
 import Pagination from "./Pagination";
 import ArtistButtons from "./ArtistButtons";
-import {
-  TbPlayerTrackNextFilled,
-  TbPlayerTrackPrevFilled,
-} from "react-icons/tb";
-import { LiaTimesSolid } from "react-icons/lia";
-import { ThemeProvider } from "../context/theme";
-import { useExtractColors } from "react-extract-colors"
 import { useDispatch } from "react-redux";
 import { getCurrentUser } from "../redux/features/auth/authAction";
 
@@ -26,9 +17,6 @@ function HomePage() {
   const { songId } = useParams(); // Get songId from URL
 
   const [selectedArtist, setSelectedArtist] = useState("all");
-  const [songLoop, setSongLoop] = useState(false);
-
-  const [songListCopy, setSongListCopy] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -39,37 +27,24 @@ function HomePage() {
 
   const [currentPage, setCurrentPage] = useState(1);
 
-
-  const [isFavourite, setIsFavourite] = useState(false);
   const {
     player,
     setPlayer,
     songList,
     setSongList,
-    totalDuration,
-    isLoading,
-    setIsLoading,
     audioRef,
     setCurrentPlayingSong,
     isPlaying,
     setIsPlaying,
     songDetail,
-    hiddenPlayer,
-    setHiddenPlayer,
-    setProgressPercentage,
-    playPrevSong,
-    playNextSong,
-    songClickLoading
   } = useOutletContext()
   useEffect(() => {
     if (player !== 0)
       setPlayer(player)
     if (audioRef?.current?.paused) {
-      audioRef?.current?.play();
-      setIsPlaying(true);
-    } else {
-      audioRef?.current?.pause();
       setIsPlaying(false);
+    } else {
+      setIsPlaying(true);
     }
   }, [player])
 
@@ -124,10 +99,6 @@ function HomePage() {
 
   const navigate = useNavigate();
 
-  // authentication code to check whether admin is login or not
-  // Get the base URL from the environment variables
-  const baseUrl = import.meta.env.VITE_BASEURL; // This will use the VITE_BASE_URL variable from .env
-
 
   const handleToggleUpload = () => {
     setUpload(!upload);
@@ -141,7 +112,7 @@ function HomePage() {
     try {
       setCurrentPage(1);
       setLoading(true);
-      const songs = await apiService.getSongs(isFavourite, selectedArtist);
+      const songs = await apiService.getSongs(selectedArtist);
       if (songs.length === 0) {
         setIsNoSongsFound(true); // Set state to true if no songs are found
       } else {
@@ -149,7 +120,6 @@ function HomePage() {
       }
 
       setSongList(songs); // If no songs, songs will be an empty array
-      setSongListCopy(songs); // If no songs, songs will be an empty array
       setLoading(false);
     } catch (err) {
       setError("Failed to fetch songs");
@@ -162,16 +132,6 @@ function HomePage() {
   useEffect(() => {
     fetchSongs();
   }, [selectedArtist]);
-  useEffect(() => {
-    if (isFavourite) {
-      // Filter the songs to include only those with favourite = true
-      setSongList(songListCopy.filter((song) => song.favourite));
-    } else {
-      // Reset to the original song list
-      setSongList([...songListCopy]);
-    }
-  }, [isFavourite]);
-
 
   // Handle song click to navigate and set player state
   const handlePlayer = async (id, title, artist) => {
@@ -184,20 +144,13 @@ function HomePage() {
       artist,
     });
     setPlayer(id);
-    // navigate(`/song/${id}`);
   };
 
+  useEffect(() => {
+    if (songId)
+      setPlayer(songId)
+  }, [songId])
 
-
-  // Function to close the player
-  const handlePlayerClose = async (id, name, artist) => {
-    setCurrentPlayingSong({
-      id,
-      name,
-      artist,
-    });
-    setHiddenPlayer(true);
-  };
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -367,41 +320,6 @@ function HomePage() {
             </div>
           )}
         </div>
-
-        {player !== undefined && player !== 0  && (
-          <div
-            className={`transition-all ${hiddenPlayer
-              ? "opacity-0 z-[-1] duration-500"
-              : "opacity-100 z-10 duration-500"
-              } 
-            ${hiddenPlayer ? "sm:block md:hidden" : "sm:block md:block"} 
-            `}
-          >
-            <MusicPlayer
-              audioRef={audioRef}
-              songId={player}
-              id={songDetail?._id}
-              likes={songDetail?.likes}
-              handlePlayerClose={handlePlayerClose}
-              songName={songDetail?.songName}
-              artistName={songDetail?.artistName}
-              image={songDetail?.highQualityThumbnailUrl}
-              audioUrl={songDetail?.audioUrl}
-              backgroundImage={songDetail?.lowQualityThumbnailUrl}
-              favourite={songDetail?.favourite}
-              playNextSong={playNextSong}
-              playPrevSong={playPrevSong}
-              SetisPlayingOrNotForLayout={setIsPlaying}
-              setProgressPercentage={setProgressPercentage}
-              totalDuration={totalDuration}
-              songClickLoading={songClickLoading}
-              setIsLoading={setIsLoading} // this is for song if song is buffering...
-              isLoading={isLoading}
-              songLoop={songLoop}
-              setSongLoop={setSongLoop}
-            />
-          </div>
-        )}
 
         {upload && (
           <Upload

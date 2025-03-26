@@ -1,6 +1,7 @@
 // Pagination.js
 import React from "react";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
+import { useOutletContext } from "react-router-dom";
 
 const Pagination = ({
   filteredSongs,
@@ -14,11 +15,12 @@ const Pagination = ({
     { length: totalPages },
     (_, index) => index + 1
   );
+  const {player} = useOutletContext();
 
   return (
     filteredSongs.length > 0 &&
     totalPages !== 1 && (
-      <div className="flex md:bg-transparent bg-white dark:bg-slate-900 dark:border-white/10 border md:border-none rounded-xl md:justify-center justify-evenly mt-4 items-center">
+      <div className={`flex ${player !== undefined && player !== 0 ? 'mb-16 md:mb-0' : "mb-0"} md:bg-transparent bg-white dark:bg-slate-900 dark:border-white/10 border md:border-none rounded-xl md:justify-center justify-evenly mt-4 items-center`}>
         {/* Previous Button */}
         <button
           onClick={handlePrevPage}
