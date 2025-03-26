@@ -34,7 +34,7 @@ function Library() {
 
 
     return (
-        <div className="md:bg-white my-5 py-12 px-8 dark:md:bg-slate-900/50 dark:border-white/10 md:border md:rounded-3xl">
+        <div className="md:bg-white md:my-5 py-12 px-8 dark:md:bg-slate-900/50 dark:border-white/10 md:border md:rounded-3xl">
             <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-5">
                     <img

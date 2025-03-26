@@ -1,5 +1,6 @@
 const Playlist = require("../models/playlistModel");
 const mongoose = require("mongoose");
+const { ObjectId } = mongoose.Types;
 exports.createPlaylist = async (req, res) => {
   const { name, description, userId } = req.body;
   try {
@@ -127,3 +128,33 @@ exports.deletePlaylist = async (req, res) => {
     res.status(500).json({ error: "Error deleting playlist" });
   }
 };
+exports.deletePlaylistSong = async (req, res) => {
+  const { playlistId } = req.params;
+  const { songId } = req.body;
+
+  try {
+    const playlist = await Playlist.findById(playlistId);
+    if (!playlist) {
+      return res.status(404).json({ message: "Playlist not found" });
+    }
+
+    // Convert songId to ObjectId
+    const objectId = new ObjectId(songId);
+
+    // Filter out the song by comparing ObjectId
+    playlist.songs = playlist.songs.filter((song) => !song.equals(objectId));
+
+    // Save the updated playlist
+    const updatedPlaylist = await playlist.save();
+    res
+      .status(200)
+      .json({
+        message: "Song deleted successfully",
+        playlist: updatedPlaylist,
+      });
+  } catch (error) {
+    console.error("Error deleting song:", error);
+    res.status(500).json({ message: "Error deleting song" });
+  }
+};
+ 

@@ -20,7 +20,7 @@ const Pagination = ({
   return (
     filteredSongs.length > 0 &&
     totalPages !== 1 && (
-      <div className={`flex ${player !== undefined && player !== 0 ? 'mb-16 md:mb-0' : "mb-0"} md:bg-transparent bg-white dark:bg-slate-900 dark:border-white/10 border md:border-none rounded-xl md:justify-center justify-evenly mt-4 items-center`}>
+      <div className={`flex ${player !== undefined && player !== 0 ? 'mb-12 md:mb-0' : "mb-0"} md:bg-transparent bg-white dark:bg-slate-900 dark:border-white/10 border md:border-none rounded-xl md:justify-center justify-evenly mt-4 items-center`}>
         {/* Previous Button */}
         <button
           onClick={handlePrevPage}

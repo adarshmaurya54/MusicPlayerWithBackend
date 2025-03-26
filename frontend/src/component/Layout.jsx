@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { ThemeProvider } from '../context/theme'
 import { LiaTimesSolid } from 'react-icons/lia'
 import { TbPlayerTrackNextFilled, TbPlayerTrackPrevFilled } from 'react-icons/tb'
@@ -8,6 +8,8 @@ import MusicPlayer from './MusicPlayer'
 import { useExtractColors } from 'react-extract-colors'
 
 function Layout() {
+    const {songId}= useParams()
+    
     const [songClickLoading, setSongClickLoading] = useState(false);
     const [player, setPlayer] = useState(0) // Default to 0 or undefined initially
     const [totalDuration, setTotalDuration] = useState(0)
@@ -168,7 +170,7 @@ function Layout() {
             if (player !== 0) {
                 await apiService.deleteThumbnails(player);
             }
-        }, 10000);
+        }, 4000);
     }, [songDetail]);
     useEffect(() => {
         const link = document.getElementsByTagName("link")[0];
@@ -258,7 +260,10 @@ function Layout() {
                         >
                             {/* Close Button */}
                             <div
-                                onClick={() => handlePlayerClose()}
+                                onClick={() => {
+                                    setPlayer(0)
+                                    if(songId) navigate('/')
+                                }}
                                 className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute -top-2 text-xs right-[2px] cursor-pointer rounded-full p-[2px] text-gray-500 bg-white z-10"
                             >
                                 <LiaTimesSolid />

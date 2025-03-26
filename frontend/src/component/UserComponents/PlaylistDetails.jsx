@@ -12,31 +12,30 @@ import { LiaTimesSolid } from "react-icons/lia";
 import InputType from "../auth/InputType";
 import toast from "react-hot-toast";
 import MusicAnimation from "../MusicAnimation";
+import { AiTwotoneDelete } from "react-icons/ai";
 
 function PlaylistDetails() {
     const [openAddSong, setOpenAddSong] = useState(false);
     const [openEditPlaylist, setOpenEditPlaylist] = useState(false);
-    const [playlist, setPlaylist] = useState(null); // ✅ Change to null to avoid length error
+    const [playlist, setPlaylist] = useState(null);
     const { id } = useParams();
     const { user } = useSelector((state) => state.auth);
-    const navigate = useNavigate()
-    const [playlistName, setPlaylistName] = useState('')
-    const [playlistDescription, setPlaylistDescription] = useState('')
-    const [btnDisabled, setBtnDisabled] = useState(false)
-    const { player, setPlayer, setSongList, isPlaying } = useOutletContext()
-
-
+    const navigate = useNavigate();
+    const [playlistName, setPlaylistName] = useState('');
+    const [playlistDescription, setPlaylistDescription] = useState('');
+    const [btnDisabled, setBtnDisabled] = useState(false);
+    const { player, setPlayer, setSongList, isPlaying } = useOutletContext();
 
     // Fetch playlist details
     const getPlaylistDetails = async () => {
         try {
             const response = await API.get(`/playlists/${id}`);
-            setPlaylist(response.data[0]); // ✅ Set playlist data
-            setPlaylistName(response.data[0].name)
-            setPlaylistDescription(response.data[0].description)
+            setPlaylist(response.data[0]);
+            setPlaylistName(response.data[0].name);
+            setPlaylistDescription(response.data[0].description);
         } catch (error) {
             console.log("Error fetching playlist details:", error);
-            navigate('/')
+            navigate('/');
         }
     };
 
@@ -45,73 +44,101 @@ function PlaylistDetails() {
     }, []);
 
     const handleUpdatePlaylist = async (e) => {
-        e.preventDefault()
-        setBtnDisabled(true)
-        // Validate name before submitting
+        e.preventDefault();
+        setBtnDisabled(true);
+
         if (!playlistName.trim()) {
-            toast.error("Playlist name cannot be empty!")
-            return
+            toast.error("Playlist name cannot be empty!");
+            setBtnDisabled(false);
+            return;
         }
         try {
-            const res = await API.put("/playlists/edit", { id, playlistName, playlistDescription })
-
-            // Check response status
+            const res = await API.put("/playlists/edit", { id, playlistName, playlistDescription });
             if (res.status === 200) {
-                toast.success('Playlist updated successfully!')
-                setOpenEditPlaylist(false) // Close modal on success
-                setPlaylist(res.data.playlist)
-                setBtnDisabled(false)
+                toast.success("Playlist updated successfully!");
+                setOpenEditPlaylist(false);
+                setPlaylist(res.data.playlist);
             } else {
-                toast.error('Failed to update playlist!')
+                toast.error("Failed to update playlist!");
             }
         } catch (error) {
-            console.error('Error updating playlist:', error)
-            const errorMessage =
-                error.response?.data?.error || 'Error updating playlist!'
-            toast.error(errorMessage)
+            console.error("Error updating playlist:", error);
+            toast.error("Error updating playlist!");
+        } finally {
+            setBtnDisabled(false);
         }
-    }
+    };
 
     const handleDeletePlaylist = async () => {
-        const toastId = toast.loading("Deleting your playlist....")
-        try {
-            const res = await API.delete(`/playlists/delete/${id}`)
-            if (res.status === 200) {
-                toast.success(res.data.message || 'Playlist deleted successfully!', { id: toastId })
-                navigate('/library/playlists')
+        if (confirm("Do you really want to delete the playlist?")) {
+            const toastId = toast.loading("Deleting your playlist...");
+            try {
+                const res = await API.delete(`/playlists/delete/${id}`);
+                if (res.status === 200) {
+                    toast.success("Playlist deleted successfully!", { id: toastId });
+                    navigate("/library/playlists");
+                }
+            } catch (error) {
+                console.error("Error deleting playlist:", error);
+                toast.error("Error deleting playlist!", { id: toastId });
             }
-        } catch (error) {
-            console.error('Error deleting playlist:', error)
-            const errorMessage =
-                error.response?.data?.error || 'Error deleting playlist!'
-            toast.error(errorMessage, { id: toastId })
         }
-    }
+    };
 
-    // ✅ Show loading while fetching data
+    const handleDeleteSong = async (songId) => {
+        if (confirm("Do you really want to delete this song?")) {
+            const toastId = toast.loading("Deleting song...");
+            try {
+                const res = await API.put(`/playlists/${id}/delete-song`,{songId});
+                if (res.status === 200) {
+                    toast.success("Song deleted successfully!", { id: toastId });
+                    getPlaylistDetails(); // Refresh playlist after deletion
+                }
+            } catch (error) {
+                console.error("Error deleting song:", error);
+                toast.error("Error deleting song!", { id: toastId });
+            }
+        }
+    };
+
     if (!playlist) {
-        return <div className="text-center mt-5">Loading playlist...</div>;
+        return <div className="text-center text-gray-500 mt-5">Loading playlist...</div>;
     }
 
     return (
-        <div className="relative mt-5 bg-white md:bg-gray-100 p-4 rounded-3xl">
-            <div className="absolute flex items-center gap-3 cursor-pointer top-5 right-5">
-                <MdDelete onClick={() => handleDeletePlaylist()} title="Delete Playlist" className="text-xl" />
-                <FiEdit2 onClick={() => { setOpenEditPlaylist(true); setPlaylistName(playlist.name); setPlaylistDescription(playlist.description) }} title="Edit playlist" className="text-xl" />
-                {playlist.songs.length !== 0 && <FaPlus title="Add song" onClick={() => setOpenAddSong(true)} className="text-xl" />}
-            </div>
+        <div className={`relative mt-5 bg-white p-6 rounded-3xl w-full ${player !== undefined && player !== 0 ? "mb-12" : "mb-0"}`}>
             {/* ✅ Playlist Header */}
-            <div className="flex flex-col gap-2 border-b-2 pb-4">
-                <p className="text-sm text-gray-400">Playlist</p>
-                <h1 className="text-4xl md:text-7xl font-bold">{playlist?.name}</h1>
-                <p className="text-sm mt-2 text-gray-400">{playlist?.description}</p>
+            <div className="flex flex-col gap-4 pb-4 border-b-2">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h1 className="text-4xl md:text-5xl font-bold">{playlist?.name}</h1>
+                        <p className="text-sm mt-1 text-gray-500">{playlist?.description || "No description available"}</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <MdDelete
+                            onClick={() => handleDeletePlaylist()}
+                            title="Delete Playlist"
+                            className="text-2xl text-gray-600 cursor-pointer hover:scale-110 transition"
+                        />
+                        <FiEdit2
+                            onClick={() => setOpenEditPlaylist(true)}
+                            title="Edit Playlist"
+                            className="text-xl text-gray-500 cursor-pointer hover:scale-110 transition"
+                        />
+                        <FaPlus
+                            title="Add Song"
+                            onClick={() => setOpenAddSong(true)}
+                            className="text-xl text-gray-500 cursor-pointer hover:scale-110 transition"
+                        />
+                    </div>
+                </div>
                 <div className="flex gap-2 items-center">
                     <img
-                        src={defaultUser} // Replace with actual profile image if available
+                        src={defaultUser}
                         alt="Profile"
-                        className="border border-gray-100 w-7 h-7 object-cover rounded-full"
+                        className="border border-gray-200 w-8 h-8 object-cover rounded-full"
                     />
-                    <div className="text-xs font-bold hover:underline cursor-pointer">
+                    <div className="text-sm font-bold">
                         {user?.name}{" "}
                         <span className="text-gray-400">
                             • {playlist?.songs?.length || 0} song(s)
@@ -120,37 +147,45 @@ function PlaylistDetails() {
                 </div>
             </div>
 
-            {/* ✅ Playlist Songs */}
-            <div className="mt-4">
+            {/* ✅ Song List */}
+            <div className="mt-6">
                 {playlist?.songs?.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-10">
-                        <p className="text-gray-500 font-semibold mt-3">
-                            No songs available in this playlist.
-                        </p>
+                        <p className="text-gray-500 font-semibold">No songs available in this playlist.</p>
                         <button
                             onClick={() => setOpenAddSong(true)}
-                            className="mt-4 bg-purple-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-purple-700 transition"
+                            className="mt-4 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition"
                         >
                             Add Songs
                         </button>
                     </div>
                 ) : (
-                    <div className="mt-2">
+                    <div className="mt-2 grid gap-4">
                         {playlist.songs?.map((song, index) => (
                             <div
-                                onClick={() => {setPlayer(song.audioFile); setSongList(playlist.songs)}}
+                                onClick={() => {
+                                    setPlayer(song.audioFile);
+                                    setSongList(playlist.songs);
+                                }}
                                 key={index}
-                                className="flex items-center justify-between p-3 hover:bg-gray-200 rounded-lg transition cursor-pointer"
+                                className="flex items-center justify-between bg-gray-100 p-4 hover:bg-gray-200 rounded-lg cursor-pointer transition"
                             >
-                                <div className="flex flex-col">
-                                    <p className="text-sm font-medium">{song.songName}</p>
-                                    <p className="text-xs text-gray-500">{song.artistName}</p>
+                                <div className="flex items-start gap-3">
+                                    <div className="flex flex-col">
+                                        <p className="text-sm font-medium">{song.songName}</p>
+                                        <p className="text-xs text-gray-500">{song.artistName}</p>
+                                    </div>
                                 </div>
                                 <div className="flex gap-4 items-center">
-                                    {song.audioFile === player && <MusicAnimation isPlaying={isPlaying} extraClass='bg-black/30' />}
-                                    {/* Three-dot menu for song actions */}
-                                    <button className="text-gray-500 hover:text-gray-700">
-                                        <IoEllipsisHorizontalSharp />
+                                    {song.audioFile === player && <MusicAnimation isPlaying={isPlaying} extraClass="bg-black/30" />}
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation(); // Prevent triggering the parent click
+                                            handleDeleteSong(song._id);
+                                        }}
+                                        className="text-gray-500 hover:text-red-500 transition"
+                                    >
+                                        <AiTwotoneDelete />
                                     </button>
                                 </div>
                             </div>
@@ -166,34 +201,52 @@ function PlaylistDetails() {
                     getPlaylistDetails={getPlaylistDetails}
                     playlistId={playlist._id}
                     onClose={() => setOpenAddSong(false)}
-                    refreshPlaylist={getPlaylistDetails} // Refresh playlist after adding
+                    refreshPlaylist={getPlaylistDetails}
                 />
             )}
+
+            {/* ✅ Edit Playlist Modal */}
             {openEditPlaylist && (
-                <div className="fixed top-0 left-0 w-full h-full bg-black/20 backdrop-blur-md flex items-center justify-center">
+                <div className="fixed top-0 left-0 w-full h-full bg-black/30 backdrop-blur-sm flex items-center justify-center">
                     <form
-                        onSubmit={(e) => handleUpdatePlaylist(e)} // Update here
-                        className="relative bg-gradient-to-t from-white to-blue-50 border-4 border-white w-[500px] p-5 pt-9 rounded-3xl"
+                        onSubmit={(e) => handleUpdatePlaylist(e)}
+                        className="relative bg-white w-[500px] p-6 rounded-3xl shadow-2xl"
                     >
-                        {/* Input for Name */}
+                        <h2 className="text-2xl font-bold mb-4">Edit Playlist</h2>
+
                         <InputType
-                            extraClass="mb-5"
+                            extraClass="mb-4"
                             inputType="text"
                             placeholder="Add a name"
                             value={playlistName}
-                            onChange={(e) => setPlaylistName(e)} // Ensure value change works
+                            onChange={(e) => setPlaylistName(e)}
                         />
 
-                        {/* Textarea for Description */}
                         <textarea
                             value={playlistDescription}
                             onChange={(e) => setPlaylistDescription(e.target.value)}
                             placeholder="Add an optional description"
-                            className="w-full no-scrollbar placeholder:text-sm md:placeholder:text-base border-none pr-6 pl-8 py-3 rounded-2xl shadow-lg placeholder-gray-400 focus:outline focus:outline-2 outline-offset-2 resize-none"
+                            className="w-full shadow-md rounded-xl p-3 placeholder:text-sm resize-none focus:ring-2 focus:ring-black"
                             rows={4}
                         />
+                        <div className="flex justify-end mt-4 gap-3">
+                            <button
+                                type="button"
+                                onClick={() => setOpenEditPlaylist(false)}
+                                className="text-gray-600 hover:text-gray-800 px-4 py-2 rounded-lg"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                disabled={btnDisabled}
+                                type="submit"
+                                className={`bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition ${btnDisabled && "opacity-50 cursor-not-allowed"
+                                    }`}
+                            >
+                                {btnDisabled ? "Updating..." : "Update"}
+                            </button>
+                        </div>
 
-                        {/* Close Button */}
                         <button
                             type="button"
                             onClick={() => setOpenEditPlaylist(false)}
@@ -201,19 +254,9 @@ function PlaylistDetails() {
                         >
                             <LiaTimesSolid />
                         </button>
-
-                        {/* Submit Button */}
-                        <button
-                            disabled={btnDisabled}
-                            type="submit"
-                            className="mt-5 bg-black text-white font-medium px-6 py-3 rounded-2xl shadow-lg hover:bg-gray-900 transition-all duration-300"
-                        >
-                            {btnDisabled ? "Updating..." : "Update"}
-                        </button>
                     </form>
                 </div>
             )}
-
         </div>
     );
 }
