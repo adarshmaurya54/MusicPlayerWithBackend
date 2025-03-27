@@ -170,8 +170,8 @@ function Layout() {
             if (player !== 0) {
                 await apiService.deleteThumbnails(player);
             }
-        }, 4000);
-    }, [songDetail]);
+        }, 10000);
+    }, [songDetail?.highQualityThumbnailUrl]);
     useEffect(() => {
         const link = document.getElementsByTagName("link")[0];
         const title = document.getElementsByTagName("title")[0];
