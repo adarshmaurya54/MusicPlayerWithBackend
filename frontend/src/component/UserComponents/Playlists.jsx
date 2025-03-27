@@ -17,14 +17,12 @@ const Playlists = () => {
 
     // Fetch all playlists
     const getAllPlaylists = async () => {
-        const toastId = toast.loading("Getting your playlists...");
         try {
             const response = await API.get(`/playlists`);
             setPlaylists(response.data);
-            toast.success("Fetched successfully", { id: toastId });
         } catch (error) {
             console.error("Error getting playlists:", error);
-            toast.error("Failed to get playlists!", { id: toastId });
+            toast.error("Failed to get playlists!");
         }
     };
 
@@ -55,28 +53,39 @@ const Playlists = () => {
     };
 
     return (
-        <div className="mt-5 bg-gradient-to-b from-blue-50 to-white p-4 sm:p-6 rounded-3xl shadow-lg dark:bg-gray-800 transition-all duration-300">
-            {/* Header */}
-            <div className="flex justify-between items-center mb-4">
-                <h1 className="text-lg flex items-center gap-3 sm:text-xl font-bold text-gray-700 dark:text-white">
-                    <PiPlaylistFill />
-                    Your Playlists
-                </h1>
-                <button
-                    onClick={() => setOpenCreatePlaylist(true)}
-                    className="flex items-center bg-black text-white px-3 py-1.5 rounded-lg shadow-md"
-                >
-                    <FaPlus className="mr-2 text-sm" /> Create Playlist
-                </button>
-            </div>
+        <>{playlists.length === 0 ? <div className="flex flex-col items-center justify-center mt-5 text-xl font-bold">
 
-            {/* Playlist Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-5">
-                {playlists.map((playlist) => (
-                    <PlaylistCard key={playlist._id} playlist={playlist} />
-                ))}
-            </div>
+            No Playlists
+            <button
+                onClick={() => setOpenCreatePlaylist(true)}
+                className="mt-4 flex items-center text-sm bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition"
+            >
+                <FaPlus className="mr-2" /> Create Playlist
+            </button>
+        </div>
+            :
+            <div className="mt-5 bg-gradient-to-b from-blue-50 to-white p-4 sm:p-6 rounded-3xl shadow-lg dark:bg-gray-800 transition-all duration-300">
+                {/* Header */}
+                <div className="flex justify-between items-center mb-4">
+                    <h1 className="text-lg flex items-center gap-3 sm:text-xl font-bold text-gray-700 dark:text-white">
+                        <PiPlaylistFill />
+                        Your Playlists
+                    </h1>
+                    <button
+                        onClick={() => setOpenCreatePlaylist(true)}
+                        className="flex items-center bg-black text-white px-3 py-1.5 rounded-lg shadow-md"
+                    >
+                        <FaPlus className="mr-2 text-sm" /> Create Playlist
+                    </button>
+                </div>
 
+                {/* Playlist Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-5">
+                    {playlists.map((playlist) => (
+                        <PlaylistCard key={playlist._id} playlist={playlist} />
+                    ))}
+                </div>
+            </div>}
             {/* Create Playlist Modal */}
             {openCreatePlaylist && (
                 <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
@@ -87,7 +96,7 @@ const Playlists = () => {
                         {/* Modal Header */}
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="flex items-center gap-3 text-lg font-semibold text-gray-800 dark:text-white">
-                            <PiPlaylistFill /> Create New Playlist
+                                <PiPlaylistFill /> Create New Playlist
                             </h2>
                             <button
                                 type="button"
@@ -128,7 +137,7 @@ const Playlists = () => {
                     </form>
                 </div>
             )}
-        </div>
+        </>
     );
 };
 

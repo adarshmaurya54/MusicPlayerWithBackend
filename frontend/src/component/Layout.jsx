@@ -47,7 +47,7 @@ function Layout() {
 
 
     // Update theme color
-    metaThemeColor.setAttribute("content", colors[2] || "#ffffff");
+    metaThemeColor.setAttribute("content", colors[3] + "b1" || "#ffffff");
 
     // Handle metadata and play audio
     const handleLoadedMetadata = () => {
@@ -170,7 +170,7 @@ function Layout() {
             if (player !== 0) {
                 await apiService.deleteThumbnails(player);
             }
-        }, 10000);
+        }, 20000);
     }, [songDetail?.highQualityThumbnailUrl]);
     useEffect(() => {
         const link = document.getElementsByTagName("link")[0];

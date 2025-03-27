@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FaArrowLeft, FaPlay, FaPause } from "react-icons/fa";
+import { FaPlay, FaPause } from "react-icons/fa";
+import { IoIosArrowDown } from "react-icons/io";
 import { HiSpeakerWave, HiSpeakerXMark } from "react-icons/hi2";
 import { PiShuffle } from "react-icons/pi";
 import { FaForward } from "react-icons/fa";
 import { FaBackward } from "react-icons/fa";
-import apiService, { API } from "../services/apiService";
+import { API } from "../services/apiService";
 import { BsRepeat1 } from "react-icons/bs";
-import { useExtractColors } from "react-extract-colors";
 import { TbShare3 } from "react-icons/tb";
 import Share from "./Share";
 import { useSelector } from "react-redux";
@@ -20,7 +20,6 @@ const MusicPlayer = ({
   playPrevSong,
   artistName,
   image,
-  backgroundImage,
   handlePlayerClose,
   songId,
   audioRef,
@@ -286,9 +285,9 @@ const MusicPlayer = ({
             {songClickLoading ? (
               <div className="w-8 h-8 bg-gray-500 animate-pulse rounded-full"></div>
             ) : (
-              <FaArrowLeft
+              <IoIosArrowDown
                 onClick={() => handlePlayerClose(songId, songName, artistName)}
-                className="text-white text-xl cursor-pointer"
+                className="text-white text-3xl cursor-pointer"
               />
             )}
           </div>

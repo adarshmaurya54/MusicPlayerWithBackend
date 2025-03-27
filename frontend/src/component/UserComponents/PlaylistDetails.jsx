@@ -13,6 +13,7 @@ import InputType from "../auth/InputType";
 import toast from "react-hot-toast";
 import MusicAnimation from "../MusicAnimation";
 import { AiTwotoneDelete } from "react-icons/ai";
+import SongList from "../SongList";
 
 function PlaylistDetails() {
     const [openAddSong, setOpenAddSong] = useState(false);
@@ -24,7 +25,7 @@ function PlaylistDetails() {
     const [playlistName, setPlaylistName] = useState('');
     const [playlistDescription, setPlaylistDescription] = useState('');
     const [btnDisabled, setBtnDisabled] = useState(false);
-    const { player, setPlayer, setSongList, isPlaying } = useOutletContext();
+    const { player, setPlayer, songDetail, setSongList, isPlaying } = useOutletContext();
 
     // Fetch playlist details
     const getPlaylistDetails = async () => {
@@ -89,7 +90,7 @@ function PlaylistDetails() {
         if (confirm("Do you really want to delete this song?")) {
             const toastId = toast.loading("Deleting song...");
             try {
-                const res = await API.put(`/playlists/${id}/delete-song`,{songId});
+                const res = await API.put(`/playlists/${id}/delete-song`, { songId });
                 if (res.status === 200) {
                     toast.success("Song deleted successfully!", { id: toastId });
                     getPlaylistDetails(); // Refresh playlist after deletion
@@ -106,9 +107,9 @@ function PlaylistDetails() {
     }
 
     return (
-        <div className={`relative mt-5 bg-white p-6 rounded-3xl w-full ${player !== undefined && player !== 0 ? "mb-12" : "mb-0"}`}>
+        <div className={`relative mt-5 md:bg-white md:p-6 rounded-3xl w-full ${player !== undefined && player !== 0 ? "mb-12" : "mb-0"}`}>
             {/* ✅ Playlist Header */}
-            <div className="flex flex-col gap-4 pb-4 border-b-2">
+            <div className="flex flex-col md:bg-transparent bg-white p-5 border rounded-3xl gap-4 md:pb-4 md:border-b md:border-x-0 md:border-t-0 md:rounded-none">
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-4xl md:text-5xl font-bold">{playlist?.name}</h1>
@@ -140,7 +141,7 @@ function PlaylistDetails() {
                     />
                     <div className="text-sm font-bold">
                         {user?.name}{" "}
-                        <span className="text-gray-400">
+                        <span className="text-gray-400 font-normal">
                             • {playlist?.songs?.length || 0} song(s)
                         </span>
                     </div>
@@ -161,35 +162,29 @@ function PlaylistDetails() {
                     </div>
                 ) : (
                     <div className="mt-2 grid gap-4">
-                        {playlist.songs?.map((song, index) => (
-                            <div
-                                onClick={() => {
-                                    setPlayer(song.audioFile);
-                                    setSongList(playlist.songs);
-                                }}
-                                key={index}
-                                className="flex items-center justify-between bg-gray-100 p-4 hover:bg-gray-200 rounded-lg cursor-pointer transition"
-                            >
-                                <div className="flex items-start gap-3">
-                                    <div className="flex flex-col">
-                                        <p className="text-sm font-medium">{song.songName}</p>
-                                        <p className="text-xs text-gray-500">{song.artistName}</p>
-                                    </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-5">
+                            {playlist.songs?.map((song, index) => (
+                                <div onClick={() => {setPlayer(song.audioFile); setSongList(playlist.songs)}}>
+                                    <SongList
+                                        currentlyPlaying={player === song.audioFile}
+                                        isPlaying={isPlaying}
+                                        key={song.songId}
+                                        image={
+                                            songDetail?.highQualityThumbnailUrl
+                                                ? songDetail?.highQualityThumbnailUrl
+                                                : "/thumbnails/default-thumbnail-low.png"
+                                        }
+                                        id={song._id}
+                                        likes={song.likes}
+                                        songId={song.songId}
+                                        audioFile={song.audioFile}
+                                        title={song.songName}
+                                        artist={song.artistName}
+                                        favourite={song.favourite}
+                                    />
                                 </div>
-                                <div className="flex gap-4 items-center">
-                                    {song.audioFile === player && <MusicAnimation isPlaying={isPlaying} extraClass="bg-black/30" />}
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation(); // Prevent triggering the parent click
-                                            handleDeleteSong(song._id);
-                                        }}
-                                        className="text-gray-500 hover:text-red-500 transition"
-                                    >
-                                        <AiTwotoneDelete />
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
                 )}
             </div>
@@ -207,7 +202,7 @@ function PlaylistDetails() {
 
             {/* ✅ Edit Playlist Modal */}
             {openEditPlaylist && (
-                <div className="fixed top-0 left-0 w-full h-full bg-black/30 backdrop-blur-sm flex items-center justify-center">
+                <div className="fixed px-4 md:px-0 top-0 left-0 w-full h-full bg-black/30 backdrop-blur-sm flex items-center justify-center">
                     <form
                         onSubmit={(e) => handleUpdatePlaylist(e)}
                         className="relative bg-white w-[500px] p-6 rounded-3xl shadow-2xl"

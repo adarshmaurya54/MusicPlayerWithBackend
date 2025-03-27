@@ -1,18 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import defaultUser from "../../assets/default-user.jpg"
-import { API } from '../../services/apiService';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCurrentUser } from '../../redux/features/auth/authAction';
-import { Link, NavLink, Outlet, useLocation, useNavigate, useOutletContext } from 'react-router-dom';
+import {NavLink, Outlet, useNavigate, useOutletContext } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 
 
 function Library() {
-    const location = useLocation()
-    const { user, error } = useSelector((state) => state.auth)
+    const { error } = useSelector((state) => state.auth)
     const navigate = useNavigate()
-    const { player, setPlayer, audioRef,setSongList, setIsPlaying, isPlaying } = useOutletContext()
+    const { player, setPlayer, audioRef,setSongList, setIsPlaying, isPlaying, songDetail } = useOutletContext()
     useEffect(() => {
         if (audioRef?.current?.paused) {
             setIsPlaying(false);
@@ -34,7 +32,7 @@ function Library() {
 
 
     return (
-        <div className="md:bg-white md:my-5 py-12 px-8 dark:md:bg-slate-900/50 dark:border-white/10 md:border md:rounded-3xl">
+        <div className="md:bg-white md:my-5 py-12 md:px-8 px-3 dark:md:bg-slate-900/50 dark:border-white/10 md:border md:rounded-3xl">
             <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-5">
                     <img
@@ -73,7 +71,7 @@ function Library() {
                     Liked Songs
                 </NavLink>
             </div>
-            <Outlet context={{ player, setPlayer, setSongList, isPlaying }} />
+            <Outlet context={{ player, setPlayer,songDetail, setSongList, isPlaying }} />
         </div>
     )
 }

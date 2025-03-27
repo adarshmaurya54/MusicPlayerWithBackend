@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 function PlaylistCard({ playlist }) {
   return (
     <div
-      className="w-full h-[240px] bg-gradient-to-tr from-[#6e42a6] via-[#7b4cb4] to-[#523291] group overflow-hidden relative rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500"
+      className="w-full h-[140px] bg-gradient-to-tr from-[#6e42a6] via-[#7b4cb4] to-[#523291] group overflow-hidden relative rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500"
     >
       {/* Playlist Thumbnail with Overlay */}
       <div className="absolute inset-0 bg-black/40 group-hover:bg-black/60 backdrop-blur-sm transition-all duration-500"></div>
