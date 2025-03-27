@@ -271,10 +271,8 @@ const MusicPlayer = ({
         style={{
           backgroundImage: songClickLoading
             ? "none"
-            : window.innerWidth >= 768 // Apply background image only for md and larger devices
-              ? `url(${import.meta.env.VITE_BASEURL}/assets${image})`
-              : `linear-gradient(to bottom, ${colors[3]} 55%, #2a2a2a )`, // Gradient for smaller devices
-        }}
+            : `url(${import.meta.env.VITE_BASEURL}/assets${image})`
+  }}
         className="transition-all duration-700 md:w-[100%] relative md:h-[100%] bg-no-repeat bg-cover overflow-auto no-scrollbar h-full w-full"
       >
         <div
@@ -385,7 +383,7 @@ const MusicPlayer = ({
                       onTouchStart={handleStart}
                     >
                       <div
-                        className="absolute top-0 left-0 h-2 bg-orange-500 rounded-lg"
+                        className={`absolute top-0 left-0 h-2 bg-orange-500 rounded-lg`}
                         style={{ width: `${progressPercentage}%` }}
                       ></div>
                       <div

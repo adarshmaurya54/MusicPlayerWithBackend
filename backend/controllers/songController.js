@@ -508,88 +508,8 @@ exports.songLike = async (req, res) => {
 };
 
 exports.shareSong = async (req, res) => {
-  const fileId = req.params.fileId; // Google Drive file ID
-
+  const fileId = req.params.fileId
   try {
-    // Authorize and get Google Drive service
-    const authClient = await authorize();
-    const drive = google.drive({ version: "v3", auth: authClient });
-
-    // Get file metadata from Google Drive
-    const fileMetadata = await drive.files.get({
-      fileId,
-      fields: "name, mimeType",
-    });
-    const fileName = fileMetadata.data.name;
-    const mimeType = fileMetadata.data.mimeType;
-
-    // Check if the file is a valid audio file
-    if (!fileName || mimeType !== "audio/mpeg") {
-      return res
-        .status(404)
-        .json({ error: "Audio file not found or invalid format" });
-    }
-
-    // Get audio file stream from Google Drive
-    const audioFile = await drive.files.get(
-      { fileId, alt: "media" },
-      { responseType: "stream" }
-    );
-
-    const audioBuffer = [];
-    audioFile.data.on("data", (chunk) => audioBuffer.push(chunk));
-    audioFile.data.on("end", async () => {
-      const buffer = Buffer.concat(audioBuffer);
-
-      try {
-        // Extract metadata using music-metadata
-        const metadata = await musicMetadata.parseBuffer(buffer);
-
-        // Extract song and artist details with fallback values
-        const songName = metadata.common.title || fileName;
-        const artistName = metadata.common.artist || "Unknown Artist";
-
-        // Extract image data if available
-        const imageData = metadata.common.picture
-          ? metadata.common.picture[0]
-          : null;
-
-        // Dynamically generate high and low-quality thumbnails in memory
-        let highQualityThumbnailUrl = null;
-        let lowQualityThumbnailUrl = null;
-
-        if (imageData) {
-          const imageBuffer = Buffer.from(imageData.data);
-
-          // Generate high-quality thumbnail (600x600)
-          const highQualityThumbnailBuffer = await sharp(imageBuffer)
-            .resize({ width: 600, height: 600, fit: "cover" })
-            .toFormat("jpg")
-            .jpeg({ quality: 100, chromaSubsampling: "4:4:4" })
-            .toBuffer();
-
-          // Generate low-quality thumbnail (100x100)
-          const lowQualityThumbnailBuffer = await sharp(imageBuffer)
-            .resize({ width: 100, height: 100, fit: "cover" })
-            .toFormat("jpg")
-            .jpeg({ quality: 50 })
-            .toBuffer();
-
-          // Convert buffers to base64 URLs for in-memory serving
-          highQualityThumbnailUrl = `data:image/jpeg;base64,${highQualityThumbnailBuffer.toString(
-            "base64"
-          )}`;
-          lowQualityThumbnailUrl = `data:image/jpeg;base64,${lowQualityThumbnailBuffer.toString(
-            "base64"
-          )}`;
-        } else {
-          // Default base64 image if no album art found
-          highQualityThumbnailUrl =
-            "https://musicplayerwithbackend.onrender.com/assets/thumbnails/default-thumbnail-low.png";
-          lowQualityThumbnailUrl =
-            "https://musicplayerwithbackend.onrender.com/assets/thumbnails/default-thumbnail-low.png";
-        }
-
         // Find song in the database by fileId (optional)
         const song = await Song.findOne({ audioFile: fileId });
 
@@ -599,13 +519,13 @@ exports.shareSong = async (req, res) => {
           <!DOCTYPE html>
         <html>
           <head>
-            <meta property="og:title" content="${songName}" />
-            <meta property="og:description" content="By ${artistName}" />
-            <meta property="og:image" content="${highQualityThumbnailUrl}" />
+            <meta property="og:title" content="${song.songName}" />
+            <meta property="og:description" content="By ${song.artistName}" />
+            <meta property="og:image" content="https://adarshmusicplayerwithbackend.vercel.app/icon.png">
             <meta property="og:url" content="https://adarshmusicplayerwithbackend.vercel.app/song/${fileId}" />
             <meta property="og:type" content="music.song" />
             <meta http-equiv="refresh" content="0;url=https://adarshmusicplayerwithbackend.vercel.app/song/${fileId}" />
-            <title>${songName}</title>
+            <title>${song.songName}</title>
           </head>
           <body>
             Please wait...
@@ -619,9 +539,21 @@ exports.shareSong = async (req, res) => {
         console.error("Error extracting metadata:", error);
         res.status(500).json({ error: "Failed to extract song metadata" });
       }
-    });
-  } catch (error) {
-    console.error("Error fetching song details:", error);
-    res.status(500).json({ error: "Failed to fetch song details" });
-  }
 };
+
+exports.getLikedSongs = async (req, res) => {
+  try{
+    const userId = new mongoose.Types.ObjectId(req.body.userId);
+    
+    
+    const likedSongs = await Song.find({likes: userId})
+
+    if(likedSongs.length === 0){
+      res.status(404).json({message: 'No liked songs found for this user.'})
+    }
+
+    res.status(200).json(likedSongs)
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred while fetching liked songs.' });
+  }
+}

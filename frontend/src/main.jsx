@@ -13,6 +13,7 @@ import Layout from './component/Layout'
 import Library from './component/UserComponents/Library'
 import Playlists from './component/UserComponents/Playlists'
 import PlaylistDetails from './component/UserComponents/PlaylistDetails'
+import LikedSongs from './component/UserComponents/LikedSongs'
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,7 @@ const router = createBrowserRouter([
         path: 'library',
         element: <Library />,
         children: [
+          { path: 'liked-songs', element: <LikedSongs /> }, // Corrected path
           { path: 'playlists', element: <Playlists /> }, // Corrected path
           { path: 'playlists/:id', element: <PlaylistDetails /> }, // Corrected path
         ],

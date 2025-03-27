@@ -22,6 +22,7 @@ function Library() {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(getCurrentUser()); // Dispatch action directly
+        navigate('/library/liked-songs')
     }, [dispatch]);
 
     if (error) {
@@ -59,7 +60,7 @@ function Library() {
 
                 {/* Liked Songs Link (Add end to avoid child route match) */}
                 <NavLink
-                    to="/library"
+                    to="/library/liked-songs"
                     end // Ensures exact match with /library only
                     className={({ isActive }) =>
                         `border dark:border-white/20 text-xs py-2 px-3 rounded-full ${isActive

@@ -88,7 +88,7 @@ const Playlists = () => {
             </div>}
             {/* Create Playlist Modal */}
             {openCreatePlaylist && (
-                <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+                <div className="fixed md:p-0 px-4 inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
                     <form
                         onSubmit={handleCreatePlaylist}
                         className="relative bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 w-full max-w-md p-6 rounded-2xl shadow-xl"

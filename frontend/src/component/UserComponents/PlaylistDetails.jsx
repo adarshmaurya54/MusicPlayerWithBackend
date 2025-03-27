@@ -5,14 +5,11 @@ import { useSelector } from "react-redux";
 import AddSongs from "./AddSongs";
 import { API } from "../../services/apiService";
 import { FaPlus } from "react-icons/fa";
-import { IoEllipsisHorizontalSharp } from "react-icons/io5";
 import { FiEdit2 } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
 import { LiaTimesSolid } from "react-icons/lia";
 import InputType from "../auth/InputType";
 import toast from "react-hot-toast";
-import MusicAnimation from "../MusicAnimation";
-import { AiTwotoneDelete } from "react-icons/ai";
 import SongList from "../SongList";
 
 function PlaylistDetails() {
@@ -36,6 +33,7 @@ function PlaylistDetails() {
             setPlaylistDescription(response.data[0].description);
         } catch (error) {
             console.log("Error fetching playlist details:", error);
+            toast.error("Error fetching playlist details")
             navigate('/');
         }
     };
@@ -164,7 +162,7 @@ function PlaylistDetails() {
                     <div className="mt-2 grid gap-4">
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-5">
                             {playlist.songs?.map((song, index) => (
-                                <div onClick={() => {setPlayer(song.audioFile); setSongList(playlist.songs)}}>
+                                <div key={index} onClick={() => {setPlayer(song.audioFile); setSongList(playlist.songs)}}>
                                     <SongList
                                         currentlyPlaying={player === song.audioFile}
                                         isPlaying={isPlaying}

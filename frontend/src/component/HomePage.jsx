@@ -112,7 +112,7 @@ function HomePage() {
     try {
       setCurrentPage(1);
       setLoading(true);
-      const songs = await apiService.getSongs(selectedArtist);
+      const songs = await apiService.getSongs(false, selectedArtist);
       if (songs.length === 0) {
         setIsNoSongsFound(true); // Set state to true if no songs are found
       } else {
