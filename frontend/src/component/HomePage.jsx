@@ -12,6 +12,8 @@ import Pagination from "./Pagination";
 import ArtistButtons from "./ArtistButtons";
 import { useDispatch } from "react-redux";
 import { getCurrentUser } from "../redux/features/auth/authAction";
+import { LiaTimesSolid } from "react-icons/lia";
+import EditProfile from "./EditProfile";
 
 function HomePage() {
   const { songId } = useParams(); // Get songId from URL
@@ -37,6 +39,8 @@ function HomePage() {
     isPlaying,
     setIsPlaying,
     songDetail,
+    openEditProfile,
+    setOpenEditProfile
   } = useOutletContext()
   useEffect(() => {
     if (player !== 0)
@@ -96,9 +100,6 @@ function HomePage() {
     setCurrentPage(1);
   }, [searchQuery]);
   //pagination logic ended
-
-  const navigate = useNavigate();
-
 
   const handleToggleUpload = () => {
     setUpload(!upload);
@@ -164,7 +165,7 @@ function HomePage() {
 
   return (
     <>
-      <Header handleToggleUpload={handleToggleUpload} />
+      <Header setOpenEditProfile={setOpenEditProfile} handleToggleUpload={handleToggleUpload} />
       <div className="flex flex-col mb-5 w-full text-white">
         <div className="md:bg-white dark:md:bg-slate-900/50 dark:border-white/10 md:border p-4 pb-5 md:rounded-3xl">
           {!isNoSongsFound && (
@@ -334,6 +335,7 @@ function HomePage() {
             songId={editSongId}
           />
         )}
+        {openEditProfile && <EditProfile setOpenEditProfile={setOpenEditProfile}/>}
       </div>
     </>
   );

@@ -11,6 +11,8 @@ import { LiaTimesSolid } from "react-icons/lia";
 import InputType from "../auth/InputType";
 import toast from "react-hot-toast";
 import SongList from "../SongList";
+import { RiPlayListLine } from "react-icons/ri";
+import { IoEllipsisHorizontal } from "react-icons/io5";
 
 function PlaylistDetails() {
     const [openAddSong, setOpenAddSong] = useState(false);
@@ -23,6 +25,7 @@ function PlaylistDetails() {
     const [playlistDescription, setPlaylistDescription] = useState('');
     const [btnDisabled, setBtnDisabled] = useState(false);
     const { player, setPlayer, songDetail, setSongList, isPlaying } = useOutletContext();
+    const [isOpen, setIsOpen] = useState(false)
 
     // Fetch playlist details
     const getPlaylistDetails = async () => {
@@ -105,30 +108,42 @@ function PlaylistDetails() {
     }
 
     return (
-        <div className={`relative mt-5 md:bg-white md:p-6 rounded-3xl w-full ${player !== undefined && player !== 0 ? "mb-12" : "mb-0"}`}>
+        <div className={`relative mt-5 md:bg-white rounded-3xl w-full ${player !== undefined && player !== 0 ? "mb-12" : "mb-0"}`}>
             {/* ✅ Playlist Header */}
-            <div className="flex flex-col md:bg-transparent bg-white p-5 border rounded-3xl gap-4 md:pb-4 md:border-b md:border-x-0 md:border-t-0 md:rounded-none">
+            <div className="flex flex-col p-3 md:bg-transparent bg-white border rounded-3xl gap-4 md:pb-4 md:border-b md:border-x-0 md:border-t-0 md:rounded-none">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-4xl md:text-5xl font-bold">{playlist?.name}</h1>
-                        <p className="text-sm mt-1 text-gray-500">{playlist?.description || "No description available"}</p>
+                        <h1 className="text-3xl md:text-5xl font-bold">{playlist?.name}</h1>
+                        <p className="md:text-sm text-xs mt-1 text-gray-500">{playlist?.description || "No description available"}</p>
                     </div>
-                    <div className="flex items-center gap-3">
-                        <MdDelete
-                            onClick={() => handleDeletePlaylist()}
-                            title="Delete Playlist"
-                            className="text-2xl text-gray-600 cursor-pointer hover:scale-110 transition"
-                        />
-                        <FiEdit2
-                            onClick={() => setOpenEditPlaylist(true)}
-                            title="Edit Playlist"
-                            className="text-xl text-gray-500 cursor-pointer hover:scale-110 transition"
-                        />
-                        <FaPlus
-                            title="Add Song"
-                            onClick={() => setOpenAddSong(true)}
-                            className="text-xl text-gray-500 cursor-pointer hover:scale-110 transition"
-                        />
+                    <div className="relative inline-block">
+                        <IoEllipsisHorizontal onClick={() => setIsOpen(!isOpen)} className="text-2xl text-gray-400 hover:text-black cursor-pointer" />
+                        {isOpen && <div className="absolute z-10 right-0 mt-2 w-48 bg-white dark:bg-slate-800 border dark:border-white/20 rounded-xl shadow-lg">
+                            <ul className="p-1">
+                                <li onClick={() => handleDeletePlaylist()} className="flex gap-2 text-sm items-center rounded-lg px-4 py-2 dark:text-white hover:dark:bg-gray-700 hover:bg-gray-100 cursor-pointer">
+                                    <MdDelete
+                                        title="Delete Playlist"
+                                        className="text-gray-400 cursor-pointer transition"
+                                    />
+                                    Delete
+                                </li>
+                                <li onClick={() => setOpenEditPlaylist(true)} className="flex gap-2 text-sm items-center rounded-lg px-4 py-2 dark:text-white hover:dark:bg-gray-700 hover:bg-gray-100 cursor-pointer">
+                                    <FiEdit2
+                                        title="Edit Playlist"
+                                        className="text-gray-400 cursor-pointer transition"
+                                    />
+                                    Edit
+                                </li>
+                                <li onClick={() => setOpenAddSong(true)} className="flex gap-2 text-sm items-center rounded-lg px-4 py-2 dark:text-white hover:dark:bg-gray-700 hover:bg-gray-100 cursor-pointer">
+                                    <FaPlus
+                                        title="Add Song"
+                                        className="text-gray-400 cursor-pointer transition"
+                                    />
+                                    Add Song
+                                </li>
+                            </ul>
+                        </div>
+                        }
                     </div>
                 </div>
                 <div className="flex gap-2 items-center">
@@ -162,7 +177,7 @@ function PlaylistDetails() {
                     <div className="mt-2 grid gap-4">
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-5">
                             {playlist.songs?.map((song, index) => (
-                                <div key={index} onClick={() => {setPlayer(song.audioFile); setSongList(playlist.songs)}}>
+                                <div key={index} onClick={() => { setPlayer(song.audioFile); setSongList(playlist.songs) }}>
                                     <SongList
                                         currentlyPlaying={player === song.audioFile}
                                         isPlaying={isPlaying}
@@ -200,16 +215,17 @@ function PlaylistDetails() {
 
             {/* ✅ Edit Playlist Modal */}
             {openEditPlaylist && (
-                <div className="fixed px-4 md:px-0 top-0 left-0 w-full h-full bg-black/30 backdrop-blur-sm flex items-center justify-center">
+                <div className="fixed z-20 px-4 md:px-0 top-0 left-0 w-full h-full bg-black/30 backdrop-blur-sm flex items-center justify-center">
                     <form
                         onSubmit={(e) => handleUpdatePlaylist(e)}
-                        className="relative bg-white w-[500px] p-6 rounded-3xl shadow-2xl"
+                        className="relative bg-gradient-to-t from-white to-blue-50 w-[500px] p-6 rounded-3xl shadow-2xl"
                     >
                         <h2 className="text-2xl font-bold mb-4">Edit Playlist</h2>
 
                         <InputType
                             extraClass="mb-4"
                             inputType="text"
+                            icon={<RiPlayListLine />}
                             placeholder="Add a name"
                             value={playlistName}
                             onChange={(e) => setPlaylistName(e)}
@@ -219,21 +235,14 @@ function PlaylistDetails() {
                             value={playlistDescription}
                             onChange={(e) => setPlaylistDescription(e.target.value)}
                             placeholder="Add an optional description"
-                            className="w-full shadow-md rounded-xl p-3 placeholder:text-sm resize-none focus:ring-2 focus:ring-black"
+                            className="w-full shadow-lg rounded-xl p-3 placeholder:text-sm resize-none focus:ring-2 focus:ring-black"
                             rows={4}
                         />
                         <div className="flex justify-end mt-4 gap-3">
                             <button
-                                type="button"
-                                onClick={() => setOpenEditPlaylist(false)}
-                                className="text-gray-600 hover:text-gray-800 px-4 py-2 rounded-lg"
-                            >
-                                Cancel
-                            </button>
-                            <button
                                 disabled={btnDisabled}
                                 type="submit"
-                                className={`bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition ${btnDisabled && "opacity-50 cursor-not-allowed"
+                                className={`bg-gray-600 hover:bg-black text-white px-6 py-2 rounded-lg transition ${btnDisabled && "opacity-50 cursor-not-allowed"
                                     }`}
                             >
                                 {btnDisabled ? "Updating..." : "Update"}

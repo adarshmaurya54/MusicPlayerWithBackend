@@ -64,11 +64,11 @@ const MusicPlayer = ({
     }
   };
 
-  
+
   const progressPercentage = (currentTime / totalDuration) * 100;
   useEffect(() => {
-    if(progressPercentage > 0) setIsLoading(false)
-  },[progressPercentage])
+    if (progressPercentage > 0) setIsLoading(false)
+  }, [progressPercentage])
 
   useEffect(() => {
     if (totalDuration > 0) {
@@ -144,8 +144,8 @@ const MusicPlayer = ({
     } else {
       setIsPlaying(false);
     }
-  },[])
-  
+  }, [])
+
 
   useEffect(() => {
     setIsLoading(true);
@@ -272,7 +272,7 @@ const MusicPlayer = ({
           backgroundImage: songClickLoading
             ? "none"
             : `url(${import.meta.env.VITE_BASEURL}/assets${image})`
-  }}
+        }}
         className="transition-all duration-700 md:w-[100%] relative md:h-[100%] bg-no-repeat bg-cover overflow-auto no-scrollbar h-full w-full"
       >
         <div
@@ -280,14 +280,10 @@ const MusicPlayer = ({
             } backdrop-blur-2xl p-4 h-full overflow-auto no-scrollbar`}
         >
           <div className="flex text-black md:text-white absolute md:top-7 md:left-7 justify-between items-center">
-            {songClickLoading ? (
-              <div className="w-8 h-8 bg-gray-500 animate-pulse rounded-full"></div>
-            ) : (
-              <IoIosArrowDown
-                onClick={() => handlePlayerClose(songId, songName, artistName)}
-                className="text-white text-3xl cursor-pointer"
-              />
-            )}
+            <IoIosArrowDown
+              onClick={() => handlePlayerClose(songId, songName, artistName)}
+              className={`${songClickLoading ? 'text-black dark:text-white' : 'text-white'} text-3xl cursor-pointer`}
+            />
           </div>
           <div className="flex md:flex-row h-full flex-col items-center justify-around">
             {songClickLoading ? (
@@ -377,13 +373,13 @@ const MusicPlayer = ({
                       <span>{formatTime(audioRef?.current?.duration)}</span>
                     </div>
                     <div
-                      className="relative w-full h-2 bg-white/20 rounded-lg mt-2 cursor-pointer"
+                      className="relative w-full h-2 bg-white/20 rounded-sm mt-2 cursor-pointer"
                       ref={progressBarRef}
                       onMouseDown={handleStart}
                       onTouchStart={handleStart}
                     >
                       <div
-                        className={`absolute top-0 left-0 h-2 bg-orange-500 rounded-lg`}
+                        className={`absolute top-0 left-0 h-2 bg-orange-500 rounded-sm`}
                         style={{ width: `${progressPercentage}%` }}
                       ></div>
                       <div

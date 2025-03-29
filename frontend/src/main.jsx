@@ -26,7 +26,7 @@ const router = createBrowserRouter([
         path: 'library',
         element: <Library />,
         children: [
-          { path: 'liked-songs', element: <LikedSongs /> }, // Corrected path
+          { path: '', element: <LikedSongs /> }, // Corrected path
           { path: 'playlists', element: <Playlists /> }, // Corrected path
           { path: 'playlists/:id', element: <PlaylistDetails /> }, // Corrected path
         ],

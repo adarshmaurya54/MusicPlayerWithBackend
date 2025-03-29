@@ -26,6 +26,7 @@ function Layout() {
     const [progressPercentage, setProgressPercentage] = useState(0);
     const [songList, setSongList] = useState([]);
     const [songLoop, setSongLoop] = useState(false);
+    const [openEditProfile, setOpenEditProfile] = useState(false)
     const [image, setImage] = useState('/thumbnails/default-thumbnail-low.png')
     const navigate = useNavigate();
     const { colors } = useExtractColors(
@@ -226,14 +227,16 @@ function Layout() {
                             playPrevSong,
                             playNextSong,
                             songClickLoading,
-                            setSongClickLoading
+                            setSongClickLoading,
+                            openEditProfile,
+                            setOpenEditProfile
                         }}
                     />
 
                 </div>
 
                 {/* ✅ Conditionally render audio tag only when player is valid */}
-                {player !== undefined && player !== 0 && <>
+                {player !== undefined && player !== 0 &&  <>
                     <audio
                         ref={audioRef}
                         key={player} // Reload audio when song changes
@@ -269,10 +272,12 @@ function Layout() {
                             </div>
                             {/* Progress Bar */}
                             <div className="md:group-hover:block md:hidden absolute left-0 bottom-0 px-4 w-full z-10 h-[3px]">
-                                <div
-                                    className="bg-white h-full"
-                                    style={{ width: `${progressPercentage}%` }}
-                                >
+                                <div className="bg-white/10 w-full h-full">
+                                    <div
+                                        className="bg-white h-full"
+                                        style={{ width: `${progressPercentage}%` }}
+                                    >
+                                    </div>
                                 </div>
                             </div>
                             <div className="flex px-3 md:py-2 bg-black/25 md:group-hover:rounded-2xl md:rounded-full rounded-xl w-full items-center justify-between backdrop-blur-md">

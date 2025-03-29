@@ -22,7 +22,7 @@ function Library() {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(getCurrentUser()); // Dispatch action directly
-        navigate('/library/liked-songs')
+        // navigate('/library/liked-songs')
     }, [dispatch]);
 
     if (error) {
@@ -47,6 +47,18 @@ function Library() {
             <div className='flex items-center space-x-2 mt-5'>
                 {/* Playlists Link */}
                 <NavLink
+                    to="/"
+                    className={({ isActive }) =>
+                        `border dark:border-white/20 text-xs py-2 px-3 rounded-full ${isActive
+                            ? "dark:bg-white bg-black text-white dark:text-black" // Active style
+                            : "text-black dark:text-gray-50 hover:text-white hover:bg-black hover:dark:bg-white hover:dark:text-black" // Inactive style
+                        }`
+                    }
+                >
+                    Home
+                </NavLink>
+                {/* Playlists Link */}
+                <NavLink
                     to="/library/playlists"
                     className={({ isActive }) =>
                         `border dark:border-white/20 text-xs py-2 px-3 rounded-full ${isActive
@@ -60,7 +72,7 @@ function Library() {
 
                 {/* Liked Songs Link (Add end to avoid child route match) */}
                 <NavLink
-                    to="/library/liked-songs"
+                    to="/library"
                     end // Ensures exact match with /library only
                     className={({ isActive }) =>
                         `border dark:border-white/20 text-xs py-2 px-3 rounded-full ${isActive

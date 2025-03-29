@@ -7,6 +7,7 @@ import { FaPlus } from "react-icons/fa6";
 import InputType from "../auth/InputType";
 import { LiaTimesSolid } from "react-icons/lia";
 import { PiPlaylistFill } from "react-icons/pi";
+import { RiPlayListLine } from "react-icons/ri";
 
 const Playlists = () => {
     const [playlists, setPlaylists] = useState([]);
@@ -64,7 +65,7 @@ const Playlists = () => {
             </button>
         </div>
             :
-            <div className="mt-5 bg-gradient-to-b from-blue-50 to-white p-4 sm:p-6 rounded-3xl shadow-lg dark:bg-gray-800 transition-all duration-300">
+            <div className="mt-5 transition-all duration-300">
                 {/* Header */}
                 <div className="flex justify-between items-center mb-4">
                     <h1 className="text-lg flex items-center gap-3 sm:text-xl font-bold text-gray-700 dark:text-white">
@@ -91,7 +92,7 @@ const Playlists = () => {
                 <div className="fixed md:p-0 px-4 inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
                     <form
                         onSubmit={handleCreatePlaylist}
-                        className="relative bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 w-full max-w-md p-6 rounded-2xl shadow-xl"
+                        className="relative bg-gradient-to-t from-white to-blue-50 border border-gray-200 dark:border-gray-700 w-full max-w-md p-6 rounded-2xl shadow-xl"
                     >
                         {/* Modal Header */}
                         <div className="flex justify-between items-center mb-4">
@@ -113,6 +114,7 @@ const Playlists = () => {
                             inputType="text"
                             placeholder="Playlist Name"
                             value={playlistName}
+                            icon={<RiPlayListLine />}
                             onChange={(e) => setPlaylistName(e)}
                         />
 
@@ -129,7 +131,7 @@ const Playlists = () => {
                         <div className="mt-5 flex justify-end space-x-3">
                             <button
                                 type="submit"
-                                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all"
+                                className="bg-gray-600 hover:bg-black text-white px-4 py-2 rounded-lg transition-all"
                             >
                                 Create
                             </button>
