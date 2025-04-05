@@ -11,7 +11,6 @@ import { FaUser, FaSignOutAlt } from "react-icons/fa";
 import { logout } from "../redux/features/auth/authSlice"
 import { RiUploadCloud2Line } from "react-icons/ri";
 import { MdLibraryMusic } from "react-icons/md";
-import defaultUser from "../assets/default-user.jpg"
 
 
 
@@ -53,7 +52,7 @@ const Header = ({ handleToggleUpload , setOpenEditProfile}) => {
                     onClick={() => setIsOpen(!isOpen)}
                   >
                     <img
-                      src={defaultUser} // Replace with actual image URL
+                      src={`${import.meta.env.VITE_BASEURL}/assets/users/${user.profilePic}`} // Replace with actual image URL
                       alt="Profile"
                       className="md:w-10 md:h-10 w-7 h-7 object-cover rounded-full"
                     />

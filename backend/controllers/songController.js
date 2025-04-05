@@ -503,7 +503,7 @@ exports.songLike = async (req, res) => {
     }
   } catch (error) {
     console.error("Error in songLike:", error.message);
-    res.status(500).json({ message: "Server error", error: error.message });
+    return res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
@@ -537,7 +537,7 @@ exports.shareSong = async (req, res) => {
         `);
       } catch (error) {
         console.error("Error extracting metadata:", error);
-        res.status(500).json({ error: "Failed to extract song metadata" });
+        return res.status(500).json({ error: "Failed to extract song metadata" });
       }
 };
 
@@ -549,11 +549,11 @@ exports.getLikedSongs = async (req, res) => {
     const likedSongs = await Song.find({likes: userId})
 
     if(likedSongs.length === 0){
-      res.status(404).json({message: 'No liked songs found for this user.'})
+      return res.status(404).json({message: 'No liked songs found for this user.'})
     }
 
-    res.status(200).json(likedSongs)
+    return res.status(200).json(likedSongs)
   } catch (error) {
-    res.status(500).json({ error: 'An error occurred while fetching liked songs.' });
+    return res.status(500).json({ error: 'An error occurred while fetching liked songs.' });
   }
 }

@@ -15,6 +15,7 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 app.use("/assets/thumbnails", express.static(path.join(__dirname, "assets", "thumbnails")));
+app.use("/assets/users", express.static(path.join(__dirname, "assets", "users")));
 
 // Import Routes
 app.use("/auth", require("./routes/authRoutes"));

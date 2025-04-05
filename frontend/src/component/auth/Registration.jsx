@@ -54,16 +54,29 @@ function Registration() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
     if (validateForm()) {
-      const toastId = toast.loading("Registering...");
-
+      const toastId = toast.loading("Please wait...");
+  
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("email", email);
+      formData.append("password", password);
+      formData.append("profilePic", profilePic); // file input
+  
       try {
-        await API.post("/auth/signup", { name, email, password, profilePic });
-
+        await API.post("/auth/signup", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+  
         toast.success("Registration Successful!", { id: toastId });
         navigate("/login");
       } catch (error) {
-        toast.error(error.response.data.error, { id: toastId });
+        toast.error(error.response?.data?.error || "Something went wrong", {
+          id: toastId,
+        });
       }
     }
   };

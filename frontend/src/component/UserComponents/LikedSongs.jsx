@@ -17,7 +17,6 @@ function LikedSongs() {
             setLikedSongs(response.data || []); // Set empty array if no data
         } catch (error) {
             console.log("Error fetching liked songs:", error);
-            toast.error("Error fetching liked songs");
         }
         setLoading(false);
     };

@@ -60,34 +60,40 @@ exports.validateToken = (req, res) => {
 
 exports.signup = async (req, res) => {
   try {
-    const { name, email, password, profile } = req.body;
+    const { name, email, password } = req.body;
+    const profilePic = req.file?.filename; // get filename from multer
 
-    // ✅ Check if all fields are provided
+    console.log(name);
+    console.log(email);
+    console.log(password);
+    console.log("Uploaded profile pic filename:", profilePic);
+
+    // Check if all fields are provided
     if (!name || !email || !password) {
       return res.status(400).json({ error: "All fields are required!" });
     }
 
-    // ✅ Check if user already exists
+    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ error: "Email already registered!" });
     }
 
-    // ✅ Hash the password
+    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // ✅ Create new user
+    // Create new user
     const newUser = new User({
       name,
       email,
       password: hashedPassword,
-      profile: profile || "", // Default empty if no profile is provided
+      profilePic: profilePic || "", // default to empty if no file uploaded
     });
 
-    // ✅ Save user to database
+    // Save user to database
     await newUser.save();
 
-    // ✅ Send response
+    // Send response
     res.status(201).json({
       message: "User registered successfully!",
       user: {
@@ -102,6 +108,7 @@ exports.signup = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 exports.currentUserController = async (req, res) => {
   try {

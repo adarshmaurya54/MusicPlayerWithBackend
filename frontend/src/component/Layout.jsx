@@ -200,7 +200,7 @@ function Layout() {
         <ThemeProvider value={{ lightTheme, darkTheme, themeMode }}>
             <div className="md:bg-black/20 transition-all duration-500">
                 <div
-                    className={`h-screen md:px-10 bg-fixed overflow-auto bg-center bg-cover transition-all duration-500 bg-[url('/src/assets/Blur.png')] dark:bg-[url('/src/assets/bg_dark.jpg')]`}
+                    className={`h-screen md:px-10 bg-fixed md:overflow-auto bg-center bg-cover transition-all duration-500 bg-[url('/src/assets/Blur.png')] dark:bg-[url('/src/assets/bg_dark.jpg')]`}
                 >
                     {/* Pass player, audioRef, and isLoading to children using Outlet */}
                     <Outlet

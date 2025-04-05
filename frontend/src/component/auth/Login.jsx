@@ -37,7 +37,6 @@ function Login() {
   // Redirect to home page after successful login
   useEffect(() => {
     if (token && user) {
-      toast.success("Already logged in!")
       navigate("/"); 
     }
   }, [token,user, navigate]);
