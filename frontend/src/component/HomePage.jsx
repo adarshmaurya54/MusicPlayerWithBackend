@@ -28,7 +28,7 @@ function HomePage() {
   const [isNoSongsFound, setIsNoSongsFound] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
-
+  const navigate = useNavigate();
   const {
     player,
     setPlayer,
@@ -164,7 +164,7 @@ function HomePage() {
   }
 
   return (
-    <div className={`${openEditProfile ? "overflow-hidden" : "overflow-auto"}  md:px-10 w-full h-full`}>
+    <>
       <Header setOpenEditProfile={setOpenEditProfile} handleToggleUpload={handleToggleUpload} />
       <div className="flex overflow-auto flex-col mb-5 w-full text-white">
         <div className="md:bg-white dark:md:bg-slate-900/50 dark:border-white/10 md:border p-4 pb-5 md:rounded-3xl">
@@ -267,12 +267,14 @@ function HomePage() {
                                 ? songDetail?.highQualityThumbnailUrl
                                 : "/thumbnails/default-thumbnail-low.png"
                             }
-                            handlePlayer={() =>
+                            handlePlayer={() =>{
                               handlePlayer(
                                 song.audioFile,
                                 song.songName,
                                 song.artistName
-                              )
+                              );
+                              navigate(`/song/${song.audioFile}`)
+                            }
                             }
                             id={song._id}
                             likes={song.likes}
@@ -337,7 +339,7 @@ function HomePage() {
         )}
         {openEditProfile && <EditProfile setOpenEditProfile={setOpenEditProfile}/>}
       </div>
-    </div>
+    </>
   );
 }
 

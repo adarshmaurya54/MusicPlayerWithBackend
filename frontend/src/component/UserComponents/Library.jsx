@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 
 
 function Library() {
-    const { error } = useSelector((state) => state.auth)
+    const { error, user } = useSelector((state) => state.auth)
     const navigate = useNavigate()
     const { player, setPlayer, audioRef,setSongList, setIsPlaying, isPlaying, songDetail } = useOutletContext()
     useEffect(() => {
@@ -35,13 +35,14 @@ function Library() {
     return (
         <div className="md:bg-white md:my-5 py-12 md:px-8 px-3 dark:md:bg-slate-900/50 dark:border-white/10 md:border md:rounded-3xl">
             <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-5">
+                <div className="flex items-center md:space-x-5 space-x-2">
                     <img
-                        src={defaultUser} // Replace with actual image URL
-                        alt="Profile"
+                        title={user?.name}
+                        src={`${import.meta.env.VITE_BASEURL}/assets/users/${user?.profilePic}`} // Replace with actual image URL
+                        alt={user?.name}
                         className="md:w-14 border border-gray-100 md:h-14 w-7 h-7 object-cover rounded-full"
                     />
-                    <p className='text-2xl dark:text-gray-50 font-bold'>Your Library</p>
+                    <p className='md:text-2xl dark:text-gray-50 font-bold'>Your Library</p>
                 </div>
             </div>
             <div className='flex items-center space-x-2 mt-5'>

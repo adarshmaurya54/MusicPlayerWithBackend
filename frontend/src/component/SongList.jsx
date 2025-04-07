@@ -91,8 +91,7 @@ function SongList({
     </div>}
     <div
       onClick={() => {
-        handlePlayer(id, title, artist);
-        navigate(`/song/${audioFile}`)
+        handlePlayer();
       }}
       className="relative w-full group flex flex-col space-y-2 "
 

@@ -9,6 +9,8 @@ import { useExtractColors } from 'react-extract-colors'
 
 function Layout() {
     const { songId } = useParams()
+    const location = useLocation();
+    const isSongPage = location.pathname.startsWith("/song");
 
     const [songClickLoading, setSongClickLoading] = useState(false);
     const [player, setPlayer] = useState(0) // Default to 0 or undefined initially
@@ -94,7 +96,8 @@ function Layout() {
         const nextSongId = getNextSongId(player);
         if (nextSongId) {
             setPlayer(nextSongId);
-            navigate(`/song/${nextSongId}`);
+            if (isSongPage)
+                navigate(`/song/${nextSongId}`);
         }
     };
 
@@ -103,7 +106,8 @@ function Layout() {
         const prevSongId = getPrevSongId(player);
         if (prevSongId) {
             setPlayer(prevSongId);
-            navigate(`/song/${prevSongId}`);
+            if (isSongPage)
+                navigate(`/song/${prevSongId}`);
         }
     };
 
@@ -202,41 +206,43 @@ function Layout() {
                 <div
                     className={`h-screen bg-center bg-fixed bg-cover transition-all duration-500 bg-[url('/src/assets/Blur.png')] dark:bg-[url('/src/assets/bg_dark.jpg')]`}
                 >
-                    {/* Pass player, audioRef, and isLoading to children using Outlet */}
-                    <Outlet
-                        context={{
-                            player,
-                            setPlayer,
-                            songList,
-                            setSongList,
-                            totalDuration,
-                            isLoading,
-                            setIsLoading,
-                            audioRef,
-                            handleLoadedMetadata,
-                            currentPlayingSong,
-                            setCurrentPlayingSong,
-                            isPlaying,
-                            setIsPlaying,
-                            songDetail,
-                            setSongDetail,
-                            hiddenPlayer,
-                            setHiddenPlayer,
-                            progressPercentage,
-                            setProgressPercentage,
-                            playPrevSong,
-                            playNextSong,
-                            songClickLoading,
-                            setSongClickLoading,
-                            openEditProfile,
-                            setOpenEditProfile
-                        }}
-                    />
+                    <div className={`${openEditProfile ? "overflow-hidden" : "overflow-auto"} ${player !== undefined && player !== 0 ? 'pb-12 md:pb-0' : "pb-0"} md:px-10 w-full h-full`}>
 
+                        {/* Pass player, audioRef, and isLoading to children using Outlet */}
+                        <Outlet
+                            context={{
+                                player,
+                                setPlayer,
+                                songList,
+                                setSongList,
+                                totalDuration,
+                                isLoading,
+                                setIsLoading,
+                                audioRef,
+                                handleLoadedMetadata,
+                                currentPlayingSong,
+                                setCurrentPlayingSong,
+                                isPlaying,
+                                setIsPlaying,
+                                songDetail,
+                                setSongDetail,
+                                hiddenPlayer,
+                                setHiddenPlayer,
+                                progressPercentage,
+                                setProgressPercentage,
+                                playPrevSong,
+                                playNextSong,
+                                songClickLoading,
+                                setSongClickLoading,
+                                openEditProfile,
+                                setOpenEditProfile
+                            }}
+                        />
+                    </div>
                 </div>
 
                 {/* ✅ Conditionally render audio tag only when player is valid */}
-                {player !== undefined && player !== 0 &&  <>
+                {player !== undefined && player !== 0 && <>
                     <audio
                         ref={audioRef}
                         key={player} // Reload audio when song changes

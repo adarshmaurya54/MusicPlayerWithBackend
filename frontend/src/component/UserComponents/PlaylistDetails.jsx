@@ -108,16 +108,16 @@ function PlaylistDetails() {
     }
 
     return (
-        <div className={`relative mt-5 md:bg-white rounded-3xl w-full ${player !== undefined && player !== 0 ? "mb-12" : "mb-0"}`}>
+        <div className={`relative mt-5 md:bg-white rounded-3xl w-full`}>
             {/* ✅ Playlist Header */}
             <div className="flex flex-col p-3 md:bg-transparent bg-white border rounded-3xl gap-4 md:pb-4 md:border-b md:border-x-0 md:border-t-0 md:rounded-none">
-                <div className="flex items-center justify-between">
+                <div className="flex md:items-center justify-between">
                     <div>
-                        <h1 className="text-3xl md:text-5xl font-bold">{playlist?.name}</h1>
+                        <h1 className="text-2xl md:text-5xl font-bold">{playlist?.name}</h1>
                         <p className="md:text-sm text-xs mt-1 text-gray-500">{playlist?.description || "No description available"}</p>
                     </div>
                     <div className="relative inline-block">
-                        <IoEllipsisHorizontal onClick={() => setIsOpen(!isOpen)} className="text-2xl text-gray-400 hover:text-black cursor-pointer" />
+                        <IoEllipsisHorizontal onClick={() => setIsOpen(!isOpen)} className={`text-2xl text-gray-400 hover:text-black cursor-pointer ${isOpen && 'text-black'}`} />
                         {isOpen && <div className="absolute z-10 right-0 mt-2 w-48 bg-white dark:bg-slate-800 border dark:border-white/20 rounded-xl shadow-lg">
                             <ul className="p-1">
                                 <li onClick={() => handleDeletePlaylist()} className="flex gap-2 text-sm items-center rounded-lg px-4 py-2 dark:text-white hover:dark:bg-gray-700 hover:bg-gray-100 cursor-pointer">
@@ -148,8 +148,9 @@ function PlaylistDetails() {
                 </div>
                 <div className="flex gap-2 items-center">
                     <img
-                        src={defaultUser}
-                        alt="Profile"
+                        title={user?.name}
+                        src={`${import.meta.env.VITE_BASEURL}/assets/users/${user?.profilePic}`} // Replace with actual image URL
+                        alt={user?.name}
                         className="border border-gray-200 w-8 h-8 object-cover rounded-full"
                     />
                     <div className="text-sm font-bold">
@@ -177,25 +178,24 @@ function PlaylistDetails() {
                     <div className="mt-2 grid gap-4">
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-5">
                             {playlist.songs?.map((song, index) => (
-                                <div key={index} onClick={() => { setPlayer(song.audioFile); setSongList(playlist.songs) }}>
-                                    <SongList
-                                        currentlyPlaying={player === song.audioFile}
-                                        isPlaying={isPlaying}
-                                        key={song.songId}
-                                        image={
-                                            songDetail?.highQualityThumbnailUrl
-                                                ? songDetail?.highQualityThumbnailUrl
-                                                : "/thumbnails/default-thumbnail-low.png"
-                                        }
-                                        id={song._id}
-                                        likes={song.likes}
-                                        songId={song.songId}
-                                        audioFile={song.audioFile}
-                                        title={song.songName}
-                                        artist={song.artistName}
-                                        favourite={song.favourite}
-                                    />
-                                </div>
+                                <SongList
+                                    currentlyPlaying={player === song.audioFile}
+                                    isPlaying={isPlaying}
+                                    key={song.songId}
+                                    handlePlayer={() => { setPlayer(song.audioFile); setSongList(playlist.songs) }}
+                                    image={
+                                        songDetail?.highQualityThumbnailUrl
+                                            ? songDetail?.highQualityThumbnailUrl
+                                            : "/thumbnails/default-thumbnail-low.png"
+                                    }
+                                    id={song._id}
+                                    likes={song.likes}
+                                    songId={song.songId}
+                                    audioFile={song.audioFile}
+                                    title={song.songName}
+                                    artist={song.artistName}
+                                    favourite={song.favourite}
+                                />
                             ))}
                         </div>
                     </div>

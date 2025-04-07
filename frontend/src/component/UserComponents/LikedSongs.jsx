@@ -36,7 +36,7 @@ function LikedSongs() {
                     No liked songs found.
                 </div>
             ) : (
-                <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-5 ${player !== undefined && player !== 0 ? "mb-12" : "mb-0"}`}>
+                <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-5`}>
                     {likedSongs.map((song, index) => (
                         <div key={index} onClick={() => { setPlayer(song.audioFile); setSongList(likedSongs ) }}>
                             <SongList
