@@ -1,6 +1,10 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel"); // Import User model
 const bcrypt = require("bcrypt");
+const uploadProfile = require("../middleware/uploadProfile");
+const { default: mongoose } = require("mongoose");
+const fs = require("fs")
+const path = require("path");
 require("dotenv").config();
 
 // Login Controller
@@ -87,7 +91,7 @@ exports.signup = async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      profilePic: profilePic || "", // default to empty if no file uploaded
+      profilePic: profilePic || "default-user.svg", // default to empty if no file uploaded
     });
 
     // Save user to database
@@ -125,5 +129,61 @@ exports.currentUserController = async (req, res) => {
           message: 'unable to get current user',
           error
       })
+  }
+}
+
+exports.updateProfile = async (req, res) => {
+  const userId_ = req.body.userId
+  try {
+    // Use multer inside the controller
+    uploadProfile.single("profilePic")(req, res, async function (err) {
+      if (err) {
+        return res.status(400).json({ error: "Image upload failed" });
+      }
+      
+      
+      const { name } = req.body;
+      const userId = new mongoose.Types.ObjectId(req.body.userId ? req.body.userId : userId_); // Convert to ObjectId
+
+      const updateData = { name };
+
+      if (req.file) {
+        updateData.profilePic = req.file.filename;
+      }
+
+      const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true });
+
+      if (!updatedUser) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      res.status(200).json({ message: "Profile updated successfully", user: updatedUser });
+    });
+  } catch (error) {
+    console.error("Update error:", error);
+    res.status(500).json({ error: "Server error while updating profile" });
+  }
+};
+
+exports.deleteProfilePic = async (req, res) => {
+  try {
+    const filename = req.params.filename
+    if (!filename) {
+      return res.status(400).json({ error: 'Filename is required' });
+    }
+
+    const filePath = path.join(__dirname, '../assets/users', filename);
+
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.error('File deletion failed:', err.message);
+        return res.status(500).json({ error: 'Failed to delete file' });
+      }
+
+      return res.status(200).json({success: true, message: "profile deleted successfully", filename})
+    });
+  } catch (error) {
+    console.error("Delete error:", error);
+    res.status(500).json({ error: "Server error while deleting profile" });
   }
 }

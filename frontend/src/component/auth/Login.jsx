@@ -8,7 +8,6 @@ import store from "../../redux/store"
 import { useDispatch, useSelector } from "react-redux";
 import { IoIosMail } from "react-icons/io";
 import { IoLockClosedOutline } from "react-icons/io5";
-import toast from "react-hot-toast";
 
 
 function Login() {

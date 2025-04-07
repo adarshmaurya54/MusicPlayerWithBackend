@@ -14,6 +14,7 @@ connectDB();
 // Middleware setup
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // for froms
 app.use("/assets/thumbnails", express.static(path.join(__dirname, "assets", "thumbnails")));
 app.use("/assets/users", express.static(path.join(__dirname, "assets", "users")));
 
