@@ -7,10 +7,12 @@ import { FaForward } from "react-icons/fa";
 import { FaBackward } from "react-icons/fa";
 import { API } from "../services/apiService";
 import { BsRepeat1 } from "react-icons/bs";
-import { TbShare3 } from "react-icons/tb";
-import Share from "./Share";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
+import { CiShare1 } from "react-icons/ci";
+import { IoEllipsisVertical, IoShareOutline } from "react-icons/io5";
+import Share from "./Share";
+
 
 const MusicPlayer = ({
   songName,
@@ -38,6 +40,7 @@ const MusicPlayer = ({
   const [isDragging, setIsDragging] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [open, setOpen] = useState(false);
+  const [share, setShare] = useState(false)
   // New state for loading
   const { user } = useSelector((state) => state.auth)
   const [isLiked, setIsLiked] = useState(likes?.includes(user?._id));
@@ -279,19 +282,31 @@ const MusicPlayer = ({
           className={`${songClickLoading ? "bg-white dark:bg-slate-900" : "bg-black/30  md:bg-black/20"
             } backdrop-blur-2xl p-4 h-full overflow-auto no-scrollbar`}
         >
-          <div className="flex text-black md:text-white absolute md:top-7 md:left-7 justify-between items-center">
+          <div className="flex justify-between text-black md:text-white absolute md:top-7 left-0 md:px-7 pl-7 pr-4 w-full items-center">
             <IoIosArrowDown
-              onClick={() => handlePlayerClose(songId, songName, artistName)}
+              onClick={() => {handlePlayerClose(songId, songName, artistName); setOpen(false)}}
               className={`${songClickLoading ? 'text-black dark:text-white' : 'text-white'} text-3xl cursor-pointer`}
             />
+            <div className="relative inline-block">
+              <IoEllipsisVertical onClick={() => setOpen(!open)} className={`text-2xl ${songClickLoading ? 'text-black dark:text-white' : 'text-white'} text-white cursor-pointer `} />
+              {open && <div className="absolute z-10 right-0 mt-2 w-48 bg-white dark:bg-slate-800 border dark:border-white/20 rounded-xl shadow-lg">
+                <ul className="text-black p-1">
+                  <li onClick={() => setShare(true)} className="flex gap-2 text-sm items-center rounded-lg px-4 py-2 dark:text-white hover:dark:bg-gray-700 hover:bg-gray-100 cursor-pointer">
+                  <IoShareOutline className="text-base" />
+                  Share
+                  </li>
+                </ul>
+              </div>
+              }
+            </div>
           </div>
-          <div className="flex md:flex-row h-full flex-col items-center justify-around">
+          <div className="flex md:flex-row h-full flex-col items-center justify-evenly">
             {songClickLoading ? (
               <div className="transition-all md:mt-0 mt-10 md:mb-0 mb-5 px-3 py-5 md:w-[50%] w-full flex justify-center">
                 <div className="md:w-[80%] w-[270px] h-[200px] md:h-[300px] bg-gray-500 animate-pulse rounded-3xl"></div>
               </div>
             ) : (
-              <div className="transition-all md:mt-0 mt-10 md:mb-0 mb-5 px-3 py-5 md:w-[50%] w-full flex justify-center">
+              <div className="transition-all md:mt-0 mt-10 md:mb-0 px-3 md:w-[50%] w-full flex justify-center">
                 <img
                   src={`${import.meta.env.VITE_BASEURL}/assets${image}`}
                   alt="Album Art"
@@ -426,10 +441,7 @@ const MusicPlayer = ({
                         <HiSpeakerWave className="text-white  hover:scale-110 transition-all md:text-lg text-3xl" />
                       )}
                     </button>
-                    <button onClick={() => setOpen(true)} className="md:block hidden absolute top-1/2 right-0 -translate-x-1/2 -translate-y-1/2">
-                      <TbShare3 className="text-white text-3xl" />
-                    </button>
-                    {open && <Share setOpen={setOpen} audioFile={songId} />}
+                    {share && <Share setShare={setShare} audioFile={songId} />}
                   </div>
                 </div>
               </div>

@@ -200,6 +200,40 @@ function Layout() {
         setHiddenPlayer(true);
     };
 
+    if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: songDetail?.songName || 'Please wait...',
+            artist: songDetail?.artistName || '',
+            artwork: [
+                { src: `${import.meta.env.VITE_BASEURL}/assets${songDetail?.highQualityThumbnailUrl}`, sizes: '512x512', type: 'image/jpeg' }
+            ]
+        });
+
+        // Set actions
+        navigator.mediaSession.setActionHandler('play', () => {
+            if(audioRef.current.pause){
+                audioRef.current.play()
+                setIsPlaying(true)
+            }
+        });
+
+        navigator.mediaSession.setActionHandler('pause', () => {
+            if(audioRef.current.play){
+                audioRef.current.pause()
+                setIsPlaying(false)
+            }
+        });
+
+        navigator.mediaSession.setActionHandler('nexttrack', () => {
+            // your next method
+            playNextSong();
+        });
+        navigator.mediaSession.setActionHandler('previoustrack', () => {
+            // your next method
+            playPrevSong();
+        });
+    }
+
     return (
         <ThemeProvider value={{ lightTheme, darkTheme, themeMode }}>
             <div className="md:bg-black/20 transition-all duration-500">
