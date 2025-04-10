@@ -54,7 +54,7 @@ function SongList({
       <TbShare3 className="text-gray-400" />
     </button>
     {/* Custom Popup */}
-    {open && <Share setOpen={setOpen} audioFile={audioFile} />}
+    {open && <Share setShare={setOpen} audioFile={audioFile} />}
     {!isDeleting && user?.role === 'admin' && (
       <>
         <button

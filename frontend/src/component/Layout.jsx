@@ -30,6 +30,7 @@ function Layout() {
     const [songLoop, setSongLoop] = useState(false);
     const [openEditProfile, setOpenEditProfile] = useState(false)
     const [image, setImage] = useState('/thumbnails/default-thumbnail-low.png')
+    const [logQualityImage, setLogQualityImage] = useState('/thumbnails/default-thumbnail-low.png')
     const navigate = useNavigate();
     const { colors } = useExtractColors(
         `${import.meta.env.VITE_BASEURL}/assets${image}`,
@@ -148,6 +149,7 @@ function Layout() {
                 const response = await apiService.getSongInfo(player);
                 setSongDetail(response);
                 setImage(response.highQualityThumbnailUrl)
+                setLogQualityImage(response.lowQualityThumbnailUrl)
                 // setHiddenPlayer(false); // Make the player visible
             } catch (err) {
                 console.error("Failed to fetch song details:", err);
@@ -295,7 +297,7 @@ function Layout() {
                             style={{
                                 backgroundImage:
                                     window.innerWidth >= 768
-                                        ? `url(${import.meta.env.VITE_BASEURL}/assets${image})`
+                                        ? `url(${import.meta.env.VITE_BASEURL}/assets${logQualityImage})`
                                         : "none",
                                 backgroundColor: window.innerWidth < 768 ? colors[3] : "transparent",
                             }}
@@ -346,7 +348,7 @@ function Layout() {
                                             ? isLoading
                                                 ? "Buffering..."
                                                 : isPlaying
-                                                    ? "Now Playing"
+                                                    ? `Playing`
                                                     : "Paused"
                                             : "Please wait"}
                                     </p>

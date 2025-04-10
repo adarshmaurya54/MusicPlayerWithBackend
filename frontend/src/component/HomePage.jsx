@@ -12,7 +12,6 @@ import Pagination from "./Pagination";
 import ArtistButtons from "./ArtistButtons";
 import { useDispatch } from "react-redux";
 import { getCurrentUser } from "../redux/features/auth/authAction";
-import { LiaTimesSolid } from "react-icons/lia";
 import EditProfile from "./EditProfile";
 
 function HomePage() {

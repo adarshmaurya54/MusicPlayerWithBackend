@@ -33,7 +33,7 @@ const MusicPlayer = ({
   songLoop,
   setSongLoop,
   totalDuration,
-  colors
+  backgroundImage
 }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -274,7 +274,7 @@ const MusicPlayer = ({
         style={{
           backgroundImage: songClickLoading
             ? "none"
-            : `url(${import.meta.env.VITE_BASEURL}/assets${image})`
+            : `url(${import.meta.env.VITE_BASEURL}/assets${backgroundImage})`
         }}
         className="transition-all duration-700 md:w-[100%] relative md:h-[100%] bg-no-repeat bg-cover overflow-auto no-scrollbar h-full w-full"
       >
