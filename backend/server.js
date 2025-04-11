@@ -23,6 +23,7 @@ app.use("/auth", require("./routes/authRoutes"));
 app.use("/artists", require("./routes/artistRoutes"));
 app.use("/songs", require("./routes/songRoutes"));
 app.use("/playlists", require("./routes/playlistRoutes"));
+app.use("/comments", require("./routes/commentRoutes"));
 
 // Error Handler Middleware
 app.use((err, req, res, next) => {

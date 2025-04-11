@@ -7,6 +7,9 @@ import { TbShare3 } from "react-icons/tb";
 import Share from "./Share";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { BsChatRightText } from "react-icons/bs";
+import SongComments from "./SongComments";
+
 
 function SongList({
   id,
@@ -25,7 +28,7 @@ function SongList({
   const { user } = useSelector((state) => state.auth)
   const [isDeleting, setIsDeleting] = useState(false); // State to track if a song is being deleted
   const [open, setOpen] = useState(false);
-  const navigate = useNavigate()
+  const [showComments,setShowComments] = useState(false)
   const handleDeleteSong = async (songId, filename) => {
     const songfile = filename + ".mp3";
 
@@ -63,7 +66,7 @@ function SongList({
             e.stopPropagation();
             handleToggleEdit(songId);
           }}
-          className="absolute z-10 bottom-2 right-2 p-2 bg-white dark:bg-slate-900 dark:border-white/20 text-gray-400 border rounded-lg text-sm opacity-0 group-hover:opacity-100  transition-opacity duration-300"
+          className="absolute z-[2] bottom-2 right-2 p-2 bg-white dark:bg-slate-900 dark:border-white/20 text-gray-400 border rounded-lg text-sm opacity-0 group-hover:opacity-100  transition-opacity duration-300"
 
         >
           <FiEdit2 />
@@ -75,12 +78,19 @@ function SongList({
             handleDeleteSong(id, songId); // Call the delete function when clicked
             console.log(id);
           }}
-          className="absolute z-10 bottom-2 right-12 p-2 bg-white  dark:bg-transparent dark:border-white/20 text-gray-400 border rounded-lg text-sm opacity-0 group-hover:opacity-100  transition-opacity duration-300"
+          className="absolute z-[2] bottom-2 right-12 p-2 bg-white  dark:bg-transparent dark:border-white/20 text-gray-400 border rounded-lg text-sm opacity-0 group-hover:opacity-100  transition-opacity duration-300"
         >
           <AiOutlineDelete />
         </button>
       </>
     )}
+    {user?.role !== 'admin' && <div
+      onClick={() => setShowComments(true)}
+      className="absolute z-[2] bottom-2 right-2 p-2 bg-white  dark:bg-transparent dark:border-white/20 text-gray-400 border rounded-lg text-sm opacity-0 group-hover:opacity-100  transition-opacity duration-300"
+    >
+      <BsChatRightText />
+    </div>}
+    {showComments && <SongComments setShowComments={setShowComments} songname={title} userId={user?._id} songId={id}/>}
     {isDeleting && (
       <div className="absolute bottom-2 text-xs right-2 p-2 bg-white   dark:bg-gray-900 dark:text-white dark:border-white/20 text-black border rounded-lg transition-opacity duration-300">
         Deleting...
