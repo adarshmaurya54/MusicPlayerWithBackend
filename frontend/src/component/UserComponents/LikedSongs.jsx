@@ -7,7 +7,7 @@ import SongList from '../SongList';
 function LikedSongs() {
     const [likedSongs, setLikedSongs] = useState([]);
     const [loading, setLoading] = useState(false);
-    const {songDetail, player, setPlayer, setSongList, isPlaying} = useOutletContext();
+    const { songDetail, player, setPlayer, setSongList, isPlaying } = useOutletContext();
 
     // Fetch liked songs
     const getLikedSongs = async () => {
@@ -38,25 +38,24 @@ function LikedSongs() {
             ) : (
                 <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-5`}>
                     {likedSongs.map((song, index) => (
-                        <div key={index} onClick={() => { setPlayer(song.audioFile); setSongList(likedSongs ) }}>
-                            <SongList
-                                currentlyPlaying={player === song.audioFile}
-                                isPlaying={isPlaying}
-                                key={song.songId}
-                                image={
-                                    songDetail?.highQualityThumbnailUrl
-                                        ? songDetail?.highQualityThumbnailUrl
-                                        : "/thumbnails/default-thumbnail-low.png"
-                                }
-                                id={song._id}
-                                likes={song.likes}
-                                songId={song.songId}
-                                audioFile={song.audioFile}
-                                title={song.songName}
-                                artist={song.artistName}
-                                favourite={song.favourite}
-                            />
-                        </div>
+                        <SongList
+                            currentlyPlaying={player === song.audioFile}
+                            isPlaying={isPlaying}
+                            key={song.songId}
+                            handlePlayer={() => { setPlayer(song.audioFile); setSongList(playlist.songs) }}
+                            image={
+                                songDetail?.highQualityThumbnailUrl
+                                    ? songDetail?.highQualityThumbnailUrl
+                                    : "/thumbnails/default-thumbnail-low.png"
+                            }
+                            id={song._id}
+                            likes={song.likes}
+                            songId={song.songId}
+                            audioFile={song.audioFile}
+                            title={song.songName}
+                            artist={song.artistName}
+                            favourite={song.favourite}
+                        />
                     ))}
                 </div>
             )}
