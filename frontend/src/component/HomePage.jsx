@@ -13,6 +13,7 @@ import ArtistButtons from "./ArtistButtons";
 import { useDispatch } from "react-redux";
 import { getCurrentUser } from "../redux/features/auth/authAction";
 import EditProfile from "./EditProfile";
+import { LiaTimesSolid } from "react-icons/lia";
 
 function HomePage() {
   const { songId } = useParams(); // Get songId from URL
@@ -170,7 +171,7 @@ function HomePage() {
           {!isNoSongsFound && (
             <>
               <div className="flex gap-5 md:flex-row flex-col items-center w-full text-black justify-between">
-                <div className="relative z-5 md:w-[376px] w-full">
+                <div className="group relative z-5 md:w-[376px] w-full">
                   {/* Search Icon */}
                   <span className="absolute dark:text-gray-500 inset-y-0 left-4 flex items-center pointer-events-none ">
                     <svg
@@ -199,6 +200,9 @@ function HomePage() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
+                    <div className={`absolute top-1/2 right-3 -translate-y-1/2 transition-all duration-300 ${searchQuery ? "group-hover:opacity-100 opacity-0" : "hidden"}`}>
+                    <LiaTimesSolid onClick={() => setSearchQuery('')} className="cursor-pointer" />
+                  </div>
                 </div>
               </div>
               {/* artist filter buttons */}
@@ -266,7 +270,7 @@ function HomePage() {
                                 ? songDetail?.highQualityThumbnailUrl
                                 : "/thumbnails/default-thumbnail-low.png"
                             }
-                            handlePlayer={() =>{
+                            handlePlayer={() => {
                               handlePlayer(
                                 song.audioFile,
                                 song.songName,
@@ -336,7 +340,7 @@ function HomePage() {
             songId={editSongId}
           />
         )}
-        {openEditProfile && <EditProfile setOpenEditProfile={setOpenEditProfile}/>}
+        {openEditProfile && <EditProfile setOpenEditProfile={setOpenEditProfile} />}
       </div>
     </>
   );
