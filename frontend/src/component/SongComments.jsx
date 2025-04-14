@@ -139,7 +139,7 @@ const SongComments = ({ setShowComments, userId, songId, songname }) => {
                                                 {console.log(msg.userId.profilePic)}
                                             </p>
                                         )}
-                                        <pre className='font-poppins'>{msg.comment}</pre>
+                                        <pre className='font-poppins text-wrap'>{msg.comment}</pre>
                                     </div>
                                 </div>
                             </div>
