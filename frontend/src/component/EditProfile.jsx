@@ -5,6 +5,7 @@ import InputType from './auth/InputType'
 import toast from 'react-hot-toast'
 import { API } from '../services/apiService'
 import { setUser } from "../redux/features/auth/authSlice"
+import { FaRegUser } from 'react-icons/fa'
 
 
 function EditProfile({ setOpenEditProfile }) {
@@ -90,7 +91,7 @@ function EditProfile({ setOpenEditProfile }) {
                 <div className={`absolute top-0 left-0 w-full transition-transform duration-500 ${!edit ? "translate-x-full" : "translate-x-0"} flex h-full items-center justify-center`}>
                     <form onSubmit={handleUpdate} className="flex p-5 text-black gap-3 flex-col items-center justify-center w-full h-full">
                         <h1 className='font-bold text-3xl'>Edit Profile</h1>
-                        <InputType extraClass="mt-5" labelText="Name" inputType="text" required={true} name="name"
+                        <InputType icon={<FaRegUser />} extraClass="mt-5" labelText="Name" inputType="text" required={true} name="name"
                             placeholder="Name" onChange={(e) => setName(e)} value={name} />
                         <div className='w-full'>
                             <label

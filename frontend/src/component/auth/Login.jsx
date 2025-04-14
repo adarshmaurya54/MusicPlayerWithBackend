@@ -46,7 +46,7 @@ function Login() {
 
   return (
     <div
-      className="h-screen relative flex overflow-x-hidden items-center justify-center bg-center bg-cover"
+      className="h-screen font-poppins relative flex overflow-x-hidden items-center justify-center bg-center bg-cover"
       style={{ backgroundImage: `url(${bg})` }}
     >
       <div className="w-[330px] bg-gradient-to-t from-white to-blue-50 rounded-3xl p-6 border-4 border-white shadow-lg mx-auto my-5">

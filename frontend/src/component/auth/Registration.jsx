@@ -82,7 +82,7 @@ function Registration() {
   };
 
   return (
-    <div className="bg-center h-screen md:px-0 px-6 flex items-center justify-center bg-cover"
+    <div className="bg-center font-poppins h-screen md:px-0 px-6 flex items-center justify-center bg-cover"
       style={{ backgroundImage: `url(${bg})` }}
     >
       <form onSubmit={handleSubmit} className=" max-w-[685px] bg-gradient-to-t from-white to-blue-50 border-4 border-white shadow-lg rounded-3xl p-6">

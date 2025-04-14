@@ -264,7 +264,7 @@ const MusicPlayer = ({
 
   return (
     <div
-      className="w-full h-full bg-black/30 flex justify-center text-white items-center"
+      className="w-full h-full font-poppins bg-black/30 flex justify-center text-white items-center"
       onMouseMove={handleMove}
       onMouseUp={handleEnd}
       onTouchMove={handleMove}
@@ -353,7 +353,7 @@ const MusicPlayer = ({
                       >
                         {songName}
                       </div>
-                      <span className="md:text-xl capitalize font-thin text-lg text-gray-200">
+                      <span className="md:text-xl capitalize font-light text-lg text-gray-200">
                         {artistName}
                       </span>
                     </div>

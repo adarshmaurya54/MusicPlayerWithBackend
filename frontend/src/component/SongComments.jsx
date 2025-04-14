@@ -9,7 +9,24 @@ const SongComments = ({ setShowComments, userId, songId, songname }) => {
     const [comment, setComment] = useState("");
     const [loading, setLoading] = useState(false);
     const [songComments, setSongComments] = useState([]);
+    const [rows, setRows] = useState(1);
     const scrollRef = useRef(null);
+    const textareaRef = useRef(null);
+    const adjustTextareaHeight = () => {
+        const textarea = textareaRef.current;
+        if (textarea) {
+            textarea.rows = 1; 
+            const lineHeight = 24;  
+            const lines = Math.floor(textarea.scrollHeight / lineHeight);
+            const newRows = Math.min(lines, 5);
+            textarea.rows = newRows;
+            setRows(newRows);
+        }
+    };
+
+    useEffect(() => {
+        adjustTextareaHeight();
+    }, [comment]);
 
     const handleComment = async () => {
         if (comment.trim() === '') {
@@ -49,26 +66,26 @@ const SongComments = ({ setShowComments, userId, songId, songname }) => {
         <div className='fixed z-50 top-0 left-0 flex justify-center items-center w-full h-full bg-black/50 backdrop-blur-sm'>
             <div className="w-full transition-all duration-500 max-w-xl mx-auto bg-white shadow-lg md:rounded-3xl p-4 flex flex-col md:h-[500px] h-full">
                 {/* Header */}
-                <div className="flex items-center mb-3 justify-between">
-                    <h2 className="md:text-base text-sm font-semibold text-black">
+                <div className="flex items-center cursor-auto mb-3 justify-between">
+                    <h2 className="md:text-base font-poppins text-sm font-semibold text-black">
                         Feelings & Comments for <span className='font-bold'>{songname}</span>
                     </h2>
-                    <button onClick={() => setShowComments(false)} className="p-1 rounded-full text-black hover:bg-gray-200">
+                    <button onClick={() => setShowComments(false)} className="p-1 text-xl rounded-full text-black hover:bg-gray-200">
                         <LiaTimesSolid />
                     </button>
                 </div>
 
                 {/* Chat Area */}
-                <div style={{ backgroundImage: `url(${chatbgimage})` }}
-                    className="flex-1 no-scrollbar p-3 bg-center bg-cover bg-fixed rounded-3xl overflow-y-auto pr-2">
+                <div
+                    className="flex-1 border cursor-auto no-scrollbar p-3 bg-center bg-cover bg-fixed rounded-3xl overflow-y-auto pr-2">
 
                     {songComments?.length === 0 && (
-                        <div className='flex items-center justify-center h-full'>
+                        <div className='flex items-center text-black justify-center h-full'>
                             <p className='text-2xl font-bold'>No Comments</p>
                         </div>
                     )}
                     {loading && (
-                        <div className='flex items-center justify-center h-full'>
+                        <div className='flex items-center text-black justify-center h-full'>
                             <p className='text-2xl font-bold'>Please wait...</p>
                         </div>
                     )}
@@ -88,37 +105,42 @@ const SongComments = ({ setShowComments, userId, songId, songname }) => {
                             bubbleClass = "rounded-2xl";
                         } else if (isFirst) {
                             bubbleClass = isCurrentUser
-                                ? "rounded-tl-2xl rounded-bl-2xl rounded-tr-2xl rounded-br-none"
-                                : "rounded-tr-2xl rounded-br-2xl rounded-tl-2xl rounded-bl-none";
+                                ? "rounded-tl-2xl rounded-bl-2xl rounded-tr-2xl rounded-br-md"
+                                : "rounded-tr-2xl rounded-br-2xl rounded-tl-2xl rounded-bl-md";
                         } else if (isLast) {
                             bubbleClass = isCurrentUser
-                                ? "rounded-tr-none rounded-tl-2xl rounded-br-2xl rounded-bl-2xl"
-                                : "rounded-tl-none rounded-bl-2xl rounded-br-2xl rounded-tr-2xl";
+                                ? "rounded-tr-md rounded-tl-2xl rounded-br-2xl rounded-bl-2xl"
+                                : "rounded-tl-md rounded-bl-2xl rounded-br-2xl rounded-tr-2xl";
                         } else {
                             bubbleClass = isCurrentUser
-                                ? "rounded-r-none rounded-l-2xl"
-                                : "rounded-l-none rounded-r-2xl";
+                                ? "rounded-r-md rounded-l-2xl"
+                                : "rounded-l-md rounded-r-2xl";
                         }
 
 
                         return (
-                            <div
-                                key={msg._id}
-                                className={`flex ${isCurrentUser ? 'justify-end' : 'justify-start'} mb-1`}
-                            >
+                            <div key={msg._id} className='relative'>
+                                {isLast && <img src={`${import.meta.env.VITE_BASEURL}/assets/users/${msg.userId.profilePic}`} className={`absolute w-7 h-7 rounded-full ${isCurrentUser ? 'right-0 bottom-0' : 'left-0 bottom-0'}`} />}
                                 <div
-                                    className={`
-                    p-2 px-3 text-black max-w-[75%] text-sm
-                    ${isCurrentUser ? 'bg-green-200' : 'bg-white text'}
-                    ${bubbleClass}
-                `}
+
+                                    className={`flex items-center ${isCurrentUser ? 'justify-end mr-9' : 'justify-start ml-9'} mb-1`}
                                 >
-                                    {isFirst && (
-                                        <p className={`font-bold mb-1 ${isCurrentUser ? 'text-green-500' : 'text-orange-500'}`}>
-                                            {isCurrentUser ? "You" : msg.userId.name}
-                                        </p>
-                                    )}
-                                    <p>{msg.comment}</p>
+                                    <div
+                                        className={`
+                                            p-2 px-3 text-black max-w-[75%] text-sm
+                                            ${isCurrentUser ? 'bg-green-200' : 'bg-white border'}
+                                            ${bubbleClass}
+                                            ${isFirst && "mt-3"}
+                                        `}
+                                    >
+                                        {isFirst && (
+                                            <p className={`font-bold cursor-pointer mb-1 ${isCurrentUser ? 'text-green-500' : 'text-orange-500'}`}>
+                                                {isCurrentUser ? "You" : msg.userId.name}
+                                                {console.log(msg.userId.profilePic)}
+                                            </p>
+                                        )}
+                                        <pre className='font-poppins'>{msg.comment}</pre>
+                                    </div>
                                 </div>
                             </div>
                         );
@@ -127,23 +149,32 @@ const SongComments = ({ setShowComments, userId, songId, songname }) => {
 
                     {/* Auto-scroll point */}
                     <div ref={scrollRef}></div>
+
                 </div>
 
                 {/* Input Section */}
-                <div className="mt-4 border-t pt-3 flex items-center gap-2">
-                    <input
+                <div className="mt-4 flex items-center gap-2">
+                    <textarea
+                        ref={textareaRef}
                         value={comment}
+                        rows={rows}
                         type="text"
-                        className="flex-1 text-black focus:outline-none border rounded-full px-4 py-2 text-sm"
+                        className={`flex-1 font-poppins resize-none text-black focus:outline-none border px-4 py-2 text-sm ${
+                            rows > 1 ? 'rounded-xl' : 'rounded-full'
+                        }`}
                         placeholder="Share your feeling..."
                         onChange={(e) => setComment(e.target.value)}
+                        disabled={userId === undefined}
                         onKeyDown={(e) => {
-                            if (e.key === 'Enter') handleComment();
+                            if (e.key === 'Enter' && !e.shiftKey) {
+                                e.preventDefault();
+                                handleComment();
+                            }
                         }}
-                    />
+                    ></textarea>
                     <button
                         onClick={handleComment}
-                        className="bg-green-500 text-white p-2 rounded-full text-xl opacity-70 hover:opacity-100"
+                        className={`bg-green-500 ${userId === undefined ? "pointer-events-none" : "hover:opacity-100"} text-white p-2 rounded-full text-xl opacity-70`}
                     >
                         <RiSendPlane2Fill />
                     </button>

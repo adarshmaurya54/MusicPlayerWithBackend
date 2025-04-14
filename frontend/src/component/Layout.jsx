@@ -242,7 +242,7 @@ function Layout() {
                 <div
                     className={`h-screen bg-center bg-fixed bg-cover transition-all duration-500 bg-[url('/src/assets/Blur.png')] dark:bg-[url('/src/assets/bg_dark.jpg')]`}
                 >
-                    <div className={`${openEditProfile ? "overflow-hidden" : "overflow-auto"} ${player !== undefined && player !== 0 ? 'pb-12 md:pb-0' : "pb-0"} md:px-10 w-full h-full`}>
+                    <div className={`${openEditProfile ? "overflow-hidden" : "overflow-auto"} ${player !== undefined && player !== 0 ? 'pb-12 md:pb-0' : "pb-0"} md:px-10 font-poppins w-full h-full`}>
 
                         {/* Pass player, audioRef, and isLoading to children using Outlet */}
                         <Outlet

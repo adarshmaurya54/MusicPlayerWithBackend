@@ -171,6 +171,10 @@ exports.deleteProfilePic = async (req, res) => {
     if (!filename) {
       return res.status(400).json({ error: 'Filename is required' });
     }
+    
+    if(filename === "default-user.svg"){
+      return res.status(200).json({ success: true });
+    }
 
     const filePath = path.join(__dirname, '../assets/users', filename);
 

@@ -42,9 +42,9 @@ exports.getAllCommentForSong = async (req, res) => {
     const _songId = new mongoose.Types.ObjectId(songId);
 
     const comments = await Comment.find({ songId: _songId })
-      .populate("userId", "name") // You can also include avatar or email
-      .populate("songId") // You can also include avatar or email
-      .sort({ createdAt: 1 }); // Optional: sort oldest to newest
+      .populate("userId") 
+      .populate("songId") 
+      .sort({ createdAt: 1 }); 
 
     res.status(200).json({
       message: "Comments",
