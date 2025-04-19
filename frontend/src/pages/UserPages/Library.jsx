@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
-import defaultUser from "../../assets/default-user.jpg"
 import { useDispatch, useSelector } from 'react-redux';
-import { getCurrentUser } from '../../redux/features/auth/authAction';
+import { getCurrentUser } from "../../redux/features/auth/authAction";
 import {NavLink, Outlet, useNavigate, useOutletContext } from 'react-router-dom';
 import toast from 'react-hot-toast';
 

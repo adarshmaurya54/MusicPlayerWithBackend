@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import PlaylistCard from "./PlaylistCard";
+import PlaylistCard from "../../component/UserComponents/PlaylistCard";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { API } from "../../services/apiService";
 import { FaPlus } from "react-icons/fa6";
-import InputType from "../auth/InputType";
+import InputType from "../../component/auth/InputType";
 import { LiaTimesSolid } from "react-icons/lia";
 import { PiPlaylistFill } from "react-icons/pi";
 import { RiPlayListLine } from "react-icons/ri";

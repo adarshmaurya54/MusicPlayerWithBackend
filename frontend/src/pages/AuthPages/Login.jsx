@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import MessageCard from "../MessageCard";
+import MessageCard from "../../component/MessageCard";
 import bg from "../../assets/bg.jpg";
-import InputType from "./InputType";
+import InputType from "../../component/auth/InputType";
 import { getCurrentUser, userLogin } from "../../redux/features/auth/authAction"
 import store from "../../redux/store"
 import { useDispatch, useSelector } from "react-redux";

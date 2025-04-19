@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { API } from '../../services/apiService';
-import toast from 'react-hot-toast';
 import { useOutletContext } from 'react-router-dom';
-import SongList from '../SongList';
+import SongList from '../../component/SongList';
 
 function LikedSongs() {
     const [likedSongs, setLikedSongs] = useState([]);

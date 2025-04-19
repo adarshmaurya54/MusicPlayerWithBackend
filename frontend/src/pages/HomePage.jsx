@@ -3,16 +3,16 @@ import { useParams, useNavigate, useOutletContext } from "react-router-dom"; // 
 import apiService, { API } from "../services/apiService";
 
 // Lazy load the SongList component
-const SongList = React.lazy(() => import("./SongList"));
-import Header from "./Header";
-import SongLoadingScalaton from "./SongLoadingScalaton";
-import Upload from "./Upload";
-import EditSong from "./EditSong";
-import Pagination from "./Pagination";
-import ArtistButtons from "./ArtistButtons";
+const SongList = React.lazy(() => import("../component/SongList"));
+import Header from "../component/Header";
+import SongLoadingScalaton from "../component/SongLoadingScalaton";
+import Upload from "../component/Upload";
+import EditSong from "../component/EditSong";
+import Pagination from "../component/Pagination";
+import ArtistButtons from "../component/ArtistButtons";
 import { useDispatch } from "react-redux";
 import { getCurrentUser } from "../redux/features/auth/authAction";
-import EditProfile from "./EditProfile";
+import EditProfile from "../component/EditProfile";
 import { LiaTimesSolid } from "react-icons/lia";
 
 function HomePage() {

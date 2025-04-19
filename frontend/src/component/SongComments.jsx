@@ -1,22 +1,21 @@
 import React, { useEffect, useState, useRef } from 'react';
 import toast from "react-hot-toast";
 import { RiSendPlane2Fill } from "react-icons/ri";
-import chatbgimage from '../assets/chatbgimage.jpg';
 import { API } from '../services/apiService';
 import { LiaTimesSolid } from 'react-icons/lia';
 
-const SongComments = ({ setShowComments, userId, songId, songname }) => {
+const SongComments = ({ setShowComments, userProfile, userId, songId, songname }) => {
     const [comment, setComment] = useState("");
     const [loading, setLoading] = useState(false);
-    const [songComments, setSongComments] = useState([]);
+    const [songComments, setSongComments] = useState(null);
     const [rows, setRows] = useState(1);
     const scrollRef = useRef(null);
     const textareaRef = useRef(null);
     const adjustTextareaHeight = () => {
         const textarea = textareaRef.current;
         if (textarea) {
-            textarea.rows = 1; 
-            const lineHeight = 24;  
+            textarea.rows = 1;
+            const lineHeight = 24;
             const lines = Math.floor(textarea.scrollHeight / lineHeight);
             const newRows = Math.min(lines, 5);
             textarea.rows = newRows;
@@ -33,28 +32,49 @@ const SongComments = ({ setShowComments, userId, songId, songname }) => {
             toast.error("Please enter a comment...");
             return;
         }
+        const tempComment = {
+            _id: `temp-${Date.now()}`,
+            comment,
+            userId: {
+                _id: userId,
+                name: "You",
+                profilePic: userProfile,
+            }
+        };
+        setSongComments((prev) => [...prev, tempComment]);
+
+        setComment("");
+        scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+
         try {
             const { data } = await API.post("/comments/", { songId, comment });
-            setComment("");
             fetchAllComments();
         } catch (error) {
-            console.error("Error posting comment:", error);
-            toast.error(error?.response?.data?.message || "Something went wrong. Please try again.");
+            toast.error(error?.response?.data?.message || "Something went wrong.");
+            setSongComments((prev) => prev.filter((c) => c._id !== tempComment._id));
         }
     };
 
+
+    const initialLoad = useRef(true); // using this to track if it's first render...
+
     const fetchAllComments = async () => {
         try {
-            setLoading(true);
+            if (initialLoad.current) {
+                setLoading(true);
+            }
             const { data } = await API.get(`/comments/${songId}`);
             setSongComments(data.data);
-            setLoading(false);
-            // scroll to bottom after rendering
             setTimeout(() => {
                 scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
             }, 100);
         } catch (error) {
             console.error("Error fetching comments:", error);
+        } finally {
+            if (initialLoad.current) {
+                setLoading(false);
+                initialLoad.current = false; // turn off for future calls
+            }
         }
     };
 
@@ -64,7 +84,7 @@ const SongComments = ({ setShowComments, userId, songId, songname }) => {
 
     return (
         <div className='fixed z-50 top-0 left-0 flex justify-center items-center w-full h-full bg-black/50 backdrop-blur-sm'>
-            <div className="w-full transition-all duration-500 max-w-xl mx-auto bg-white shadow-lg md:rounded-3xl p-4 flex flex-col md:h-[500px] h-full">
+            <div className="w-full bg-white transition-all duration-500 max-w-xl mx-auto shadow-lg md:rounded-3xl p-4 flex flex-col md:h-[500px] h-full">
                 {/* Header */}
                 <div className="flex items-center cursor-auto mb-3 justify-between">
                     <h2 className="md:text-base font-poppins text-sm font-semibold text-black">
@@ -77,7 +97,7 @@ const SongComments = ({ setShowComments, userId, songId, songname }) => {
 
                 {/* Chat Area */}
                 <div
-                    className="flex-1 border cursor-auto no-scrollbar p-3 bg-center bg-cover bg-fixed rounded-3xl overflow-y-auto pr-2">
+                className="flex-1 border cursor-auto no-scrollbar p-3 bg-[#e3dbd331] rounded-3xl overflow-y-auto pr-2">
 
                     {songComments?.length === 0 && (
                         <div className='flex items-center text-black justify-center h-full'>
@@ -159,9 +179,8 @@ const SongComments = ({ setShowComments, userId, songId, songname }) => {
                         value={comment}
                         rows={rows}
                         type="text"
-                        className={`flex-1 font-poppins resize-none text-black focus:outline-none border px-4 py-2 text-sm ${
-                            rows > 1 ? 'rounded-xl' : 'rounded-full'
-                        }`}
+                        className={`flex-1 font-poppins resize-none text-black focus:outline-none border px-4 py-2 text-sm ${rows > 1 ? 'rounded-xl' : 'rounded-full'
+                            }`}
                         placeholder="Share your feeling..."
                         onChange={(e) => setComment(e.target.value)}
                         disabled={userId === undefined}

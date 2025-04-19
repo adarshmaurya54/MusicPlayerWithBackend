@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import InputType from "./InputType";
+import InputType from "../../component/auth/InputType";
 import bg from "../../assets/bg.jpg";
 import { API } from "../../services/apiService";
 import toast from "react-hot-toast"; 

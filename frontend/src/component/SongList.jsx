@@ -6,7 +6,6 @@ import MusicAnimation from "./MusicAnimation";
 import { TbShare3 } from "react-icons/tb";
 import Share from "./Share";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { BsChatRightText } from "react-icons/bs";
 import SongComments from "./SongComments";
 
@@ -90,7 +89,7 @@ function SongList({
     >
       <BsChatRightText />
     </div>}
-    {showComments && <SongComments setShowComments={setShowComments} songname={title} userId={user?._id} songId={id}/>}
+    {showComments && <SongComments setShowComments={setShowComments} songname={title} userId={user?._id} userProfile={user?.profilePic} songId={id}/>}
     {isDeleting && (
       <div className="absolute bottom-2 text-xs right-2 p-2 bg-white   dark:bg-gray-900 dark:text-white dark:border-white/20 text-black border rounded-lg transition-opacity duration-300">
         Deleting...
