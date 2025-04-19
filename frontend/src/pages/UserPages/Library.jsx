@@ -29,8 +29,6 @@ function Library() {
         navigate("/")
     }
 
-
-
     return (
         <div className="md:bg-white md:my-5 py-12 md:px-8 px-3 dark:md:bg-slate-900/50 dark:border-white/10 md:border md:rounded-3xl">
             <div className="flex items-center justify-between">

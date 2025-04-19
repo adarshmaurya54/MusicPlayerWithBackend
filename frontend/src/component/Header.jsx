@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineLogin } from "react-icons/ai";
 import logo from "../assets/icon.png";
@@ -12,6 +12,7 @@ import { RiUploadCloud2Line } from "react-icons/ri";
 import { MdLibraryMusic } from "react-icons/md";
 import { toggleTheme } from '../redux/features/theme/themeSlice';
 import { FaUserPlus } from "react-icons/fa";
+import { getCurrentUser } from "../redux/features/auth/authAction";
 
 const Header = ({ handleToggleUpload, setOpenEditProfile }) => {
   const [hamb, setHamb] = useState(false);
@@ -20,7 +21,10 @@ const Header = ({ handleToggleUpload, setOpenEditProfile }) => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth)
   const darkMode = useSelector(state => state.theme.darkMode)
-
+  useEffect(() => {
+    dispatch(getCurrentUser()); // Dispatch action directly
+    // navigate('/library/liked-songs')
+  }, [dispatch]);
   const handleLogout = () => {
     localStorage.removeItem("token"); // Remove token
     dispatch(logout()); // Dispatch logout action to set user to null

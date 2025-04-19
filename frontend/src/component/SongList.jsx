@@ -8,6 +8,7 @@ import Share from "./Share";
 import { useSelector } from "react-redux";
 import { BsChatRightText } from "react-icons/bs";
 import SongComments from "./SongComments";
+import CustomButton from "./CustomButton";
 
 
 function SongList({
@@ -22,7 +23,11 @@ function SongList({
   fetchSongs,
   songId,
   isPlaying,
-  audioFile
+  audioFile,
+  customButton,
+  customButtonClassName,
+  CustomButtonContent,
+  CustomButtonOnclick
 }) {
   const { user } = useSelector((state) => state.auth)
   const [isDeleting, setIsDeleting] = useState(false); // State to track if a song is being deleted
@@ -90,6 +95,7 @@ function SongList({
       <BsChatRightText />
     </div>}
     {showComments && <SongComments setShowComments={setShowComments} songname={title} userId={user?._id} userProfile={user?.profilePic} songId={id}/>}
+    {customButton && <CustomButton className={customButtonClassName} content={CustomButtonContent} actionOnClick={CustomButtonOnclick}/>}
     {isDeleting && (
       <div className="absolute bottom-2 text-xs right-2 p-2 bg-white   dark:bg-gray-900 dark:text-white dark:border-white/20 text-black border rounded-lg transition-opacity duration-300">
         Deleting...

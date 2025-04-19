@@ -13,6 +13,7 @@ import toast from "react-hot-toast";
 import SongList from "../SongList";
 import { RiPlayListLine } from "react-icons/ri";
 import { IoEllipsisHorizontal } from "react-icons/io5";
+import { AiOutlineDelete } from "react-icons/ai";
 
 function PlaylistDetails() {
     const [openAddSong, setOpenAddSong] = useState(false);
@@ -104,7 +105,16 @@ function PlaylistDetails() {
     };
 
     if (!playlist) {
-        return <div className="text-center text-gray-500 mt-5">Loading playlist...</div>;
+        return <div className="w-full px-4 py-8 mt-5 rounded-2xl flex items-center justify-center bg-white">
+            <div className="flex items-center justify-center">
+                <div className="flex flex-col items-center space-y-4">
+                    <div className="w-16 h-16 border-4 border-black/50 border-dashed rounded-full animate-spin"></div>
+                    <p className="text-xl text-center font-semibold text-gray-700">
+                        Loading...
+                    </p>
+                </div>
+            </div>
+        </div>
     }
 
     return (
@@ -195,6 +205,10 @@ function PlaylistDetails() {
                                     title={song.songName}
                                     artist={song.artistName}
                                     favourite={song.favourite}
+                                    customButton
+                                    customButtonClassName="absolute z-[2] bottom-2 right-12 p-2 bg-white  dark:bg-transparent dark:border-white/20 text-gray-400 border rounded-lg text-sm opacity-0 group-hover:opacity-100  transition-opacity duration-300"
+                                    CustomButtonContent={<AiOutlineDelete />}
+                                    CustomButtonOnclick={() => handleDeleteSong(song._id)}
                                 />
                             ))}
                         </div>

@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { API } from '../../services/apiService';
-import { useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import SongList from '../../component/SongList';
+import { useDispatch, useSelector } from 'react-redux';
+import { getCurrentUser } from '../../redux/features/auth/authAction';
+import toast from 'react-hot-toast';
 
 function LikedSongs() {
+    const { error } = useSelector((state) => state.auth);
     const [likedSongs, setLikedSongs] = useState([]);
     const [loading, setLoading] = useState(false);
     const { songDetail, player, setPlayer, setSongList, isPlaying } = useOutletContext();
-
+    const navigate = useNavigate()
     // Fetch liked songs
     const getLikedSongs = async () => {
         setLoading(true);
@@ -24,8 +28,26 @@ function LikedSongs() {
         getLikedSongs();
     }, []);
 
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(getCurrentUser()); // Dispatch action directly
+        // navigate('/library/liked-songs')
+    }, []);
+
+    if (error) {
+        navigate("/")
+    }
     if (loading) {
-        return <div className="mt-4 text-center text-xl">Please Wait...</div>;
+        return <div className="w-full px-4 py-8 mt-5 rounded-2xl flex items-center justify-center bg-white">
+            <div className="flex items-center justify-center">
+                <div className="flex flex-col items-center space-y-4">
+                    <div className="w-16 h-16 border-4 border-black/50 border-dashed rounded-full animate-spin"></div>
+                    <p className="text-xl text-center font-semibold text-gray-700">
+                        Loading...
+                    </p>
+                </div>
+            </div>
+        </div>
     }
 
     return (

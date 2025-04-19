@@ -1,26 +1,30 @@
 import React, { useEffect, useState } from "react";
 import PlaylistCard from "../../component/UserComponents/PlaylistCard";
 import toast from "react-hot-toast";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { API } from "../../services/apiService";
 import { FaPlus } from "react-icons/fa6";
 import InputType from "../../component/auth/InputType";
 import { LiaTimesSolid } from "react-icons/lia";
 import { PiPlaylistFill } from "react-icons/pi";
 import { RiPlayListLine } from "react-icons/ri";
+import { getCurrentUser } from "../../redux/features/auth/authAction";
 
 const Playlists = () => {
-    const [playlists, setPlaylists] = useState([]);
-    const { user } = useSelector((state) => state.auth);
+    const [playlists, setPlaylists] = useState(null);
+    const { user, error } = useSelector((state) => state.auth);
     const [openCreatePlaylist, setOpenCreatePlaylist] = useState(false);
     const [playlistName, setPlaylistName] = useState("");
     const [playlistDescription, setPlaylistDescription] = useState("");
+    const [loading, setLoading] = useState(false)
 
     // Fetch all playlists
     const getAllPlaylists = async () => {
+        setLoading(true)
         try {
             const response = await API.get(`/playlists`);
             setPlaylists(response.data);
+            setLoading(false)
         } catch (error) {
             console.error("Error getting playlists:", error);
             toast.error("Failed to get playlists!");
@@ -52,9 +56,31 @@ const Playlists = () => {
             toast.error("Failed to create playlist!", { id: toastId });
         }
     };
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(getCurrentUser()); // Dispatch action directly
+        // navigate('/library/liked-songs')
+    }, []);
+    if (error) {
+        navigate("/")
+    }
+    if (loading) {
+        return (
+            <div className="w-full px-4 py-8 mt-5 rounded-2xl flex items-center justify-center bg-white">
+                <div className="flex items-center justify-center">
+                    <div className="flex flex-col items-center space-y-4">
+                        <div className="w-16 h-16 border-4 border-black/50 border-dashed rounded-full animate-spin"></div>
+                        <p className="text-xl text-center font-semibold text-gray-700">
+                            Loading...
+                        </p>
+                    </div>
+                </div>
+            </div>
+        )
+    }
 
     return (
-        <>{playlists.length === 0 ? <div className="flex flex-col items-center justify-center mt-5 text-xl font-bold">
+        <>{playlists?.length === 0 ? <div className="flex flex-col items-center justify-center mt-5 text-xl font-bold">
 
             No Playlists
             <button
@@ -65,7 +91,7 @@ const Playlists = () => {
             </button>
         </div>
             :
-            <div className="mt-5 transition-all duration-300">
+            <div className="mt-5">
                 {/* Header */}
                 <div className="flex justify-between items-center mb-4">
                     <h1 className="text-lg flex items-center gap-3 sm:text-xl font-bold text-gray-700 dark:text-white">
@@ -82,7 +108,7 @@ const Playlists = () => {
 
                 {/* Playlist Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-5">
-                    {playlists.map((playlist) => (
+                    {playlists?.map((playlist) => (
                         <PlaylistCard key={playlist._id} playlist={playlist} />
                     ))}
                 </div>
