@@ -59,6 +59,7 @@ const SongComments = ({ setShowComments, userProfile, userId, songId, songname }
     const initialLoad = useRef(true); // using this to track if it's first render...
 
     const fetchAllComments = async () => {
+        scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
         try {
             if (initialLoad.current) {
                 setLoading(true);
