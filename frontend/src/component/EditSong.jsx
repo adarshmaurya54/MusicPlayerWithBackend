@@ -47,25 +47,32 @@ function EditSong({ songId, fetchSongs, handleToggleEdit }) {
       fetchSongs();
       handleToggleEdit(); // Close the modal on success
     } catch (err) {
-        setError(err.message || "An error occurred while updating the song.");
+      setError(err.message || "An error occurred while updating the song.");
     }
   };
   console.log(song);
-  
+
 
   return (
     <div className="fixed z-50 top-0 left-0 bg-black/10 flex justify-center items-center w-full h-full backdrop-blur-lg">
-      <div className="relative flex items-center justify-center w-full h-full md:w-[90%] md:h-[95%] bg-white md:rounded-3xl md:p-6 shadow-lg transition-all">
-        <div className="flex text-black absolute md:top-7 md:left-7 top-5 left-4 justify-between items-center">
+      <div className="relative flex items-center justify-center w-full h-full md:w-[90%] md:h-[95%] bg-white dark:bg-slate-800 md:rounded-3xl md:p-6 shadow-lg transition-all">
+        <div className="flex text-black dark:text-white absolute md:top-7 md:left-7 top-5 left-4 justify-between items-center">
           <FaArrowLeft
             onClick={handleToggleEdit}
             className="text-xl cursor-pointer"
           />
         </div>
         {loading && (
-          <div className="text-black flex flex-col items-center justify-center">
-            <FaInfoCircle className="text-9xl" />
-            <p className="text-3xl">Getting song info...</p>
+          <div className="w-full px-4 py-8 mt-5 rounded-2xl flex items-center justify-center">
+            <div className="flex items-center justify-center">
+              <div className="flex flex-col items-center space-y-4">
+                <div className="w-16 h-16 border-4 border-black/50 dark:border-white border-dashed rounded-full animate-spin"></div>
+                <div className="text-black dark:text-white flex items-center gap-3 justify-center">
+                  <FaInfoCircle className="text-3xl" />
+                  <p className="text-3xl">Getting song info...</p>
+                </div>
+              </div>
+            </div>
           </div>
         )}
         {error && (
@@ -82,7 +89,7 @@ function EditSong({ songId, fetchSongs, handleToggleEdit }) {
               <div className="mb-5">
                 <label
                   htmlFor="songname"
-                  className="block mb-2 text-sm font-medium text-gray-900"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
                   Song Name
                 </label>
@@ -90,7 +97,7 @@ function EditSong({ songId, fetchSongs, handleToggleEdit }) {
                   type="text"
                   id="songname"
                   name="songName" // Add name attribute to match the state key
-                  className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="border dark:border-none border-gray-300 dark:bg-slate-300 text-gray-900 text-sm rounded-lg dark:outline-none block w-full p-2.5"
                   value={song.songName} // Set song name from the fetched data
                   onChange={handleInputChange} // Handle input change
                   required
@@ -99,7 +106,7 @@ function EditSong({ songId, fetchSongs, handleToggleEdit }) {
               <div className="mb-5">
                 <label
                   htmlFor="artistname"
-                  className="block mb-2 text-sm font-medium text-gray-900"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
                   Artist Name
                 </label>
@@ -107,7 +114,7 @@ function EditSong({ songId, fetchSongs, handleToggleEdit }) {
                   type="text"
                   id="artistname"
                   name="artistName" // Add name attribute to match the state key
-                  className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="border dark:border-none border-gray-300 dark:bg-slate-300 text-gray-900 text-sm rounded-lg dark:outline-none block w-full p-2.5"
                   value={song.artistName} // Set artist name from the fetched data
                   onChange={handleInputChange} // Handle input change
                   required
@@ -116,7 +123,7 @@ function EditSong({ songId, fetchSongs, handleToggleEdit }) {
               <div className="mb-5">
                 <label
                   htmlFor="songlyrics"
-                  className="block mb-2 text-sm font-medium text-gray-900 "
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
                   Song Lyrics
                 </label>
@@ -124,7 +131,7 @@ function EditSong({ songId, fetchSongs, handleToggleEdit }) {
                   id="songlyrics"
                   name="lyrics" // Add name attribute to match the state key
                   rows="6"
-                  className="resize-none border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="resize-none border dark:border-none border-gray-300 dark:bg-slate-300 text-gray-900 text-sm rounded-lg dark:outline-none block w-full p-2.5"
                   value={song.lyrics} // Set song lyrics from the fetched data
                   onChange={handleInputChange} // Handle input change
                 ></textarea>

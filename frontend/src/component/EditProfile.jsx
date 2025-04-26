@@ -73,13 +73,13 @@ function EditProfile({ setOpenEditProfile }) {
 
     return (
         <div className="fixed flex justify-center items-center z-50 top-0 left-0 w-full h-full backdrop-blur-sm">
-            <div className="relative overflow-hidden p-8 md:w-[400px] w-[320px] transition-all md:h-[90%] h-[500px] bg-white dark:bg-slate-700 rounded-3xl border-2 dark:border-white/10 bg-gradient-to-t from-white to-blue-50">
+            <div className="relative overflow-hidden p-8 md:w-[400px] w-[320px] transition-all md:h-[90%] h-[500px] dark:bg-slate-700 rounded-3xl border-2 dark:border-none dark:border-white/10 bg-gradient-to-t from-white dark:from-slate-800 to-blue-50">
                 <div className={`absolute top-0 left-0 w-full transition-transform duration-500 ${!edit ? "translate-x-0" : "-translate-x-full"} flex h-full items-center justify-center`}>
                     <div className="flex gap-3 flex-col items-center justify-center w-full h-full">
                         <img
                             src={`${import.meta.env.VITE_BASEURL}/assets/users/${currentUser?.profilePic}`} // Replace with actual image URL
                             alt="Profile"
-                            className="md:w-60 md:h-60 w-36 h-36 object-contain border rounded-full"
+                            className="md:w-60 md:h-60 w-36 h-36 object-contain border dark:border-white/20 rounded-full"
                         />
                         <div className='flex items-center flex-col'>
                             <p className='text-black dark:text-white text-3xl font-bold'>{currentUser?.name}</p>
@@ -89,9 +89,9 @@ function EditProfile({ setOpenEditProfile }) {
                     </div>
                 </div>
                 <div className={`absolute top-0 left-0 w-full transition-transform duration-500 ${!edit ? "translate-x-full" : "translate-x-0"} flex h-full items-center justify-center`}>
-                    <form onSubmit={handleUpdate} className="flex p-5 text-black gap-3 flex-col items-center justify-center w-full h-full">
-                        <h1 className='font-bold text-3xl'>Edit Profile</h1>
-                        <InputType icon={<FaRegUser />} extraClass="mt-5" labelText="Name" inputType="text" required={true} name="name"
+                    <form onSubmit={handleUpdate} className="flex p-5 gap-3 flex-col items-center justify-center w-full h-full">
+                        <h1 className='font-bold text-3xl text-black dark:text-white'>Edit Profile</h1>
+                        <InputType icon={<FaRegUser />} extraClass="mt-5 text-black" labelText="Name" inputType="text" required={true} name="name"
                             placeholder="Name" onChange={(e) => setName(e)} value={name} />
                         <div className='w-full'>
                             <label
@@ -103,7 +103,7 @@ function EditProfile({ setOpenEditProfile }) {
                                 onChange={handleFileChange} className="shadow-lg w-full bg-white file:bg-slate-100 file:text-sm file:p-1 file:px-2 file:rounded-lg file:border-none rounded-xl p-2" />
                         </div>
                         <div className='w-full flex items-center justify-between mt-5'>
-                            <button type='button' onClick={() => handleBack()} className='border border-black text-black hover:bg-black text-sm hover:text-white px-3 py-2 rounded-lg transition-all'>Back</button>
+                            <button type='button' onClick={() => handleBack()} className='border border-black dark:border-white/20 text-black dark:text-white hover:bg-black text-sm hover:text-white px-3 py-2 rounded-lg transition-all'>Back</button>
                             <button type='submit' className='bg-gray-600 hover:bg-black text-sm text-white px-3 py-2 rounded-lg transition-all'>Update Profile</button>
                         </div>
                     </form>

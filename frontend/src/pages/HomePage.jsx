@@ -200,7 +200,7 @@ function HomePage() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
-                    <div className={`absolute top-1/2 right-3 -translate-y-1/2 transition-all duration-300 ${searchQuery ? "group-hover:opacity-100 opacity-0" : "hidden"}`}>
+                    <div className={`absolute dark:text-white top-1/2 right-3 -translate-y-1/2 transition-all duration-300 ${searchQuery ? "group-hover:opacity-100 opacity-0" : "hidden"}`}>
                     <LiaTimesSolid onClick={() => setSearchQuery('')} className="cursor-pointer" />
                   </div>
                 </div>

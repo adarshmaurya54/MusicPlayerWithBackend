@@ -115,7 +115,7 @@ function SongList({
         {/* Album Artwork Placeholder */}
         <div
           className={`flex-shrink-0 ${user?.role === 'admin' ? "w-[100px] h-[100px]" : "w-20 h-20"
-            } bg-cover overflow-hidden rounded-lg bg-gray-300 flex items-center justify-center`}
+            } bg-cover overflow-hidden rounded-xl bg-gray-300 flex items-center justify-center`}
           style={
             currentlyPlaying && image
               ? {

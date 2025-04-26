@@ -56,7 +56,7 @@ const AddSongs = ({ setOpenAddSong, getPlaylistDetails }) => {
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="relative bg-white shadow-lg w-[90%] max-w-3xl rounded-xl overflow-hidden">
+      <div className="relative bg-white shadow-lg w-[90%] rounded-xl overflow-hidden">
         {/* Header */}
         <div className="flex justify-between items-center bg-gradient-to-r from-blue-600 to-indigo-500 px-4 py-2">
           <h2 className="text-sm font-semibold text-white">Add Songs to Playlist</h2>
@@ -75,7 +75,7 @@ const AddSongs = ({ setOpenAddSong, getPlaylistDetails }) => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search songs by name or artist..."
-            className="w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 text-sm border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 

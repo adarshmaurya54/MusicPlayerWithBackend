@@ -37,7 +37,7 @@ function Library() {
                         title={user?.name}
                         src={`${import.meta.env.VITE_BASEURL}/assets/users/${user?.profilePic}`} // Replace with actual image URL
                         alt={user?.name}
-                        className="md:w-14 border border-gray-100 md:h-14 w-7 h-7 object-cover rounded-full"
+                        className="md:w-14 md:h-14 w-10 h-10 border border-gray-100 dark:border-white/20 object-cover rounded-full"
                     />
                     <p className='md:text-2xl dark:text-gray-50 font-bold'>Your Library</p>
                 </div>
@@ -47,9 +47,9 @@ function Library() {
                 <NavLink
                     to="/"
                     className={({ isActive }) =>
-                        `border dark:border-white/20 text-xs py-2 px-3 rounded-full ${isActive
+                        `text-xs py-2 px-3 rounded-full ${isActive
                             ? "dark:bg-white bg-black text-white dark:text-black" // Active style
-                            : "text-black dark:text-gray-50 hover:text-white hover:bg-black hover:dark:bg-white hover:dark:text-black" // Inactive style
+                            : "text-black border dark:border-white/20 border-white/50 md:border-black/70 dark:text-gray-50 hover:text-white hover:bg-black hover:dark:bg-white hover:dark:text-black" // Inactive style
                         }`
                     }
                 >
@@ -59,9 +59,9 @@ function Library() {
                 <NavLink
                     to="/library/playlists"
                     className={({ isActive }) =>
-                        `border dark:border-white/20 text-xs py-2 px-3 rounded-full ${isActive
+                        `text-xs relative py-2 px-3 rounded-full ${isActive
                             ? "dark:bg-white bg-black text-white dark:text-black" // Active style
-                            : "text-black dark:text-gray-50 hover:text-white hover:bg-black hover:dark:bg-white hover:dark:text-black" // Inactive style
+                            : "text-black border dark:border-white/20 md:border-black/70 border-white/50 dark:text-gray-50 hover:text-white hover:bg-black hover:dark:bg-white hover:dark:text-black" // Inactive style
                         }`
                     }
                 >
@@ -73,9 +73,9 @@ function Library() {
                     to="/library"
                     end // Ensures exact match with /library only
                     className={({ isActive }) =>
-                        `border dark:border-white/20 text-xs py-2 px-3 rounded-full ${isActive
+                        `text-xs py-2 px-3 rounded-full ${isActive
                             ? "dark:bg-white bg-black text-white dark:text-black" // Active style
-                            : "text-black dark:text-gray-50 hover:text-white hover:bg-black hover:dark:bg-white hover:dark:text-black" // Inactive style
+                            : "text-black border dark:border-white/20 md:border-black/70 border-white/50 dark:text-gray-50 hover:text-white hover:bg-black hover:dark:bg-white hover:dark:text-black" // Inactive style
                         }`
                     }
                 >

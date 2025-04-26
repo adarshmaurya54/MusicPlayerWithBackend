@@ -66,11 +66,11 @@ const Playlists = () => {
     }
     if (loading) {
         return (
-            <div className="w-full px-4 py-8 mt-5 rounded-2xl flex items-center justify-center bg-white">
+            <div className="w-full px-4 py-8 mt-5 rounded-2xl flex items-center justify-center">
                 <div className="flex items-center justify-center">
                     <div className="flex flex-col items-center space-y-4">
-                        <div className="w-16 h-16 border-4 border-black/50 border-dashed rounded-full animate-spin"></div>
-                        <p className="text-xl text-center font-semibold text-gray-700">
+                        <div className="w-16 h-16 border-4 border-black/50 dark:border-white border-dashed rounded-full animate-spin"></div>
+                        <p className="text-xl text-center font-semibold text-gray-700 dark:text-gray-300">
                             Loading...
                         </p>
                     </div>
@@ -94,13 +94,13 @@ const Playlists = () => {
             <div className="mt-5">
                 {/* Header */}
                 <div className="flex justify-between items-center mb-4">
-                    <h1 className="text-lg flex items-center gap-3 sm:text-xl font-bold text-gray-700 dark:text-white">
+                    <h1 className="text-lg flex items-center gap-3 sm:text-xl font-bold md:text-gray-700 dark:text-white">
                         <PiPlaylistFill />
                         Your Playlists
                     </h1>
                     <button
                         onClick={() => setOpenCreatePlaylist(true)}
-                        className="flex items-center bg-black text-white px-3 py-1.5 rounded-lg shadow-md"
+                        className="flex items-center bg-black dark:bg-white dark:text-black text-white px-3 py-1.5 rounded-lg shadow-md"
                     >
                         <FaPlus className="mr-2 text-sm" /> Create Playlist
                     </button>
@@ -118,7 +118,7 @@ const Playlists = () => {
                 <div className="fixed md:p-0 px-4 inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
                     <form
                         onSubmit={handleCreatePlaylist}
-                        className="relative bg-gradient-to-t from-white to-blue-50 border border-gray-200 dark:border-gray-700 w-full max-w-md p-6 rounded-2xl shadow-xl"
+                        className="relative dark:bg-slate-800 bg-gradient-to-t from-white dark:from-slate-800 to-blue-50 border border-gray-200 dark:border-gray-700 w-full max-w-md p-6 rounded-2xl shadow-xl"
                     >
                         {/* Modal Header */}
                         <div className="flex justify-between items-center mb-4">
@@ -149,7 +149,7 @@ const Playlists = () => {
                             value={playlistDescription}
                             onChange={(e) => setPlaylistDescription(e.target.value)}
                             placeholder="Add an optional description"
-                            className="w-full p-3 rounded-lg shadow-md resize-none focus:ring-2 focus:ring-black dark:bg-gray-700 dark:text-white"
+                            className="w-full p-3 rounded-2xl dark:bg-slate-600 shadow-md resize-none focus:outline-none dark:text-white"
                             rows={4}
                         />
 

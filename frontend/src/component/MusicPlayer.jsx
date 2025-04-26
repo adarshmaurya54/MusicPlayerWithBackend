@@ -6,12 +6,13 @@ import { PiShuffle } from "react-icons/pi";
 import { FaForward } from "react-icons/fa";
 import { FaBackward } from "react-icons/fa";
 import { API } from "../services/apiService";
-import { BsRepeat1 } from "react-icons/bs";
+import { BsChatRightText, BsRepeat1 } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { CiShare1 } from "react-icons/ci";
 import { IoEllipsisVertical, IoShareOutline } from "react-icons/io5";
 import Share from "./Share";
+import SongComments from "./SongComments";
 
 
 const MusicPlayer = ({
@@ -40,7 +41,8 @@ const MusicPlayer = ({
   const [isDragging, setIsDragging] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [open, setOpen] = useState(false);
-  const [share, setShare] = useState(false)
+  const [share, setShare] = useState(false);
+  const [openComment, setOpenComment] = useState(false)
   // New state for loading
   const { user } = useSelector((state) => state.auth)
   const [isLiked, setIsLiked] = useState(likes?.includes(user?._id));
@@ -295,6 +297,10 @@ const MusicPlayer = ({
                   <IoShareOutline className="text-base" />
                   Share
                   </li>
+                  <li onClick={() => setOpenComment(true)} className="flex gap-2 text-sm items-center rounded-lg px-4 py-2 dark:text-white hover:dark:bg-gray-700 hover:bg-gray-100 cursor-pointer">
+                  <BsChatRightText />
+                  Comments
+                  </li>
                 </ul>
               </div>
               }
@@ -442,6 +448,7 @@ const MusicPlayer = ({
                       )}
                     </button>
                     {share && <Share setShare={setShare} audioFile={songId} />}
+                    {openComment && <SongComments setShowComments={setOpenComment} songname={songName} userId={user?._id} userProfile={user?.profilePic} songId={id}/>}
                   </div>
                 </div>
               </div>

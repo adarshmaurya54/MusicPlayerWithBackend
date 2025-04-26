@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom'
-import { ThemeProvider } from '../context/theme'
 import { LiaTimesSolid } from 'react-icons/lia'
 import { TbPlayerTrackNextFilled, TbPlayerTrackPrevFilled } from 'react-icons/tb'
 import apiService from '../services/apiService'
@@ -218,7 +217,7 @@ function Layout() {
     return (
         <div className={`md:bg-black/20 transition-all duration-500 ${darkMode && "dark"}`}>
             <div
-                className={`h-screen bg-center bg-fixed bg-cover transition-all duration-500 bg-[url('/src/assets/Blur.png')] dark:bg-[url('/src/assets/bg_dark.jpg')]`}
+                className={`h-screen bg-center bg-fixed bg-cover transition-all duration-500 bg-[url('/src/assets/bg.jpg')] dark:bg-[url('/src/assets/bg_dark.jpg')]`}
             >
                 <div className={`${openEditProfile ? "overflow-hidden" : "overflow-auto"} ${player !== undefined && player !== 0 ? 'pb-12 md:pb-0' : "pb-0"} md:px-10 font-poppins w-full h-full`}>
 

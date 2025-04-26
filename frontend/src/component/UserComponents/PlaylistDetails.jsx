@@ -105,11 +105,11 @@ function PlaylistDetails() {
     };
 
     if (!playlist) {
-        return <div className="w-full px-4 py-8 mt-5 rounded-2xl flex items-center justify-center bg-white">
+        return <div className="w-full px-4 py-8 mt-5 rounded-2xl flex items-center justify-center">
             <div className="flex items-center justify-center">
                 <div className="flex flex-col items-center space-y-4">
-                    <div className="w-16 h-16 border-4 border-black/50 border-dashed rounded-full animate-spin"></div>
-                    <p className="text-xl text-center font-semibold text-gray-700">
+                    <div className="w-16 h-16 border-4 border-black/50 dark:border-white border-dashed rounded-full animate-spin"></div>
+                    <p className="text-xl text-center font-semibold text-gray-700 dark:text-gray-300">
                         Loading...
                     </p>
                 </div>
@@ -118,16 +118,16 @@ function PlaylistDetails() {
     }
 
     return (
-        <div className={`relative mt-5 md:bg-white rounded-3xl w-full`}>
+        <div className={`relative mt-5 md:bg-white md:dark:bg-transparent rounded-3xl w-full`}>
             {/* ✅ Playlist Header */}
-            <div className="flex flex-col p-3 md:bg-transparent bg-white border rounded-3xl gap-4 md:pb-4 md:border-b md:border-x-0 md:border-t-0 md:rounded-none">
-                <div className="flex md:items-center justify-between">
+            <div className="flex flex-col p-3 md:bg-transparent bg-white dark:bg-transparent border rounded-3xl gap-4 md:pb-4 md:border-b dark:border-white/20 md:border-x-0 md:border-t-0 md:rounded-none">
+                <div className="flex dark:text-white md:items-center justify-between">
                     <div>
                         <h1 className="text-2xl md:text-5xl font-bold">{playlist?.name}</h1>
-                        <p className="md:text-sm text-xs mt-1 text-gray-500">{playlist?.description || "No description available"}</p>
+                        <p className="md:text-sm text-xs mt-1 text-gray-500 dark:text-gray-400">{playlist?.description || "No description available"}</p>
                     </div>
                     <div className="relative inline-block">
-                        <IoEllipsisHorizontal onClick={() => setIsOpen(!isOpen)} className={`text-2xl text-gray-400 hover:text-black cursor-pointer ${isOpen && 'text-black'}`} />
+                        <IoEllipsisHorizontal onClick={() => setIsOpen(!isOpen)} className={`text-2xl text-gray-400 hover:text-black hover:dark:text-white cursor-pointer ${isOpen && 'text-black'}`} />
                         {isOpen && <div className="absolute z-10 right-0 mt-2 w-48 bg-white dark:bg-slate-800 border dark:border-white/20 rounded-xl shadow-lg">
                             <ul className="p-1">
                                 <li onClick={() => handleDeletePlaylist()} className="flex gap-2 text-sm items-center rounded-lg px-4 py-2 dark:text-white hover:dark:bg-gray-700 hover:bg-gray-100 cursor-pointer">
@@ -161,9 +161,9 @@ function PlaylistDetails() {
                         title={user?.name}
                         src={`${import.meta.env.VITE_BASEURL}/assets/users/${user?.profilePic}`} // Replace with actual image URL
                         alt={user?.name}
-                        className="border border-gray-200 w-8 h-8 object-cover rounded-full"
+                        className="border border-gray-200 dark:border-white/20 w-8 h-8 object-cover rounded-full"
                     />
-                    <div className="text-sm font-bold">
+                    <div className="text-sm font-bold dark:text-white">
                         {user?.name}{" "}
                         <span className="text-gray-400 font-normal">
                             • {playlist?.songs?.length || 0} song(s)
@@ -232,9 +232,18 @@ function PlaylistDetails() {
                 <div className="fixed z-20 px-4 md:px-0 top-0 left-0 w-full h-full bg-black/30 backdrop-blur-sm flex items-center justify-center">
                     <form
                         onSubmit={(e) => handleUpdatePlaylist(e)}
-                        className="relative bg-gradient-to-t from-white to-blue-50 w-[500px] p-6 rounded-3xl shadow-2xl"
+                        className="relative dark:bg-slate-800 bg-gradient-to-t from-white dark:from-slate-800 to-blue-50 w-[500px] p-6 rounded-3xl shadow-2xl"
                     >
-                        <h2 className="text-2xl font-bold mb-4">Edit Playlist</h2>
+                        <div className="flex items-center mb-4 dark:text-white justify-between">
+                            <h2 className="text-2xl font-bold ">Edit Playlist</h2>
+                            <button
+                                type="button"
+                                onClick={() => setOpenEditPlaylist(false)}
+                                className="p-1 rounded-full hover:bg-gray-200 dark:hover:bg-slate-500"
+                            >
+                                <LiaTimesSolid />
+                            </button>
+                        </div>
 
                         <InputType
                             extraClass="mb-4"
@@ -249,7 +258,7 @@ function PlaylistDetails() {
                             value={playlistDescription}
                             onChange={(e) => setPlaylistDescription(e.target.value)}
                             placeholder="Add an optional description"
-                            className="w-full shadow-lg rounded-xl p-3 placeholder:text-sm resize-none focus:ring-2 focus:ring-black"
+                            className="w-full shadow-lg rounded-xl p-3 placeholder:text-sm resize-none focus:outline-none dark:bg-slate-600 dark:text-white"
                             rows={4}
                         />
                         <div className="flex justify-end mt-4 gap-3">
@@ -262,14 +271,6 @@ function PlaylistDetails() {
                                 {btnDisabled ? "Updating..." : "Update"}
                             </button>
                         </div>
-
-                        <button
-                            type="button"
-                            onClick={() => setOpenEditPlaylist(false)}
-                            className="p-1 absolute top-2 right-2 rounded-full hover:bg-gray-200"
-                        >
-                            <LiaTimesSolid />
-                        </button>
                     </form>
                 </div>
             )}

@@ -84,29 +84,30 @@ const SongComments = ({ setShowComments, userProfile, userId, songId, songname }
     }, []);
 
     return (
-        <div className='fixed z-50 top-0 left-0 flex justify-center items-center w-full h-full bg-black/50 backdrop-blur-sm'>
-            <div className="w-full bg-white transition-all duration-500 max-w-xl mx-auto shadow-lg md:rounded-3xl p-4 flex flex-col md:h-[500px] h-full">
+        <div className='fixed z-50 cursor-auto top-0 left-0 flex justify-center items-center w-full h-full bg-black/70'>
+            <div className="w-full bg-white dark:bg-slate-800 transition-all duration-500 max-w-xl mx-auto shadow-lg md:rounded-3xl p-4 flex flex-col md:h-[500px] h-full">
                 {/* Header */}
                 <div className="flex items-center cursor-auto mb-3 justify-between">
-                    <h2 className="md:text-base font-poppins text-sm font-semibold text-black">
-                        Feelings & Comments for <span className='font-bold'>{songname}</span>
+                    <h2 className="md:text-base font-poppins text-sm font-semibold text-black dark:text-white">
+                        What are your thoughts on <span className='font-bold'>{songname}</span>? Share below!
                     </h2>
-                    <button onClick={() => setShowComments(false)} className="p-1 text-xl rounded-full text-black hover:bg-gray-200">
+
+                    <button onClick={() => setShowComments(false)} className="p-1 text-xl rounded-full text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-500">
                         <LiaTimesSolid />
                     </button>
                 </div>
 
                 {/* Chat Area */}
                 <div
-                className="flex-1 border cursor-auto no-scrollbar p-3 bg-[#e3dbd331] rounded-3xl overflow-y-auto pr-2">
+                    className="flex-1 border cursor-auto no-scrollbar p-3 bg-[#e3dbd331] dark:dark:bg-slate-600 dark:border-white/20 rounded-3xl overflow-y-auto pr-2">
 
                     {songComments?.length === 0 && (
-                        <div className='flex items-center text-black justify-center h-full'>
+                        <div className='flex items-center text-black dark:text-white justify-center h-full'>
                             <p className='text-2xl font-bold'>No Comments</p>
                         </div>
                     )}
                     {loading && (
-                        <div className='flex items-center text-black justify-center h-full'>
+                        <div className='flex items-center text-black dark:text-white justify-center h-full'>
                             <p className='text-2xl font-bold'>Please wait...</p>
                         </div>
                     )}
@@ -157,7 +158,6 @@ const SongComments = ({ setShowComments, userProfile, userId, songId, songname }
                                         {isFirst && (
                                             <p className={`font-bold cursor-pointer mb-1 ${isCurrentUser ? 'text-green-500' : 'text-orange-500'}`}>
                                                 {isCurrentUser ? "You" : msg.userId.name}
-                                                {console.log(msg.userId.profilePic)}
                                             </p>
                                         )}
                                         <pre className='font-poppins text-wrap'>{msg.comment}</pre>
@@ -180,7 +180,7 @@ const SongComments = ({ setShowComments, userProfile, userId, songId, songname }
                         value={comment}
                         rows={rows}
                         type="text"
-                        className={`flex-1 font-poppins resize-none text-black focus:outline-none border px-4 py-2 text-sm ${rows > 1 ? 'rounded-xl' : 'rounded-full'
+                        className={`flex-1 dark:bg-slate-600 dark:text-white dark:border-white/20 font-poppins resize-none text-black focus:outline-none border px-4 py-2 text-sm ${rows > 1 ? 'rounded-xl' : 'rounded-full'
                             }`}
                         placeholder="Share your feeling..."
                         onChange={(e) => setComment(e.target.value)}

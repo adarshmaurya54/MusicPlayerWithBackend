@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import MessageCard from "../../component/MessageCard";
 import bg from "../../assets/bg.jpg";
 import InputType from "../../component/auth/InputType";
 import { getCurrentUser, userLogin } from "../../redux/features/auth/authAction"
@@ -13,8 +12,6 @@ import { IoLockClosedOutline } from "react-icons/io5";
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(""); // Error message state
-  const [loginLoading, setLoginLoading] = useState(false);
   const [loginType, setLoginType] = useState("user")
 
   const navigate = useNavigate(); // To navigate to another page on success
@@ -64,24 +61,6 @@ function Login() {
             </div>
           </div>
         </div>
-        {error && (
-          <MessageCard
-            type="error"
-            message="Login failed"
-            subMessage={error}
-            setError={setError}
-            crossbtn={true}
-          />
-        )}
-        {loginLoading && (
-          <MessageCard
-            type="info"
-            message="Please wait for a moment..."
-            subMessage="We are processing your login."
-            setError={setError}
-            crossbtn={false}
-          />
-        )}
         <form onSubmit={handleLogin}>
 
           <InputType icon={<IoIosMail/>} extraClass="mt-5" inputType="email" required={true} name="email"
