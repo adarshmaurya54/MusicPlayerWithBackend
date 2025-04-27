@@ -6,7 +6,7 @@ import AddSongs from "./AddSongs";
 import { API } from "../../services/apiService";
 import { FaPlus } from "react-icons/fa";
 import { FiEdit2 } from "react-icons/fi";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdOutlinePlaylistRemove, MdPlaylistAdd } from "react-icons/md";
 import { LiaTimesSolid } from "react-icons/lia";
 import InputType from "../auth/InputType";
 import toast from "react-hot-toast";
@@ -14,6 +14,7 @@ import SongList from "../SongList";
 import { RiPlayListLine } from "react-icons/ri";
 import { IoEllipsisHorizontal } from "react-icons/io5";
 import { AiOutlineDelete } from "react-icons/ai";
+import { PiPlaylistDuotone } from "react-icons/pi";
 
 function PlaylistDetails() {
     const [openAddSong, setOpenAddSong] = useState(false);
@@ -131,21 +132,21 @@ function PlaylistDetails() {
                         {isOpen && <div className="absolute z-10 right-0 mt-2 w-48 bg-white dark:bg-slate-800 border dark:border-white/20 rounded-xl shadow-lg">
                             <ul className="p-1">
                                 <li onClick={() => handleDeletePlaylist()} className="flex gap-2 text-sm items-center rounded-lg px-4 py-2 dark:text-white hover:dark:bg-gray-700 hover:bg-gray-100 cursor-pointer">
-                                    <MdDelete
+                                    <MdOutlinePlaylistRemove
                                         title="Delete Playlist"
                                         className="text-gray-400 cursor-pointer transition"
                                     />
                                     Delete
                                 </li>
                                 <li onClick={() => setOpenEditPlaylist(true)} className="flex gap-2 text-sm items-center rounded-lg px-4 py-2 dark:text-white hover:dark:bg-gray-700 hover:bg-gray-100 cursor-pointer">
-                                    <FiEdit2
+                                    <PiPlaylistDuotone
                                         title="Edit Playlist"
                                         className="text-gray-400 cursor-pointer transition"
                                     />
                                     Edit
                                 </li>
                                 <li onClick={() => setOpenAddSong(true)} className="flex gap-2 text-sm items-center rounded-lg px-4 py-2 dark:text-white hover:dark:bg-gray-700 hover:bg-gray-100 cursor-pointer">
-                                    <FaPlus
+                                    <MdPlaylistAdd
                                         title="Add Song"
                                         className="text-gray-400 cursor-pointer transition"
                                     />

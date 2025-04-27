@@ -166,7 +166,7 @@ function HomePage() {
   return (
     <>
       <Header setOpenEditProfile={setOpenEditProfile} handleToggleUpload={handleToggleUpload} />
-      <div className="flex overflow-auto flex-col mb-5 w-full text-white">
+      <div className="flex flex-col mb-5 w-full text-white">
         <div className="md:bg-white dark:md:bg-slate-900/50 dark:border-white/10 md:border p-4 pb-5 md:rounded-3xl">
           {!isNoSongsFound && (
             <>
