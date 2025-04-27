@@ -100,7 +100,7 @@ function EditProfile({ setOpenEditProfile }) {
                                 Profile Pic
                             </label>
                             <input ref={fileInputRef} type="file" accept="image/*" id="profilePic"
-                                onChange={handleFileChange} className="shadow-lg w-full bg-white file:bg-slate-100 file:text-sm file:p-1 file:px-2 file:rounded-lg file:border-none rounded-xl p-2" />
+                                onChange={handleFileChange} className="shadow-lg w-full text-black dark:text-white dark:bg-slate-600 bg-white file:bg-slate-100 file:text-sm file:p-1 file:px-2 file:rounded-lg file:border-none rounded-xl p-2" />
                         </div>
                         <div className='w-full flex items-center justify-between mt-5'>
                             <button type='button' onClick={() => handleBack()} className='border border-black dark:border-white/20 text-black dark:text-white hover:bg-black text-sm hover:text-white px-3 py-2 rounded-lg transition-all'>Back</button>

@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const PageNotFount_404 = () => {
   return (
     <div
-      className={`flex justify-center md:p-7 pt-20 px-7 text-white items-center bg-[url(/src/assets/404.png)] bg-center bg-cover bg-no-repeat h-[100vh]`}
+      className={`flex justify-center font-poppins md:p-7 pt-20 px-7 text-white items-center bg-[url(/src/assets/404.png)] bg-center bg-cover bg-no-repeat h-[100vh]`}
     >
       <div className="flex items-center bg-black/20 backdrop-blur-md p-10 rounded-3xl flex-col">
         <span className="font-sofia text-5xl mb-3 font-light">404</span>
