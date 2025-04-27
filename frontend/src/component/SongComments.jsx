@@ -3,12 +3,16 @@ import toast from "react-hot-toast";
 import { RiSendPlane2Fill } from "react-icons/ri";
 import { API } from '../services/apiService';
 import { LiaTimesSolid } from 'react-icons/lia';
+import { AiOutlineDelete } from 'react-icons/ai';
+import { MdBlockFlipped } from "react-icons/md";
+
 
 const SongComments = ({ setShowComments, userProfile, userId, songId, songname }) => {
     const [comment, setComment] = useState("");
     const [loading, setLoading] = useState(false);
     const [songComments, setSongComments] = useState(null);
     const [rows, setRows] = useState(1);
+    const [hoveredCommentId, setHoveredCommentId] = useState(null);
     const scrollRef = useRef(null);
     const textareaRef = useRef(null);
     const adjustTextareaHeight = () => {
@@ -28,6 +32,7 @@ const SongComments = ({ setShowComments, userProfile, userId, songId, songname }
     }, [comment]);
 
     const handleComment = async () => {
+        textareaRef.current.focus()
         if (comment.trim() === '') {
             toast.error("Please enter a comment...");
             return;
@@ -82,6 +87,38 @@ const SongComments = ({ setShowComments, userProfile, userId, songId, songname }
     useEffect(() => {
         fetchAllComments();
     }, []);
+
+    const handleDeleteComment = async (id) => {
+        try {
+            const res = await API.delete(`/comments/${id}`);
+            const updatedComment = res.data.updatedComment;
+
+            // Update only the particular comment inside songComments
+            setSongComments((prevComments) =>
+                prevComments.map((comment) =>
+                    comment._id === updatedComment._id ? updatedComment : comment
+                )
+            );
+
+        } catch (error) {
+            if (error.response && error.response.status === 400) {
+                toast.error(error.response.data.message)
+            } else {
+                console.error(error);
+            }
+        }
+    };
+
+    // this function is used to check the comment was only one day old? if yes then only we need to show the delete butto
+    const isWithinOneDay = (createdAt) => {
+        const createdTime = new Date(createdAt).getTime();
+        const currentTime = Date.now();
+        const oneDayInMs = 24 * 60 * 60 * 1000; // milliseconds in one day
+    
+        return (currentTime - createdTime) <= oneDayInMs;
+    };
+    
+
 
     return (
         <div className='fixed z-50 cursor-auto top-0 left-0 flex justify-center items-center w-full h-full bg-black/70'>
@@ -139,28 +176,46 @@ const SongComments = ({ setShowComments, userProfile, userId, songId, songname }
                                 : "rounded-l-md rounded-r-2xl";
                         }
 
-
                         return (
-                            <div key={msg._id} className='relative'>
-                                {isLast && <img src={`${import.meta.env.VITE_BASEURL}/assets/users/${msg.userId.profilePic}`} className={`absolute w-7 h-7 rounded-full ${isCurrentUser ? 'right-0 bottom-0' : 'left-0 bottom-0'}`} />}
-                                <div
-
-                                    className={`flex items-center ${isCurrentUser ? 'justify-end mr-9' : 'justify-start ml-9'} mb-1`}
-                                >
+                            <div
+                                key={msg._id}
+                                className='relative'
+                                onMouseEnter={() => setHoveredCommentId(msg._id)}
+                                onMouseLeave={() => setHoveredCommentId(null)}
+                            >
+                                {isLast && (
+                                    <img
+                                        src={`${import.meta.env.VITE_BASEURL}/assets/users/${msg.userId.profilePic}`}
+                                        className={`absolute w-7 h-7 rounded-full ${isCurrentUser ? 'right-0 bottom-0' : 'left-0 bottom-0'}`}
+                                    />
+                                )}
+                                <div className={`flex items-center ${isCurrentUser ? 'justify-end mr-9' : 'justify-start ml-9'} mb-1`}>
                                     <div
-                                        className={`
-                                            p-2 px-3 text-black max-w-[75%] text-sm
-                                            ${isCurrentUser ? 'bg-green-200' : 'bg-white border'}
-                                            ${bubbleClass}
-                                            ${isFirst && "mt-3"}
-                                        `}
+                                        className={`relative
+                                    p-2 px-3 text-black max-w-[85%] text-sm
+                                    ${isCurrentUser ? 'bg-green-200' : 'bg-white border'}
+                                    ${bubbleClass}
+                                    ${isFirst && "mt-3"}
+                                `}
                                     >
                                         {isFirst && (
                                             <p className={`font-bold cursor-pointer mb-1 ${isCurrentUser ? 'text-green-500' : 'text-orange-500'}`}>
                                                 {isCurrentUser ? "You" : msg.userId.name}
                                             </p>
                                         )}
-                                        <pre className='font-poppins text-wrap'>{msg.comment}</pre>
+                                        <pre className='font-poppins text-wrap'>{msg.deleted? <span className='italic text-gray-600 flex items-center gap-1'><MdBlockFlipped />{isCurrentUser? "You deleted this message": "This message was deleted"}</span> : msg.comment}</pre>
+
+                                        {isCurrentUser && !msg.deleted  && isWithinOneDay(msg.createdAt) && (
+                                            <span
+                                                onClick={() => handleDeleteComment(msg._id)}
+                                                className={`absolute bottom-[5px] -left-[27px] border text-gray-700 p-1 cursor-pointer rounded-lg border-gray-400 transition-all duration-300 ease-in-out
+                                                            ${hoveredCommentId === msg._id ? 'opacity-100 scale-100' : 'opacity-0 scale-75'}
+                                                        `}
+                                            >
+                                                <AiOutlineDelete />
+                                            </span>
+                                        )}
+
                                     </div>
                                 </div>
                             </div>

@@ -55,3 +55,40 @@ exports.getAllCommentForSong = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+exports.deleteComment = async (req, res) => {
+  try {
+    const commentId = new mongoose.Types.ObjectId(req.params.commentId);
+
+    // First, find the comment
+    const comment = await Comment.findById(commentId);
+
+    if (!comment) {
+      return res.status(404).json({ message: "Comment not found!" });
+    }
+
+    // Check if comment is within 1 day (24 hours)
+    const createdTime = new Date(comment.createdAt).getTime();
+    const currentTime = Date.now();
+    const oneDayInMs = 24 * 60 * 60 * 1000; // milliseconds in one day
+
+    if (currentTime - createdTime > oneDayInMs) {
+      return res.status(400).json({ message: "Cannot delete comment after 1 day." });
+    }
+
+    // If within 1 day, then update (soft delete)
+    const updatedComment = await Comment.findByIdAndUpdate(
+      commentId,
+      { comment: "", deleted: true },
+      { new: true }
+    )
+    .populate("userId")
+    .populate("songId");
+
+    res.status(200).json({ message: "Comment updated successfully", updatedComment });
+
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting comment", error: error.message });
+  }
+};
+

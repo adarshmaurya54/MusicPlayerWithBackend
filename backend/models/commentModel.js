@@ -16,6 +16,10 @@ const commentSchema = new mongoose.Schema(
       type: String,
       required: [true, "Comment text is required"],
     },
+    deleted: {
+      type: Boolean,
+      default: false, // default value is false
+    },
   },
   { timestamps: true }
 );
