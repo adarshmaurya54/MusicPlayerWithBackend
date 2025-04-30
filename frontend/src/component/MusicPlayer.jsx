@@ -447,7 +447,7 @@ const MusicPlayer = ({
                         <HiSpeakerWave className="text-white  hover:scale-110 transition-all md:text-lg text-3xl" />
                       )}
                     </button>
-                    {share && <Share setShare={setShare} audioFile={songId} />}
+                    {share && <Share setShare={setShare} url={`${import.meta.env.VITE_BASEURL}/songs/share/${songId}`} heading='Share public link to song' description='Your song link is ready to share. Copy the link and send it to your friends!' />}
                     {openComment && <SongComments setShowComments={setOpenComment} songname={songName} userId={user?._id} userProfile={user?.profilePic} songId={id}/>}
                   </div>
                 </div>

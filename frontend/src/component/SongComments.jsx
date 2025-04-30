@@ -122,11 +122,11 @@ const SongComments = ({ setShowComments, userProfile, userId, songId, songname }
 
     return (
         <div className='fixed z-50 cursor-auto top-0 left-0 flex justify-center items-center w-full h-full bg-black/70'>
-            <div className="w-full bg-white dark:bg-slate-800 transition-all duration-500 max-w-xl mx-auto shadow-lg md:rounded-3xl p-4 flex flex-col md:h-[500px] h-full">
+            <div className="md:w-[50%] w-full bg-white dark:bg-slate-800 transition-all duration-500 shadow-lg md:rounded-3xl p-4 flex flex-col md:h-[95%] h-full">
                 {/* Header */}
                 <div className="flex items-center cursor-auto mb-3 justify-between">
                     <h2 className="md:text-base font-poppins text-sm font-semibold text-black dark:text-white">
-                        What are your thoughts on <span className='font-bold'>{songname}</span>? Share below!
+                        What are your thoughts on <span className='font-bold'>{songname}</span> song? Share below!
                     </h2>
 
                     <button onClick={() => setShowComments(false)} className="p-1 text-xl rounded-full text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-500">

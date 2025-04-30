@@ -19,6 +19,10 @@ const playlistSchema = new mongoose.Schema({
             ref: "Song"  // Refers to songModel
         }
     ],
+    public: {
+        type: Boolean,
+        default: false  // By default, playlists are private
+    },
     created_at: {
         type: Date,
         default: Date.now

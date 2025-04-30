@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
 import { LiaTimesSolid } from "react-icons/lia";
 
-function Share({audioFile,setShare}) {
+function Share({heading, description, setShare, url}) {
     const [linkCopy, setLinkCopy] = useState(false);
 
     const handleCopyLink = () => {
       setLinkCopy(true);
       console.log(linkCopy);
   
-      navigator.clipboard.writeText(`${import.meta.env.VITE_BASEURL}/songs/share/${audioFile}`);
+      navigator.clipboard.writeText(url);
   
       // Reset back to "Copy Link" after 3 seconds
       setTimeout(() => {
@@ -20,7 +20,7 @@ function Share({audioFile,setShare}) {
             <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl md:w-[600px] w-[360px] duration-500 transition-[width]">
                 {/* Header */}
                 <div className="flex justify-between border-b dark:border-white/20 pb-5 items-center text-black dark:text-white">
-                    <h2 className="text-lg font-semibold ">Share public link to song</h2>
+                    <h2 className="text-lg font-semibold ">{heading}</h2>
                     <button onClick={() => setShare(false)} className="p-1 rounded-full hover:bg-gray-200 hover:dark:bg-gray-600">
                         <LiaTimesSolid />
                     </button>
@@ -28,14 +28,14 @@ function Share({audioFile,setShare}) {
 
                 {/* Description */}
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                    Your song link is ready to share. Copy the link and send it to your friends!
+                    {description}
                 </p>
 
                 {/* Link Input */}
                 <div className="flex md:flex-row md:gap-0 gap-2 flex-col md:items-center justify-between mt-3 md:p-2 md:pl-4 md:border md:dark:border-white/20 rounded-full md:bg-gray-100 md:dark:bg-slate-800">
                     <input
                         type="text"
-                        value={`${import.meta.env.VITE_BASEURL}/songs/share/${audioFile}`}
+                        value={url}
                         readOnly
                         className="md:w-[70%] md:border-none border md:p-0 p-2 rounded-xl bg-transparent outline-none text-gray-600 dark:text-white"
                     />

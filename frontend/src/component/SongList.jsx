@@ -61,7 +61,7 @@ function SongList({
       <TbShare3 className="text-gray-400" />
     </button>
     {/* Custom Popup */}
-    {open && <Share setShare={setOpen} audioFile={audioFile} />}
+    {open && <Share setShare={setOpen} url={`${import.meta.env.VITE_BASEURL}/songs/share/${audioFile}`} heading='Share public link to song' description='Your song link is ready to share. Copy the link and send it to your friends!' />}
     {!isDeleting && user?.role === 'admin' && (
       <>
         <button

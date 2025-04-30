@@ -48,8 +48,8 @@ function Library() {
                     to="/"
                     className={({ isActive }) =>
                         `text-xs border border-white/30 py-2 px-3 rounded-full ${isActive
-                            ? "dark:bg-white bg-black text-white dark:text-black" // Active style
-                            : "text-white md:text-black dark:border-white/20 md:border-black/70 dark:text-gray-50 hover:text-white hover:bg-black hover:dark:bg-white hover:dark:text-black" // Inactive style
+                            ? "dark:bg-white md:bg-black bg-white md:text-white text-black dark:text-black" // Active style
+                            : "text-white md:text-black dark:border-white/20 md:border-black/70 dark:text-gray-50 hover:md:text-white hover:text-black hover:md:bg-black hover:bg-white hover:dark:bg-white hover:dark:text-black" // Inactive style
                         }`
                     }
                 >
@@ -60,8 +60,8 @@ function Library() {
                     to="/library/playlists"
                     className={({ isActive }) =>
                         `text-xs border border-white/30 relative py-2 px-3 rounded-full ${isActive
-                            ? "dark:bg-white bg-black text-white dark:text-black" // Active style
-                            : "text-white md:text-black dark:border-white/20 md:border-black/70 dark:text-gray-50 hover:text-white hover:bg-black hover:dark:bg-white hover:dark:text-black" // Inactive style
+                            ? "dark:bg-white md:bg-black bg-white md:text-white text-black dark:text-black" // Active style
+                            : "text-white md:text-black dark:border-white/20 md:border-black/70 dark:text-gray-50 hover:md:text-white hover:text-black hover:md:bg-black hover:bg-white hover:dark:bg-white hover:dark:text-black" // Inactive style
                         }`
                     }
                 >
@@ -74,8 +74,8 @@ function Library() {
                     end // Ensures exact match with /library only
                     className={({ isActive }) =>
                         `text-xs border border-white/30 py-2 px-3 rounded-full ${isActive
-                            ? "dark:bg-white bg-black text-white dark:text-black" // Active style
-                            : "text-white md:text-black dark:border-white/20 md:border-black/70 dark:text-gray-50 hover:text-white hover:bg-black hover:dark:bg-white hover:dark:text-black" // Inactive style
+                            ? "dark:bg-white md:bg-black bg-white md:text-white text-black dark:text-black" // Active style
+                            : "text-white md:text-black dark:border-white/20 md:border-black/70 dark:text-gray-50 hover:md:text-white hover:text-black hover:md:bg-black hover:bg-white hover:dark:bg-white hover:dark:text-black" // Inactive style
                         }`
                     }
                 >

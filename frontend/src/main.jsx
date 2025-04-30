@@ -14,6 +14,7 @@ import Library from './pages/UserPages/Library'
 import Playlists from './pages/UserPages/Playlists'
 import PlaylistDetails from './component/UserComponents/PlaylistDetails'
 import LikedSongs from './pages/UserPages/LikedSongs'
+import PublicPlaylist from './component/UserComponents/PublicPlaylist'
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,7 @@ const router = createBrowserRouter([
           { path: 'playlists/:id', element: <PlaylistDetails /> }, // Corrected path
         ],
       },
+      { path: 'playlist/:id', element: <PublicPlaylist /> },
       { path: 'song/:songId', element: <HomePage /> },
     ],
   },

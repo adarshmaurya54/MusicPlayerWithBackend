@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
 import AddSongs from "./AddSongs";
 import { API } from "../../services/apiService";
 import { MdOutlinePlaylistRemove, MdPlaylistAdd } from "react-icons/md";
@@ -14,7 +13,7 @@ import { AiOutlineDelete } from "react-icons/ai";
 import { PiPlaylistDuotone } from "react-icons/pi";
 import Share from "../Share";
 
-function PlaylistDetails() {
+function PublicPlaylist() {
     const [openPlaylistShare, setOpenPlaylistShare] = useState(false);
     const [openAddSong, setOpenAddSong] = useState(false);
     const [openEditPlaylist, setOpenEditPlaylist] = useState(false);
@@ -30,14 +29,19 @@ function PlaylistDetails() {
     // Fetch playlist details
     const getPlaylistDetails = async () => {
         try {
-            const response = await API.get(`/playlists/${id}`);
+            const response = await API.get(`/playlists/publicPlaylist/${id}`);
             setPlaylist(response.data);
             setPlaylistName(response.data.name);
             setPlaylistDescription(response.data.description);
         } catch (error) {
-            console.log("Error fetching playlist details:", error);
-            toast.error("Error fetching playlist details")
-            // navigate('/');
+            console.error("Error fetching playlist details:", error);
+            if (error.response && error.response.data && error.response.data.error) {
+                toast.error(error.response.data.error); // Show backend error message
+            } else {
+                toast.error("Something went wrong while fetching playlist details.");
+            }
+        
+            navigate('/');
         }
     };
 
@@ -122,8 +126,8 @@ function PlaylistDetails() {
         return <div className="w-full px-4 py-8 mt-5 rounded-2xl flex items-center justify-center">
             <div className="flex items-center justify-center">
                 <div className="flex flex-col items-center space-y-4">
-                    <div className="w-16 h-16 border-4 md:border-black/50 dark:border-white border-white border-dashed rounded-full animate-spin"></div>
-                    <p className="text-xl text-center font-semibold md:text-gray-700 text-gray-300 dark:text-gray-300">
+                    <div className="w-16 h-16 border-4 border-white border-dashed rounded-full animate-spin"></div>
+                    <p className="text-xl text-center font-semibold text-gray-300">
                         Loading...
                     </p>
                 </div>
@@ -132,49 +136,13 @@ function PlaylistDetails() {
     }
 
     return (
-        <div className={`relative mt-5 md:bg-white md:dark:bg-transparent rounded-3xl w-full`}>
-            {/* ✅ Playlist Header */}
+        <div className={`relative my-5 p-5 md:bg-white md:dark:bg-transparent rounded-3xl w-full`}>
+            {/* Playlist Header */}
             <div className="flex flex-col p-3 md:bg-transparent bg-white dark:bg-transparent border rounded-3xl gap-4 md:pb-4 md:border-b dark:border-white/20 md:border-x-0 md:border-t-0 md:rounded-none">
                 <div className="flex dark:text-white md:items-center justify-between">
                     <div>
-                        <h1 className="text-2xl md:text-5xl font-bold">{playlist?.name}</h1>
+                        <h1 className="text-2xl md:text-5xl mb-2 font-bold">{playlist?.name}</h1>
                         <p className="md:text-sm text-xs mt-1 text-gray-500 dark:text-gray-400">{playlist?.description || "No description available"}</p>
-                    </div>
-                    <div className="relative inline-block">
-                        <IoEllipsisHorizontal onClick={() => setIsOpen(!isOpen)} className={`text-2xl text-gray-400 hover:text-black hover:dark:text-white cursor-pointer ${isOpen && 'text-black'}`} />
-                        {isOpen && <div className="absolute z-10 right-0 mt-2 w-48 bg-white dark:bg-slate-800 border dark:border-white/20 rounded-xl shadow-lg">
-                            <ul className="p-1">
-                                {playlist.public && <li onClick={() => { setOpenPlaylistShare(true); setIsOpen(false) }} className="flex gap-2 text-sm items-center rounded-lg px-4 py-2 dark:text-white hover:dark:bg-gray-700 hover:bg-gray-100 cursor-pointer">
-                                    <IoShareOutline
-                                        title="Delete Playlist"
-                                        className="text-black text-base cursor-pointer transition"
-                                    />
-                                    Share Playlist
-                                </li>}
-                                <li onClick={() => handleDeletePlaylist()} className="flex gap-2 text-sm items-center rounded-lg px-4 py-2 dark:text-white hover:dark:bg-gray-700 hover:bg-gray-100 cursor-pointer">
-                                    <MdOutlinePlaylistRemove
-                                        title="Delete Playlist"
-                                        className="text-black text-base cursor-pointer transition"
-                                    />
-                                    Delete Playlist
-                                </li>
-                                <li onClick={() => setOpenEditPlaylist(true)} className="flex gap-2 text-sm items-center rounded-lg px-4 py-2 dark:text-white hover:dark:bg-gray-700 hover:bg-gray-100 cursor-pointer">
-                                    <PiPlaylistDuotone
-                                        title="Edit Playlist"
-                                        className="text-black text-base cursor-pointer transition"
-                                    />
-                                    Edit Playlist
-                                </li>
-                                <li onClick={() => setOpenAddSong(true)} className="flex gap-2 text-sm items-center rounded-lg px-4 py-2 dark:text-white hover:dark:bg-gray-700 hover:bg-gray-100 cursor-pointer">
-                                    <MdPlaylistAdd
-                                        title="Add Song"
-                                        className="text-black text-base cursor-pointer transition"
-                                    />
-                                    Add Songs
-                                </li>
-                            </ul>
-                        </div>
-                        }
                     </div>
                 </div>
                 <div className="flex items-center justify-between">
@@ -192,9 +160,6 @@ function PlaylistDetails() {
                             </span>
                         </div>
                     </div>
-                    <button onClick={() => handlePlaylistVisibility(playlist.public)} className="px-4 py-2 text-black border border-black rounded-full text-xs transition">
-                        {playlist.public ? "Public" : "Private"}
-                    </button>
                 </div>
             </div>
 
@@ -305,4 +270,4 @@ function PlaylistDetails() {
     );
 }
 
-export default PlaylistDetails;
+export default PublicPlaylist;

@@ -31,21 +31,55 @@ exports.getUserPlaylists = async (req, res) => {
 };
 exports.getUserPlaylistByPlaylistId = async (req, res) => {
   try {
-    // Convert playlistid to ObjectId properly
     const playlistId = new mongoose.Types.ObjectId(req.params.playlistId);
+    const playlist = await Playlist.findOne({ _id: playlistId })
+      .populate("songs")
+      .populate({
+        path: "user_id",
+        select: "profilePic name", // Only include these two fields
+      });
 
-    // Find playlist based on playlistid
-    const playlists = await Playlist.find({ _id: playlistId }).populate(
-      "songs"
-    );
+    if (!playlist) {
+      return res.status(404).json({ error: "Playlist not found" });
+    }
 
-    // Return playlists if found
-    res.status(200).json(playlists);
+    // Return playlist if found
+    res.status(200).json(playlist);
   } catch (error) {
     console.error("Error fetching playlist:", error);
     res.status(500).json({ error: "Error fetching playlist" });
   }
 };
+
+exports.getUserPublicPlaylistByPlaylistId = async (req, res) => {
+  try {
+    const playlistId = new mongoose.Types.ObjectId(req.params.playlistId);
+
+    // Find one playlist by ID
+    const playlist = await Playlist.findOne({ _id: playlistId })
+      .populate("songs")
+      .populate({
+        path: "user_id",
+        select: "profilePic name", // Only include these two fields
+      });
+
+    if (!playlist) {
+      return res.status(404).json({ error: "Playlist not found" });
+    }
+
+    // Check if the playlist is public
+    if (!playlist.public) {
+      return res.status(403).json({ error: "Access denied. Playlist is not public." });
+    }
+
+    // Return playlist if it's public
+    res.status(200).json(playlist);
+  } catch (error) {
+    console.error("Error fetching playlist:", error);
+    res.status(500).json({ error: "Error fetching playlist" });
+  }
+};
+
 
 // Add songs to playlist
 exports.addSongs = async (req, res) => {
@@ -146,15 +180,42 @@ exports.deletePlaylistSong = async (req, res) => {
 
     // Save the updated playlist
     const updatedPlaylist = await playlist.save();
-    res
-      .status(200)
-      .json({
-        message: "Song deleted successfully",
-        playlist: updatedPlaylist,
-      });
+    res.status(200).json({
+      message: "Song deleted successfully",
+      playlist: updatedPlaylist,
+    });
   } catch (error) {
     console.error("Error deleting song:", error);
     res.status(500).json({ message: "Error deleting song" });
   }
 };
- 
+
+exports.updatePlaylistVisibility = async (req, res) => {
+  try {
+    const { playlistId } = req.params;
+    const { visibility } = req.body; // true or false
+
+    if (typeof visibility !== "boolean") {
+      return res.status(400).json({ message: "Visibility must be a boolean value." });
+    }
+
+    const updatedPlaylist = await Playlist.findByIdAndUpdate(
+      playlistId,
+      { public: visibility },
+      { new: true }
+    );
+
+    if (!updatedPlaylist) {
+      return res.status(404).json({ message: "Playlist not found." });
+    }
+
+    res.status(200).json({
+      message: `Playlist visibility updated to ${visibility ? "public" : "private"}.`,
+      playlist: updatedPlaylist,
+    });
+  } catch (error) {
+    console.error("Error updating playlist visibility:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
+

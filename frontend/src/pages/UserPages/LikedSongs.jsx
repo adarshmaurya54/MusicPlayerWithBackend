@@ -41,8 +41,8 @@ function LikedSongs() {
         return <div className="w-full px-4 py-8 mt-5 rounded-2xl flex items-center justify-center">
             <div className="flex items-center justify-center">
                 <div className="flex flex-col items-center space-y-4">
-                    <div className="w-16 h-16 border-4 border-black/50 dark:border-white border-dashed rounded-full animate-spin"></div>
-                    <p className="text-xl text-center font-semibold text-gray-700 dark:text-gray-300">
+                    <div className="w-16 h-16 border-4 md:border-black/50 border-white dark:border-white border-dashed rounded-full animate-spin"></div>
+                    <p className="text-xl text-center font-semibold md:text-gray-700 text-gray-300 dark:text-gray-300">
                         Loading...
                     </p>
                 </div>
