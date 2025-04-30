@@ -44,104 +44,93 @@ A modern music player website with seamless audio playback, Google Drive integra
    ```bash
    git clone https://github.com/yourusername/music-player-website.git
    cd music-player-website
-Backend Setup:
+   ```
+## Backend Setup:
 
-Navigate to the backend folder.
+1. ### Navigate to the backend folder.
+   ```bash
+   cd backend
+   ```
+2. ## Install dependencies:
 
-Install dependencies:
+   ```bash
+   npm install
+   ```
+3. ### Create a ```.env``` file with the following variables:
+   ```bash
+   PORT=5000
+   MONGO_URI=your_mongodb_connection_string
+   CLIENT_EMAIL=your_google_client_email
+   PRIVATE_KEY=your_google_private_key
+   FOLDER_ID=your_google_drive_folder_id
+   JWT_SECRET=your_jwt_secret
+   ```
+4. ### Start the backend server:
 
-bash
-Copy code
-npm install
-Create a .env file with the following variables:
+   ```bash
+   npm start
+   ```
+## Frontend Setup:
 
-env
-Copy code
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
-CLIENT_EMAIL=your_google_client_email
-PRIVATE_KEY=your_google_private_key
-FOLDER_ID=your_google_drive_folder_id
-JWT_SECRET=your_jwt_secret
-Start the backend server:
+1. ### Navigate to the frontend folder.
+   ```bash
+   cd ../frontend
+   ```
+2. ### Install dependencies:
+   ```bash
+   npm install
+   ```
+3. ### Create a ```.env``` file with the following variables:
+   ```bash
+   VITE_BASEURL="Your backedn url"
+   VITE_PRODUCTION_LINK="Your frontend hosted url"
+   VITE_FRONTEND_URL="Your frontend localhost url"
+   ```
+4. ### Start the React development server:
+   ```bash
+   npm start
+   ```
+## Run the App:
+### Open your browser and visit:
+   ```bash
+   http://localhost:3000
+   ```
+## 📂 Project Structure
+   ```bash
+   MusicPlayerWebsite/
+   ├── backend/
+   │   ├── controllers/
+   │   ├── models/
+   │   ├── routes/
+   │   ├── services/
+   │   ├── .env
+   │   ├── server.js
+   │   └── ...
+   ├── frontend/
+   │   ├── public/
+   │   ├── src/
+   │   ├── .env
+   │   ├── package.json
+   │   └── ...
+   ├── README.md
+   └── ...
+   ```
+## 🎨 Screenshots
+1. ### Homepage:
 
-bash
-Copy code
-npm start
-Frontend Setup:
+2. ### Music Player UI:
 
-Navigate to the frontend folder.
-Install dependencies:
-bash
-Copy code
-npm install
-Start the React development server:
-bash
-Copy code
-npm start
-Run the App:
+3. ### File Upload Interface:
 
-Open your browser and visit:
-arduino
-Copy code
-http://localhost:3000
-📂 Project Structure
-bash
-Copy code
-MusicPlayerWebsite/
-├── backend/
-│   ├── controllers/
-│   ├── models/
-│   ├── routes/
-│   ├── services/
-│   ├── .env
-│   ├── server.js
-│   └── ...
-├── frontend/
-│   ├── public/
-│   ├── src/
-│   ├── .env
-│   ├── package.json
-│   └── ...
-├── README.md
-└── ...
-🎨 Screenshots
-1. Homepage:
+## 🛡️ Security Features
+* **JWT Authentication:** Ensures secure API access.
+* **Google Drive File Upload:** Protects uploaded files with limited access permissions.
+* **Environment Variables:** All sensitive data (API keys, DB URIs) stored securely.
+## 🚀 Future Enhancements
+* **Search Functionality:** Add real-time search for songs by name or artist.
+* **AI Recommendations:** Suggest songs based on user preferences.
+* **Live Streaming:** Add support for live audio streaming.
 
-2. Music Player UI:
-
-3. File Upload Interface:
-
-🛡️ Security Features
-JWT Authentication: Ensures secure API access.
-Google Drive File Upload: Protects uploaded files with limited access permissions.
-Environment Variables: All sensitive data (API keys, DB URIs) stored securely.
-🚀 Future Enhancements
-Playlist Management: Allow users to create and manage playlists.
-Search Functionality: Add real-time search for songs by name or artist.
-AI Recommendations: Suggest songs based on user preferences.
-Live Streaming: Add support for live audio streaming.
-🧑‍💻 Contributing
-Contributions are welcome! Feel free to fork the project and submit pull requests.
-
-Fork the repository.
-Create a new branch:
-bash
-Copy code
-git checkout -b feature/your-feature-name
-Commit your changes:
-bash
-Copy code
-git commit -m "Add your message"
-Push to the branch:
-bash
-Copy code
-git push origin feature/your-feature-name
-Open a pull request.
-📄 License
-This project is licensed under the MIT License. See the LICENSE file for details.
-
-✨ Acknowledgments
-Google APIs for providing robust cloud solutions.
-MERN Stack for powering the project.
-Inspiration and support from the open-source community.
+## ✨ Acknowledgments
+* **Google APIs** for providing robust cloud solutions.
+* **MERN Stack** for powering the project.
