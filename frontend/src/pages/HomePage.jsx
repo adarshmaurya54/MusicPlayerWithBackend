@@ -14,6 +14,7 @@ import { useDispatch } from "react-redux";
 import { getCurrentUser } from "../redux/features/auth/authAction";
 import EditProfile from "../component/EditProfile";
 import { LiaTimesSolid } from "react-icons/lia";
+import Footer from "../component/Footer";
 
 function HomePage() {
   const { songId } = useParams(); // Get songId from URL
@@ -342,6 +343,7 @@ function HomePage() {
         )}
         {openEditProfile && <EditProfile setOpenEditProfile={setOpenEditProfile} />}
       </div>
+      <Footer/>
     </>
   );
 }

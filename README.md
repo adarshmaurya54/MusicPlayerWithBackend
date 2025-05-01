@@ -1,4 +1,4 @@
-# 🎵 Music Player Website 🎶
+# 🎵 PlayBitZ 🎶
 
 A modern music player website with seamless audio playback, Google Drive integration for audio file storage, and a clean, user-friendly interface.
 

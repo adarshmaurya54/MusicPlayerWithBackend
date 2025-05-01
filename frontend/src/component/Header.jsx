@@ -37,7 +37,10 @@ const Header = ({ handleToggleUpload, setOpenEditProfile }) => {
         <h1 className="md:text-3xl flex items-center justify-between text-xl font-bold">
           <Link to="/" className="flex gap-3 items-center">
             <img src={logo} alt="./vite.svg" className="md:w-14 w-9" />
-            <span className="dark:text-white text-black">PlayBeatz</span>
+            <span className="text-transparent bg-gradient-to-r from-[#8251c5] to-[#5c3ab5] bg-clip-text dark:text-white dark:bg-none">
+              PlayBeatz
+            </span>
+
           </Link>
           {!hamb && <RxHamburgerMenu onClick={() => setHamb(true)} className="dark:text-white cursor-pointer md:hidden text-3xl" />}
           {hamb && <LiaTimesSolid onClick={() => setHamb(false)} className="dark:text-white cursor-pointer md:hidden text-3xl" />}
@@ -136,7 +139,7 @@ const Header = ({ handleToggleUpload, setOpenEditProfile }) => {
               </>) : (<>
                 <button
                   onClick={() => navigate("/login")}
-                  className="bg-black dark:bg-white hover:ring-2 hover:ring-black
+                  className="bg-gradient-to-r from-[#8251c5] to-[#5c3ab5] dark:bg-white hover:ring-2 hover:ring-[#8251c5]
            dark:ring-offset-0 ring-offset-2 transition-all duration-300 md:w-auto w-[50%] justify-center flex items-center gap-2 dark:text-black text-white px-4 py-2 rounded-xl"
                 >
                   <AiOutlineLogin className="mt-1" />
@@ -144,7 +147,7 @@ const Header = ({ handleToggleUpload, setOpenEditProfile }) => {
                 </button>
                 <button
                   onClick={() => navigate("/sign-up")}
-                  className="bg-black dark:bg-white hover:ring-2 hover:ring-black
+                  className="bg-gradient-to-r from-[#8251c5] to-[#5c3ab5] dark:bg-white hover:ring-2 hover:ring-[#8251c5]
            dark:ring-offset-0 ring-offset-2 transition-all duration-300 md:w-auto w-[50%] justify-center flex items-center gap-2 dark:text-black text-white px-4 py-2 rounded-xl"
                 >
                   <FaUserPlus className="mt-1" />

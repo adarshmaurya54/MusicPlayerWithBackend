@@ -192,7 +192,7 @@ function PlaylistDetails() {
                             </span>
                         </div>
                     </div>
-                    <button onClick={() => handlePlaylistVisibility(playlist.public)} className="px-4 py-2 text-black border border-black rounded-full text-xs transition">
+                    <button onClick={() => handlePlaylistVisibility(playlist.public)} className="px-4 py-2 text-gray-600 border border-gray-600 rounded-full text-xs transition">
                         {playlist.public ? "Public" : "Private"}
                     </button>
                 </div>

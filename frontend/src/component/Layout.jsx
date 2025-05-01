@@ -6,12 +6,13 @@ import apiService from '../services/apiService'
 import MusicPlayer from './MusicPlayer'
 import { useExtractColors } from 'react-extract-colors'
 import { useSelector } from 'react-redux'
+import Footer from './Footer'
 
 function Layout() {
     const { songId } = useParams()
     const location = useLocation();
     const isSongPage = location.pathname.startsWith("/song");
-    const darkMode = useSelector(state => state.theme.darkMode )
+    const darkMode = useSelector(state => state.theme.darkMode)
     const [songClickLoading, setSongClickLoading] = useState(false);
     const [player, setPlayer] = useState(0) // Default to 0 or undefined initially
     const [totalDuration, setTotalDuration] = useState(0)
