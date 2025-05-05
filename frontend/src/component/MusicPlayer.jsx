@@ -350,7 +350,7 @@ const MusicPlayer = ({
                 </div>
               </div>
             ) : (
-              <div className="transition-all flex flex-col gap-4 items-center justify-center md:w-[60%]">
+              <div className="transition-all flex flex-col md:gap-4 gap-10 items-center justify-center md:w-[60%]">
                 <div className="md:rounded-3xl md:mt-12 w-full md:p-2 md:border-2 md:border-white/20">
                   <div className="flex items-center text-white px-3 justify-between">
                     <div className="flex flex-col">
