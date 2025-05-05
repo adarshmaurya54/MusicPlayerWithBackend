@@ -9,7 +9,6 @@ import { API } from "../services/apiService";
 import { BsChatRightText, BsRepeat1 } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import { CiShare1 } from "react-icons/ci";
 import { IoEllipsisVertical, IoShareOutline } from "react-icons/io5";
 import Share from "./Share";
 import SongComments from "./SongComments";
@@ -34,7 +33,8 @@ const MusicPlayer = ({
   songLoop,
   setSongLoop,
   totalDuration,
-  backgroundImage
+  backgroundImage,
+  lyrics
 }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -43,9 +43,10 @@ const MusicPlayer = ({
   const [open, setOpen] = useState(false);
   const [share, setShare] = useState(false);
   const [openComment, setOpenComment] = useState(false)
-  // New state for loading
+  const [showLyrics, setShowLyrics] = useState(false)
   const { user } = useSelector((state) => state.auth)
   const [isLiked, setIsLiked] = useState(likes?.includes(user?._id));
+  console.log(lyrics)
 
   const progressBarRef = useRef(null);
   useEffect(() => {
@@ -286,7 +287,7 @@ const MusicPlayer = ({
         >
           <div className="flex justify-between text-black md:text-white absolute md:top-7 left-0 md:px-7 pl-7 pr-4 w-full items-center">
             <IoIosArrowDown
-              onClick={() => {handlePlayerClose(songId, songName, artistName); setOpen(false)}}
+              onClick={() => { handlePlayerClose(songId, songName, artistName); setOpen(false) }}
               className={`${songClickLoading ? 'text-black dark:text-white' : 'text-white'} text-3xl cursor-pointer`}
             />
             <div className="relative inline-block">
@@ -294,12 +295,12 @@ const MusicPlayer = ({
               {open && <div className="absolute z-10 right-0 mt-2 w-48 bg-white dark:bg-slate-800 border dark:border-white/20 rounded-xl shadow-lg">
                 <ul className="text-black p-1">
                   <li onClick={() => setShare(true)} className="flex gap-2 text-sm items-center rounded-lg px-4 py-2 dark:text-white hover:dark:bg-gray-700 hover:bg-gray-100 cursor-pointer">
-                  <IoShareOutline className="text-base" />
-                  Share
+                    <IoShareOutline className="text-base" />
+                    Share
                   </li>
                   <li onClick={() => setOpenComment(true)} className="flex gap-2 text-sm items-center rounded-lg px-4 py-2 dark:text-white hover:dark:bg-gray-700 hover:bg-gray-100 cursor-pointer">
-                  <BsChatRightText />
-                  Comments
+                    <BsChatRightText />
+                    Comments
                   </li>
                 </ul>
               </div>
@@ -349,8 +350,8 @@ const MusicPlayer = ({
                 </div>
               </div>
             ) : (
-              <div className="transition-all flex items-center justify-center md:w-[60%]">
-                <div className="md:rounded-3xl w-full md:p-2 md:border-2 md:border-white/20">
+              <div className="transition-all flex flex-col gap-4 items-center justify-center md:w-[60%]">
+                <div className="md:rounded-3xl md:mt-12 w-full md:p-2 md:border-2 md:border-white/20">
                   <div className="flex items-center text-white px-3 justify-between">
                     <div className="flex flex-col">
                       <div
@@ -448,8 +449,17 @@ const MusicPlayer = ({
                       )}
                     </button>
                     {share && <Share setShare={setShare} url={`${import.meta.env.VITE_BASEURL}/songs/share/${songId}`} heading='Share public link to song' description='Your song link is ready to share. Copy the link and send it to your friends!' />}
-                    {openComment && <SongComments setShowComments={setOpenComment} songname={songName} userId={user?._id} userProfile={user?.profilePic} songId={id}/>}
+                    {openComment && <SongComments setShowComments={setOpenComment} songname={songName} userId={user?._id} userProfile={user?.profilePic} songId={id} />}
                   </div>
+                </div>
+                <div className={`rounded-3xl relative overflow-hidden ${showLyrics ? "pb-10 h-[200px]" : "h-[75px]"} transition-all duration-500 w-[350px] md:w-full p-5 border-2 border-white/20`}>
+                  <div onClick={() => setShowLyrics(!showLyrics)}  className="cursor-pointer text-2xl font-bold flex justify-between items-center">
+                    <p>Lyrics</p>
+                    <IoIosArrowDown className={`transition-all duration-500 ${showLyrics ? "rotate-180" : "rotate-0"}`}/>
+                  </div>
+                  <pre className={`overflow-auto w-full font-poppins mt-2 pt-2 no-scrollbar font-bold text-lg h-full ${showLyrics ? "block" : "hidden"}`}>
+                      {lyrics}
+                  </pre>
                 </div>
               </div>
             )}

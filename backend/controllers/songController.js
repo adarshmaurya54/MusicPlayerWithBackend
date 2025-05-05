@@ -319,6 +319,7 @@ exports.getSongWithMetadata = async (req, res) => {
         // Respond with song details and thumbnail URLs
         res.json({
           _id: song._id,
+          lyrics: song.lyrics,
           songName: song.songName || songName,
           audioUrl: `/stream/${fileId}`, // Stream URL for Google Drive file ID
           artistName: song.artistName || artistName,

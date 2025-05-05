@@ -72,8 +72,8 @@ function EditProfile({ setOpenEditProfile }) {
     }
 
     return (
-        <div className="fixed flex justify-center items-center z-50 top-0 left-0 w-full h-full backdrop-blur-sm">
-            <div className="relative overflow-hidden p-8 md:w-[400px] w-[320px] transition-all md:h-[90%] h-[500px] dark:bg-slate-700 rounded-3xl border-2 dark:border-none dark:border-white/10 bg-gradient-to-t from-white dark:from-slate-800 to-blue-50">
+        <div className="fixed flex justify-center items-center z-50 top-0 left-0 w-full h-full backdrop-blur-sm bg-black/50">
+            <div className="relative overflow-hidden p-8 md:w-[400px] w-[320px] transition-all h-[500px] dark:bg-slate-700 rounded-3xl border-2 dark:border-none dark:border-white/10 bg-gradient-to-t from-white dark:from-slate-800 to-blue-50">
                 <div className={`absolute top-0 left-0 w-full transition-transform duration-500 ${!edit ? "translate-x-0" : "-translate-x-full"} flex h-full items-center justify-center`}>
                     <div className="flex gap-3 flex-col items-center justify-center w-full h-full">
                         <img

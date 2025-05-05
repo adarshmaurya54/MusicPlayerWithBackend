@@ -394,6 +394,7 @@ function Layout() {
                         audioRef={audioRef}
                         songId={player}
                         id={songDetail?._id}
+                        lyrics={songDetail?.lyrics}
                         likes={songDetail?.likes}
                         handlePlayerClose={handlePlayerClose}
                         songName={songDetail?.songName}

@@ -10,16 +10,16 @@ import SongList from "../SongList";
 import { GoArrowLeft } from "react-icons/go";
 import Share from "../Share";
 import { TiWarning } from "react-icons/ti";
+import { useDispatch } from "react-redux";
+import { getCurrentUser } from "../../redux/features/auth/authAction";
 
 
 function PublicPlaylist() {
     const [openPlaylistShare, setOpenPlaylistShare] = useState(false);
-    const [openAddSong, setOpenAddSong] = useState(false);
     const [playlist, setPlaylist] = useState(null);
     const { id } = useParams();
     const navigate = useNavigate();
     const { player, setPlayer, songDetail, setSongList, isPlaying } = useOutletContext();
-    const [isOpen, setIsOpen] = useState(false)
 
     // Fetch playlist details
     const getPlaylistDetails = async () => {
@@ -36,7 +36,12 @@ function PublicPlaylist() {
             }
         }
     };
-
+    //getting the currently loggedin user
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(getCurrentUser()); // Dispatch action directly
+        // navigate('/library/liked-songs')
+    }, [dispatch]);
     useEffect(() => {
         getPlaylistDetails();
     }, []);
@@ -84,7 +89,7 @@ function PublicPlaylist() {
                                 alt={playlist.user_id.name}
                                 className="border border-gray-200 dark:border-white/20 w-8 h-8 object-cover rounded-full"
                             />
-                            <div className="text-sm dark:text-white">
+                            <div className="text-sm dark:text-white md:text-black text-white">
                                 <span className="font-semibold">Created by</span>{" "}
                                 <span className="font-bold">{playlist.user_id.name}</span>
                                 <span className="text-gray-400 font-normal">
@@ -96,7 +101,7 @@ function PublicPlaylist() {
                     </div>
 
 
-                    <div className="flex flex-col md:bg-transparent bg-white dark:bg-transparent border rounded-3xl gap-4 md:pb-4 md:border-b dark:border-white/20 md:border-x-0 md:border-t-0 md:rounded-none">
+                    <div className="flex md:p-0 p-3 flex-col md:bg-transparent bg-white dark:bg-transparent border rounded-3xl gap-4 md:pb-4 md:border-b dark:border-white/20 md:border-x-0 md:border-t-0 md:rounded-none">
                         <div className="flex dark:text-white md:items-center justify-between">
                             <div>
                                 <h1 className="text-2xl md:text-5xl mb-2 font-bold">{playlist?.name}</h1>

@@ -65,7 +65,7 @@ const Header = ({ handleToggleUpload, setOpenEditProfile }) => {
 
                   {/* Dropdown Menu */}
                   {isOpen && (
-                    <div className="absolute md:right-0 mt-2 w-48 bg-white dark:bg-slate-800 border dark:border-white/20 rounded-xl shadow-lg">
+                    <div className="absolute md:right-0 mt-2 w-48 bg-white dark:bg-slate-800 border dark:border-white/20 rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.15)]">
                       <ul className="p-1">
                         <li onClick={() => setOpenEditProfile(true)} className="flex items-center rounded-lg px-4 py-2 dark:text-white hover:dark:bg-gray-700 hover:bg-gray-100 cursor-pointer">
                           <FaUser className="mr-3 text-gray-400" />
