@@ -83,10 +83,13 @@ const MusicPlayer = ({
   }, [currentTime, totalDuration]); // This will run every time currentTime or totalDuration changes
 
   const formatTime = (seconds) => {
+    if (isNaN(seconds) || seconds == null) return "00:00";
+    
     const minutes = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
   };
+  
 
   const updateProgress = (clientX) => {
 
@@ -291,7 +294,7 @@ const MusicPlayer = ({
               className={`${songClickLoading ? 'text-black dark:text-white' : 'text-white'} text-3xl cursor-pointer`}
             />
             <div className="relative inline-block">
-              <IoEllipsisVertical onClick={() => setOpen(!open)} className={`text-2xl ${songClickLoading ? 'text-black dark:text-white' : 'text-white'} text-white cursor-pointer `} />
+              <IoEllipsisVertical onClick={() => setOpen(!open)} className={`text-2xl ${songClickLoading ? 'text-black dark:text-white' : 'text-white'} cursor-pointer `} />
               {open && <div className="absolute z-10 right-0 mt-2 w-48 bg-white dark:bg-slate-800 border dark:border-white/20 rounded-xl shadow-lg">
                 <ul className="text-black p-1">
                   <li onClick={() => setShare(true)} className="flex gap-2 text-sm items-center rounded-lg px-4 py-2 dark:text-white hover:dark:bg-gray-700 hover:bg-gray-100 cursor-pointer">
@@ -452,15 +455,15 @@ const MusicPlayer = ({
                     {openComment && <SongComments setShowComments={setOpenComment} songname={songName} userId={user?._id} userProfile={user?.profilePic} songId={id} />}
                   </div>
                 </div>
-                <div className={`rounded-3xl relative overflow-hidden ${showLyrics ? "pb-10 h-[200px]" : "h-[75px]"} transition-all duration-500 w-[350px] md:w-full p-5 border-2 border-white/20`}>
+                {lyrics !== 'Lyrics not available' && <div className={`rounded-3xl relative overflow-hidden ${showLyrics ? "pb-10 h-[200px]" : "h-[75px]"} transition-all duration-500 w-[350px] md:w-full p-5 border-2 border-white/20`}>
                   <div onClick={() => setShowLyrics(!showLyrics)}  className="cursor-pointer text-2xl font-bold flex justify-between items-center">
                     <p>Lyrics</p>
                     <IoIosArrowDown className={`transition-all duration-500 ${showLyrics ? "rotate-180" : "rotate-0"}`}/>
                   </div>
-                  <pre className={`overflow-auto w-full font-poppins mt-2 pt-2 no-scrollbar font-bold text-lg h-full ${showLyrics ? "block" : "hidden"}`}>
+                  <pre className={`overflow-auto w-full font-poppins mt-2 pt-2 no-scrollbar font-bold text-xl h-full ${showLyrics ? "block" : "hidden"}`}>
                       {lyrics}
                   </pre>
-                </div>
+                </div>}
               </div>
             )}
           </div>

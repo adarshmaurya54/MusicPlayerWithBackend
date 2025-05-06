@@ -56,11 +56,21 @@ function HomePage() {
   const itemsPerPage = 9; // Number of songs per page
   //pagination logic
   // Filtered songs based on search query
-  const filteredSongs = songList.filter(
-    (song) =>
-      song.songName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      song.artistName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredSongs = songList
+  .map((song) => {
+    const lowerQuery = searchQuery.toLowerCase();
+    if (!lowerQuery) return song;
+    if (song.songName.toLowerCase().includes(lowerQuery)) {
+      return { ...song, matchedField: 'Song name matched' };
+    } else if (song.artistName.toLowerCase().includes(lowerQuery)) {
+      return { ...song, matchedField: 'Artist name matched' };
+    } else if (song.lyrics.toLowerCase().includes(lowerQuery)) {
+      return { ...song, matchedField: 'Lyrics matched' };
+    } else {
+      return null;
+    }
+  })
+  .filter((song) => song !== null);
 
   // Total pages based on the filtered list
   const totalPages = Math.ceil(filteredSongs.length / itemsPerPage);
@@ -289,6 +299,7 @@ function HomePage() {
                             favourite={song.favourite}
                             handleToggleEdit={handleToggleEdit}
                             fetchSongs={fetchSongs}
+                            matchedField={song.matchedField}
                           />
                         ))}
                       </div>

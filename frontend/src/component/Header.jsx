@@ -140,15 +140,15 @@ const Header = ({ handleToggleUpload, setOpenEditProfile }) => {
                 <button
                   onClick={() => navigate("/login")}
                   className="bg-gradient-to-r from-[#8251c5] to-[#5c3ab5] dark:bg-white hover:ring-2 hover:ring-[#8251c5]
-           dark:ring-offset-0 ring-offset-2 transition-all duration-300 md:w-auto w-[50%] justify-center flex items-center gap-2 dark:text-black text-white px-4 py-2 rounded-xl"
+           dark:ring-offset-0 ring-offset-2 transition-all duration-300 md:w-auto w-[50%] justify-center flex items-center gap-2 dark:text-white text-white px-4 py-2 rounded-xl"
                 >
                   <AiOutlineLogin className="mt-1" />
                   <span>Login</span>
                 </button>
                 <button
                   onClick={() => navigate("/sign-up")}
-                  className="bg-gradient-to-r from-[#8251c5] to-[#5c3ab5] dark:bg-white hover:ring-2 hover:ring-[#8251c5]
-           dark:ring-offset-0 ring-offset-2 transition-all duration-300 md:w-auto w-[50%] justify-center flex items-center gap-2 dark:text-black text-white px-4 py-2 rounded-xl"
+                  className="bg-gradient-to-r from-[#8251c5] to-[#5c3ab5] dark:text-white dark:bg-white hover:ring-2 hover:ring-[#8251c5]
+           dark:ring-offset-0 ring-offset-2 transition-all duration-300 md:w-auto w-[50%] justify-center flex items-center gap-2 text-white px-4 py-2 rounded-xl"
                 >
                   <FaUserPlus className="mt-1" />
                   <span>Sign Up</span>

@@ -27,7 +27,8 @@ function SongList({
   customButton,
   customButtonClassName,
   CustomButtonContent,
-  CustomButtonOnclick
+  CustomButtonOnclick,
+  matchedField
 }) {
   const { user } = useSelector((state) => state.auth)
   const [isDeleting, setIsDeleting] = useState(false); // State to track if a song is being deleted
@@ -194,6 +195,7 @@ function SongList({
               {title}
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 ">{artist}</p>
+            {matchedField && <span className="text-[10px] px-2 py-1 rounded-full bg-gray-100 font-bold text-gray-600 dark:text-gray-400">{matchedField}</span>}
           </div>
 
           <div className="flex items-center space-x-2">
