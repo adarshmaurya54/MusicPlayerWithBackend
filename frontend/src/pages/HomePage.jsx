@@ -207,7 +207,7 @@ function HomePage() {
                     className="w-full dark:text-white text-black border dark:md:border dark:border-white/10 rounded-2xl py-4 pl-12 pr-5 outline-none
                             dark:md:bg-transparent dark:bg-slate-900 bg-white md:focus:ring-1 focus:ring-offset-2 dark:ring-offset-0 focus:ring-gray-500 focus:ring-opacity-50
                             transition-all duration-300 ease-in-out placeholder:text-sm"
-                    placeholder="Search for music that matches your vibe"
+                    placeholder="Search by song name, artist, or lyrics..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
