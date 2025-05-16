@@ -105,7 +105,7 @@ exports.updateSongById = async (req, res) => {
 };
 
 exports.createSong = async (req, res) => {
-  const { songName } = req.body;
+  const { songName, lyrics } = req.body;
   const audioFile = req.file; // The uploaded file from the request
 
   if (!audioFile) {
@@ -119,8 +119,7 @@ exports.createSong = async (req, res) => {
     // Extract metadata fields
     const extractedSongName = metadata.common.title || songName; // Use metadata title if available, fallback to songName
     const extractedArtistName = metadata.common.artist || "Unknown Artist"; // Use metadata artist, fallback to 'Unknown Artist'
-    const extractedLyrics =
-      metadata.common.lyrics?.[0]?.text || "Lyrics not available"; // Extract lyrics from metadata, fallback to default
+    const extractedLyrics = lyrics && lyrics.trim() !== "" ? lyrics : "Lyrics not available"; 
 
     // Generate the songId
     const songId = extractedSongName.replace(/\s+/g, ""); // Remove spaces for songId

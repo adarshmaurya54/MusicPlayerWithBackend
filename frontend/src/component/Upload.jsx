@@ -13,7 +13,6 @@ function Upload({ handleToggleUpload, fetchSongs }) {
   const [songLyrics, setSongLyrics] = useState("");
   const [fileUploaded, setFileUploaded] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -55,20 +54,10 @@ function Upload({ handleToggleUpload, fetchSongs }) {
     }
   };
 
-  const generateRandomString = (length) => {
-    const characters =
-      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; // Lowercase, uppercase, and digits
-    let result = "";
-    for (let i = 0; i < length; i++) {
-      const randomIndex = Math.floor(Math.random() * characters.length);
-      result += characters[randomIndex];
-    }
-    return result;
-  };
-
   const submitForm = async () => {
     const toastId = toast.loading("Please wait...");
-    if (!fileUploaded || !songName || !songLyrics) {
+    if (!fileUploaded || !songName) {
+      toast.dismiss(toastId);
       alert("Please upload the file and fill in all fields.");
       return;
     }
@@ -76,13 +65,6 @@ function Upload({ handleToggleUpload, fetchSongs }) {
     setUploadStatus("Submitting...");
     const formData = new FormData();
 
-    // Create songId based on songName
-    const formattedSongName = songName.trim().replace(/\s+/g, ""); // Remove spaces from the songName
-    const randomString = generateRandomString(8); // Generate 8 random characters
-
-    const songId = formattedSongName + "-" + randomString; // Combine formatted songName and random string
-
-    formData.append("songId", songId); // Use the generated songId
     formData.append("songName", songName.trim());
     formData.append("lyrics", songLyrics.trim());
     formData.append("audioFile", file);
@@ -154,7 +136,7 @@ function Upload({ handleToggleUpload, fetchSongs }) {
                 <input
                   type="text"
                   id="songname"
-                  className="border dark:border-none border-gray-300 dark:bg-slate-300 text-gray-900 text-sm rounded-lg dark:outline-none block w-full p-2.5"
+                  className="border dark:border-none border-gray-300 dark:bg-slate-300 text-gray-900 text-sm rounded-xl dark:outline-none block w-full p-2.5"
                   placeholder="Ex. O Mere Dil Ke Chain"
                   value={songName}
                   onChange={(e) => setSongName(e.target.value)}
@@ -166,16 +148,15 @@ function Upload({ handleToggleUpload, fetchSongs }) {
                   htmlFor="songlyrics"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Song Lyrics
+                  Song Lyrics (Optional)
                 </label>
                 <textarea
                   id="songlyrics"
                   rows="6"
-                  className="border dark:border-none border-gray-300 dark:bg-slate-300 text-gray-900 text-sm rounded-lg dark:outline-none block w-full p-2.5"
+                  className="border dark:border-none border-gray-300 dark:bg-slate-300 text-gray-900 text-sm rounded-xl resize-none dark:outline-none block w-full p-2.5"
                   placeholder="Enter the song lyrics here..."
                   value={songLyrics}
                   onChange={(e) => setSongLyrics(e.target.value)}
-                  required
                 ></textarea>
               </div>
               <button
