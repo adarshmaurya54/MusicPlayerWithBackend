@@ -23,6 +23,7 @@ const router = createBrowserRouter([
     children: [
       { path: '', element: <HomePage /> }, // Default route inside Layout
       { path: 'song', element: <HomePage /> },
+      { path: 'users', element: <HomePage /> },
       {
         path: 'library',
         element: <Library />,

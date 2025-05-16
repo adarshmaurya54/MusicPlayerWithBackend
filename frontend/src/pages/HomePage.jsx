@@ -15,10 +15,11 @@ import { getCurrentUser } from "../redux/features/auth/authAction";
 import EditProfile from "../component/EditProfile";
 import { LiaTimesSolid } from "react-icons/lia";
 import Footer from "../component/Footer";
+import Users from "../component/Users";
 
 function HomePage() {
   const { songId } = useParams(); // Get songId from URL
-
+  const isUsersRoute = location.pathname === '/users';
   const [selectedArtist, setSelectedArtist] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
@@ -355,6 +356,7 @@ function HomePage() {
         {openEditProfile && <EditProfile setOpenEditProfile={setOpenEditProfile} />}
       </div>
       <Footer/>
+      {isUsersRoute && <Users />}
     </>
   );
 }

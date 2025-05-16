@@ -111,7 +111,7 @@ function Upload({ handleToggleUpload, fetchSongs }) {
   };
 
   return (
-    <div className="fixed z-50 top-0 left-0 bg-black/10 flex justify-center items-center w-full h-full backdrop-blur-lg">
+    <div className="fixed z-50 top-0 left-0 bg-black/50 flex justify-center items-center w-full h-full backdrop-blur-sm">
       
       <div className="relative flex items-center justify-center w-full h-full md:w-[90%] md:h-[95%] bg-white dark:bg-slate-800 md:rounded-3xl md:p-6 shadow-lg transition-all">
         <div className="flex text-black dark:text-white absolute md:top-7 md:left-7 top-5 left-4 justify-between items-center">

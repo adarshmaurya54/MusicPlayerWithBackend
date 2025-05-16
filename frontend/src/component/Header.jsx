@@ -6,7 +6,7 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import { LiaTimesSolid } from "react-icons/lia";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import { FaUser, FaSignOutAlt } from "react-icons/fa";
+import { FaUser, FaSignOutAlt, FaUsers } from "react-icons/fa";
 import { logout } from "../redux/features/auth/authSlice"
 import { RiUploadCloud2Line } from "react-icons/ri";
 import { MdLibraryMusic } from "react-icons/md";
@@ -75,6 +75,12 @@ const Header = ({ handleToggleUpload, setOpenEditProfile }) => {
                           <li onClick={() => handleToggleUpload()} className="flex items-center rounded-lg px-4 py-2 dark:text-white hover:dark:bg-gray-700 hover:bg-gray-100 cursor-pointer">
                             <RiUploadCloud2Line className="mr-3 text-gray-400" />
                             Upload Song
+                          </li>
+                        }
+                        {user.role === 'admin' &&
+                          <li onClick={() => navigate('/users')} className="flex items-center rounded-lg px-4 py-2 dark:text-white hover:dark:bg-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <FaUsers className="mr-3 text-gray-400" />
+                            Users
                           </li>
                         }
                         {user.role === 'user' &&

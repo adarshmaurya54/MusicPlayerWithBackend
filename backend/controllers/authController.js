@@ -191,3 +191,39 @@ exports.deleteProfilePic = async (req, res) => {
     res.status(500).json({ error: "Server error while deleting profile" });
   }
 }
+
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({});
+    
+    if (users.length === 0) {
+      return res.status(404).json({ message: "No users found" });
+    }
+
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+exports.deleteUser = async (req, res) => {
+  try {
+    const { email } = req.params;
+
+    // Check if user exists
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Delete user
+    await User.deleteOne({ email });
+
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
