@@ -42,8 +42,8 @@ A modern music player website with seamless audio playback, Google Drive integra
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/music-player-website.git
-   cd music-player-website
+   git clone https://github.com/adarshmaurya54/MusicPlayerWithBackend.git
+   cd MusicPlayerWithBackend
    ```
 ## Backend Setup:
 
@@ -101,6 +101,7 @@ A modern music player website with seamless audio playback, Google Drive integra
    ├── backend/
    │   ├── controllers/
    │   ├── models/
+   │   ├── middlewares/
    │   ├── routes/
    │   ├── services/
    │   ├── .env

@@ -5,7 +5,7 @@ import logo from "../assets/icon.png";
 function Footer() {
     return (
         <footer className="mt-10 bg-gradient-to-tl from-[#6441a5] to-[#2a0845] text-white py-8 rounded-t-3xl">
-            <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8 items-center text-center md:text-left">
+            <div className="max-w-7xl mx-auto flex items-center justify-between px-8 text-center md:text-left">
 
                 {/* Logo / Brand */}
                 <div className=''>
@@ -17,14 +17,8 @@ function Footer() {
 
                     </Link>
                     <p className="text-sm text-left mt-2 text-gray-300">
-                        Your World, Your Playlist, Playbitz.
+                        Your World, Your Playlist, Playbeatz.
                     </p>
-                </div>
-
-                {/* Footer Links */}
-                <div className="flex flex-col gap-2">
-                    <Link to="/" className="hover:underline hover:text-purple-300">Home</Link>
-                    <Link to="/library" className="hover:underline hover:text-purple-300">Your Library</Link>
                 </div>
 
                 {/* Copyright */}
